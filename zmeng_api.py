@@ -183,6 +183,41 @@ def fetch_host_rooms(host_name: str, start_date: str = "", end_date: str = "", p
     return all_rooms
 
 
+def fetch_rooms_by_ids(room_ids: list[str]) -> list[dict]:
+    """通过直播间ID列表获取直播数据（含geminiTaskId）"""
+    headers, cookies = _get_headers_cookies()
+    all_rooms = []
+    for rid in room_ids:
+        rid = rid.strip()
+        if not rid:
+            continue
+        payload = {"pageNum": 1, "pageSize": 1, "roomId": rid}
+        try:
+            resp = requests.post(API_URL, json=payload, headers=headers, cookies=cookies, timeout=15)
+            data = resp.json()
+        except Exception:
+            continue
+        if data.get("errorCode") != 0 or not data.get("data", {}).get("list"):
+            continue
+        item = data["data"]["list"][0]
+        all_rooms.append({
+            "roomId": item.get("roomId", ""),
+            "hostName": item.get("hostName", ""),
+            "openTime": item.get("openTime", ""),
+            "geminiTaskId": item.get("geminiTaskId", ""),
+            "ctr": parse_metric_value(item.get("ctr")),
+            "dwell_time": parse_metric_value(item.get("avgViewDuration"), is_duration=True),
+            "gmv": parse_metric_value(item.get("gmv")),
+            "order_volume": parse_metric_value(item.get("itemsSold")),
+            "follow_rate": parse_metric_value(item.get("followRate")),
+            "views": parse_metric_value(item.get("views")),
+            "impressions": parse_metric_value(item.get("impressions")),
+            "roi": parse_metric_value(item.get("gmvMaxROI")),
+            "duration": item.get("duration", ""),
+        })
+    return all_rooms
+
+
 def fetch_task_content(gemini_task_id: str) -> dict | None:
     headers, cookies = _get_headers_cookies()
     try:

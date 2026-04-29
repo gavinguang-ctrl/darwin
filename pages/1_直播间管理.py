@@ -5,7 +5,7 @@ from models import Session
 from data_io import (new_session_id, save_session, list_sessions,
                      parse_metrics_from_excel, parse_metrics_from_json, parse_metrics_from_csv)
 from room import create_room, list_rooms, load_room
-from zmeng_api import fetch_live_data, extract_script_from_excel, fetch_host_rooms
+from zmeng_api import fetch_live_data, extract_script_from_excel, fetch_host_rooms, fetch_rooms_by_ids
 from task_manager import request_stop, list_tasks, cleanup_dead
 from ui_helpers import import_sessions_from_api, scorer_selector, launch_batch_score
 import time as _time
@@ -17,26 +17,45 @@ tabs = st.tabs(["新建直播间", "添加场次", "管理直播间"])
 
 
 def _api_search_import_ui(room, prefix):
-    api_host = st.text_input("主播ID（hostName）", placeholder="例：cottondaylive1", key=f"{prefix}_host")
-    dc1, dc2 = st.columns(2)
-    with dc1:
-        api_date = st.date_input("起始日期", value=None if prefix == "imp_api" else datetime.now().date(),
-                                 key=f"{prefix}_date")
-    with dc2:
-        api_end_date = st.date_input("结束日期（留空=至今）", value=None, key=f"{prefix}_end_date")
-    if prefix == "imp_api":
-        st.caption("起始日期留空则导入全部场次")
-    if api_host and st.button("🔍 搜索", type="primary", key=f"{prefix}_search"):
-        with st.spinner(f"搜索 {api_host}..."):
-            rooms_data = fetch_host_rooms(api_host,
-                                          start_date=str(api_date) if api_date else "",
-                                          end_date=str(api_end_date) if api_end_date else "")
-        if not rooms_data:
-            st.warning("未找到直播记录")
-        else:
-            st.session_state[f"{prefix}_rooms"] = rooms_data
-            has_script = sum(1 for r in rooms_data if r.get("geminiTaskId"))
-            st.success(f"找到 {len(rooms_data)} 场，{has_script} 场有脚本")
+    search_mode = st.radio("搜索方式", ["按主播ID", "按直播间ID"], horizontal=True, key=f"{prefix}_mode")
+
+    if search_mode == "按主播ID":
+        api_host = st.text_input("主播ID（hostName）", placeholder="例：cottondaylive1", key=f"{prefix}_host")
+        dc1, dc2 = st.columns(2)
+        with dc1:
+            api_date = st.date_input("起始日期", value=None if prefix == "imp_api" else datetime.now().date(),
+                                     key=f"{prefix}_date")
+        with dc2:
+            api_end_date = st.date_input("结束日期（留空=至今）", value=None, key=f"{prefix}_end_date")
+        if prefix == "imp_api":
+            st.caption("起始日期留空则导入全部场次")
+        if api_host and st.button("🔍 搜索", type="primary", key=f"{prefix}_search"):
+            with st.spinner(f"搜索 {api_host}..."):
+                rooms_data = fetch_host_rooms(api_host,
+                                              start_date=str(api_date) if api_date else "",
+                                              end_date=str(api_end_date) if api_end_date else "")
+            if not rooms_data:
+                st.warning("未找到直播记录")
+            else:
+                st.session_state[f"{prefix}_rooms"] = rooms_data
+                has_script = sum(1 for r in rooms_data if r.get("geminiTaskId"))
+                st.success(f"找到 {len(rooms_data)} 场，{has_script} 场有脚本")
+    else:
+        room_ids_input = st.text_area("直播间ID（每行一个，或用逗号/空格分隔）",
+                                      placeholder="7399000000000000000\n7399000000000000001",
+                                      height=100, key=f"{prefix}_room_ids")
+        if room_ids_input and st.button("🔍 查询", type="primary", key=f"{prefix}_search_ids"):
+            import re
+            ids = [x.strip() for x in re.split(r'[,\s\n]+', room_ids_input) if x.strip()]
+            with st.spinner(f"查询 {len(ids)} 个直播间..."):
+                rooms_data = fetch_rooms_by_ids(ids)
+            if not rooms_data:
+                st.warning("未找到直播记录")
+            else:
+                st.session_state[f"{prefix}_rooms"] = rooms_data
+                has_script = sum(1 for r in rooms_data if r.get("geminiTaskId"))
+                st.success(f"找到 {len(rooms_data)} 场，{has_script} 场有脚本")
+
     if st.session_state.get(f"{prefix}_rooms"):
         rooms_data = st.session_state[f"{prefix}_rooms"]
         for rd in rooms_data[:8]:
