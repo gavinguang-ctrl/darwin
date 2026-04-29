@@ -148,7 +148,9 @@ def run_auto_iterate(task_id, params):
 
     _update(task_id, f"开始迭代，基线 {best_total:.1f}", best_total)
 
-    for r in range(1, int(max_rounds) + 1):
+    r = 0
+    while r < int(max_rounds):
+        r += 1
         if _check_stop(task_id):
             _update(task_id, f"已停止于轮{r}，最高分 {best_total:.1f}", best_total, "用户停止")
             break
@@ -217,7 +219,8 @@ def run_auto_iterate(task_id, params):
                 dim_fail_counts[dim_id] = dim_fail_counts.get(dim_id, 0) + 1
                 if dim_fail_counts[dim_id] >= 2:
                     skip_dims.add(dim_id)
-            _update(task_id, f"轮{r}: 出错", best_total, f"轮{r}: ⚠️ {str(e)[:100]}")
+            max_rounds += 1
+            _update(task_id, f"轮{r}: 出错（已补偿+1轮）", best_total, f"轮{r}: ⚠️ {str(e)[:100]}")
             continue
 
     cand_result = {}
