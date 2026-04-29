@@ -214,11 +214,6 @@ def run_auto_iterate(task_id, params):
                 break
 
         except Exception as e:
-            dim_id = dim_target["id"] if "dim_target" in dir() and dim_target else None
-            if dim_id:
-                dim_fail_counts[dim_id] = dim_fail_counts.get(dim_id, 0) + 1
-                if dim_fail_counts[dim_id] >= 2:
-                    skip_dims.add(dim_id)
             max_rounds += 1
             _update(task_id, f"轮{r}: 出错（已补偿+1轮）", best_total, f"轮{r}: ⚠️ {str(e)[:100]}")
             continue
