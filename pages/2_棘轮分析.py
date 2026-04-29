@@ -1,6 +1,6 @@
 import streamlit as st
 import plotly.graph_objects as go
-from config import RATCHET_STATE_FILE, OPENAI_API_KEY, ANTHROPIC_API_KEY, GOOGLE_API_KEY
+from config import OPENAI_API_KEY, ANTHROPIC_API_KEY, GOOGLE_API_KEY
 from models import RatchetState
 from data_io import list_sessions, save_session
 from ratchet import compare_metrics, get_improvement_targets, ratchet_step

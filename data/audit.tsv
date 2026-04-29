@@ -1,0 +1,2 @@
+timestamp	session_id	old_score	new_score	status	dimension	priority	scorer_model	note
+2026-04-21T13:14:29	test_session	0	75.5	baseline	-	-	test/model	test
