@@ -18,13 +18,19 @@ tabs = st.tabs(["新建直播间", "添加场次", "管理直播间"])
 
 def _api_search_import_ui(room, prefix):
     api_host = st.text_input("主播ID（hostName）", placeholder="例：cottondaylive1", key=f"{prefix}_host")
-    api_date = st.date_input("起始日期", value=None if prefix == "imp_api" else datetime.now().date(),
-                             key=f"{prefix}_date")
+    dc1, dc2 = st.columns(2)
+    with dc1:
+        api_date = st.date_input("起始日期", value=None if prefix == "imp_api" else datetime.now().date(),
+                                 key=f"{prefix}_date")
+    with dc2:
+        api_end_date = st.date_input("结束日期（留空=至今）", value=None, key=f"{prefix}_end_date")
     if prefix == "imp_api":
-        st.caption("留空则导入全部场次")
+        st.caption("起始日期留空则导入全部场次")
     if api_host and st.button("🔍 搜索", type="primary", key=f"{prefix}_search"):
         with st.spinner(f"搜索 {api_host}..."):
-            rooms_data = fetch_host_rooms(api_host, start_date=str(api_date) if api_date else "")
+            rooms_data = fetch_host_rooms(api_host,
+                                          start_date=str(api_date) if api_date else "",
+                                          end_date=str(api_end_date) if api_end_date else "")
         if not rooms_data:
             st.warning("未找到直播记录")
         else:
