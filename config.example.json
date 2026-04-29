@@ -1,0 +1,17 @@
+{
+  "GOOGLE_API_KEY": "",
+  "GOOGLE_PROXY_KEY": "",
+  "GOOGLE_PROXY_URL": "https://www.fucheers.top",
+  "ANTHROPIC_API_KEY": "",
+  "ANTHROPIC_PROXY_URL": "https://www.fucheers.top",
+  "OPENAI_API_KEY": "",
+  "OPENAI_PROXY_URL": "https://www.fucheers.top",
+  "ZMENG_AUTH_TOKEN": "",
+  "ZMENG_COOKIE": "",
+  "DEFAULT_SCORER": "google（代理）/gemini-3.1-pro-preview",
+  "DEFAULT_OPTIMIZER": "anthropic/claude-opus-4-7",
+  "DEFAULT_GENERATOR": "google（代理）/gemini-3-flash-preview",
+  "USERS": {
+    "your_email@example.com": "your_password"
+  }
+}
