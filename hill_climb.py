@@ -140,6 +140,7 @@ def build_prompt_improvement(
     parts.append("- 优化后的提示词格式必须与原始提示词保持一致\n")
     parts.append("- 约束条件放在提示词最前面\n")
     parts.append("- 提示词中必须包含完整的基准脚本内容，不能用占位符\n")
+    parts.append("- 你可以修改提示词中嵌入的基准脚本，使其与优化方向一致\n")
     if locked_constraints:
         parts.append("- 以下已锁定的提示词指令必须保留：\n")
         for c in locked_constraints:
@@ -169,8 +170,8 @@ def build_prompt_improvement(
     if original_prompt and original_prompt != base_prompt:
         parts.append(f"## 原始提示词格式（输出格式必须与此一致）\n```\n{original_prompt[:2000]}\n```\n\n")
     parts.append(f"## 当前提示词\n```\n{filled_prompt}\n```\n")
-    parts.append(f"\n## 当前提示词生成的脚本（供参考）\n{current_script[:2000]}\n")
-    parts.append("\n## 输出\n请输出改进后的完整提示词。提示词中必须包含完整基准脚本（不要用占位符）。格式与原始提示词保持一致，约束条件放最前面。")
+    parts.append(f"\n## 当前提示词生成的脚本（这是最新的最佳脚本，提示词中的基准脚本应更新为此版本或更优版本）\n{current_script[:3000]}\n")
+    parts.append("\n## 输出\n请输出改进后的完整提示词。提示词中的基准脚本应替换为最新的最佳版本（可在此基础上进一步优化）。格式与原始提示词保持一致，约束条件放最前面。")
     return "".join(parts)
 
 
