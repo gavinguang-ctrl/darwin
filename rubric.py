@@ -1,11 +1,25 @@
 import json
 import re
 import time
+from datetime import datetime as _dt
 from pathlib import Path
 from llm import LLMProvider
 from config import DATA_DIR
 
 WEIGHT_CONFIG_FILE = DATA_DIR / "weight_config.json"
+
+NIGHT_DWELL_DISCOUNT = 0.6
+
+
+def calibrate_dwell_time(dwell_seconds: float, timestamp: str) -> float:
+    """凌晨场(00-06点)停留时长打折，消除挂机影响"""
+    try:
+        hour = _dt.fromisoformat(timestamp).hour
+        if 0 <= hour < 6:
+            return dwell_seconds * NIGHT_DWELL_DISCOUNT
+    except Exception:
+        pass
+    return dwell_seconds
 
 STATIC_DIMENSIONS = [
     {

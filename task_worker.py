@@ -24,7 +24,7 @@ def run_batch_score(task_id, params):
     from room import load_room
     from data_io import list_sessions, save_session
     from llm import get_provider
-    from rubric import score_script, compute_effect_score, compute_total_score, load_weight_config
+    from rubric import score_script, compute_effect_score, compute_total_score, load_weight_config, calibrate_dwell_time
     from models import RatchetState
 
     room = load_room(params["room_id"])
@@ -41,7 +41,11 @@ def run_batch_score(task_id, params):
     wc = load_weight_config()
     scorer = get_provider(params["scorer"]["provider"], params["scorer"]["key"], params["scorer"]["model"])
     state = RatchetState.load(room.ratchet_state_path())
-    all_metrics = [s.metrics for s in all_sessions]
+    calibrated_metrics = []
+    for s in all_sessions:
+        m = dict(s.metrics)
+        m["dwell_time"] = calibrate_dwell_time(m.get("dwell_time", 0), s.timestamp)
+        calibrated_metrics.append(m)
 
     best_session = None
     best_score = -1
@@ -54,13 +58,13 @@ def run_batch_score(task_id, params):
             break
         _update(task_id, f"评分 {i+1}/{len(sessions)}", best_score)
         try:
-            dwell = s.metrics.get("dwell_time", 0)
+            dwell = calibrate_dwell_time(s.metrics.get("dwell_time", 0), s.timestamp)
             result = score_script(s.script, scorer, state.locked_constraints, wc, dwell_seconds=dwell)
             s.static_scores = result["scores"]
             s.rubric_reasoning = result.get("reasoning", {})
             s.static_total = result["static_score"]
             s.scorer_model = f"{params['scorer']['provider']}/{params['scorer']['model']}"
-            eff_total, eff_scores = compute_effect_score(s.metrics, state.effect_baselines, wc, all_sessions_metrics=all_metrics)
+            eff_total, eff_scores = compute_effect_score(s.metrics, state.effect_baselines, wc, all_sessions_metrics=calibrated_metrics)
             s.effect_scores = eff_scores
             s.effect_total = eff_total
             s.total_score = compute_total_score(s.static_total, eff_total)
@@ -99,7 +103,7 @@ def run_auto_iterate(task_id, params):
     from data_io import list_sessions, load_session
     from llm import get_provider
     from rubric import (score_script, compute_effect_score, compute_total_score,
-                        get_effective_weights, load_weight_config)
+                        get_effective_weights, load_weight_config, calibrate_dwell_time)
     from hill_climb import (generate_improvement, generate_prompt_improvement,
                             generate_script_from_prompt, decide)
     from models import RatchetState, Candidate
@@ -141,10 +145,14 @@ def run_auto_iterate(task_id, params):
         best_static = dict(session.static_scores)
         best_effect = dict(session.effect_scores or {})
     completed_rounds = 0
-    dwell = session.metrics.get("dwell_time", 0)
+    dwell = calibrate_dwell_time(session.metrics.get("dwell_time", 0), session.timestamp)
     dim_fail_counts: dict[str, int] = {}
     skip_dims: set[str] = set()
-    all_metrics = [s.metrics for s in sessions]
+    calibrated_metrics = []
+    for s in sessions:
+        m = dict(s.metrics)
+        m["dwell_time"] = calibrate_dwell_time(m.get("dwell_time", 0), s.timestamp)
+        calibrated_metrics.append(m)
 
     _update(task_id, f"开始迭代，基线 {best_total:.1f}", best_total)
 
@@ -185,7 +193,7 @@ def run_auto_iterate(task_id, params):
 
             nr = score_script(new_script, scorer, state.locked_constraints, wc, dwell_seconds=dwell)
             new_static_total = nr["static_score"]
-            new_eff, new_eff_scores = compute_effect_score(session.metrics, state.effect_baselines, wc, all_sessions_metrics=all_metrics)
+            new_eff, new_eff_scores = compute_effect_score(session.metrics, state.effect_baselines, wc, all_sessions_metrics=calibrated_metrics)
             new_total = compute_total_score(new_static_total, new_eff)
 
             if new_total > best_total:
