@@ -304,6 +304,35 @@ with tabs[2]:
                         r.save()
                         st.success("已保存")
                         st.rerun()
+
+                # Scored sessions with rescore checkboxes
+                scored_sessions = [s for s in sessions if s.total_score > 0]
+                if scored_sessions:
+                    with st.expander(f"📊 已评分场次（{len(scored_sessions)}场）"):
+                        selected_ids = []
+                        for s in scored_sessions:
+                            label = f"{s.id[:20]} | {s.total_score:.1f}分 | 静态{s.static_total:.1f} 实效{s.effect_total:.1f}"
+                            if st.checkbox(label, key=f"rescore_cb_{r.id}_{s.id}"):
+                                selected_ids.append(s.id)
+                        if selected_ids:
+                            if st.button(f"🔄 重新评分选中的 {len(selected_ids)} 场", type="primary",
+                                         key=f"rescore_selected_{r.id}"):
+                                from config import GOOGLE_API_KEY as _gk2, get_default_models as _gdm2
+                                from data_io import save_session as _save
+                                defs = _gdm2()
+                                for sid in selected_ids:
+                                    s = next(x for x in scored_sessions if x.id == sid)
+                                    s.total_score = 0
+                                    s.static_total = 0
+                                    s.effect_total = 0
+                                    s.static_scores = {}
+                                    s.effect_scores = {}
+                                    _save(s)
+                                launch_batch_score(r.id, r.name, defs["scorer"]["provider"], _gk2, defs["scorer"]["model"],
+                                                   desc=f"「{r.name}」重评{len(selected_ids)}场",
+                                                   session_ids=selected_ids)
+                                st.rerun()
+
                 unscored_list = [s for s in sessions if s.total_score <= 0]
                 if unscored_list:
                     running_for_room = [t for t in list_tasks(room_id=r.id, status="running") if t.op == "batch_score"]
