@@ -259,6 +259,64 @@ def find_weakest_dimension(static_scores: dict[str, int], effect_scores: dict[st
     return max(candidates, key=lambda x: x["weighted"])
 
 
+REPETITION_MIN_LEN = 20
+REPETITION_MAX_PENALTY = 10
+
+
+def _longest_common_substring_len(a: str, b: str) -> tuple[int, str]:
+    """Return (length, substring) of the longest common substring."""
+    m, n = len(a), len(b)
+    if m == 0 or n == 0:
+        return 0, ""
+    # Optimize: limit to reasonable size to avoid O(m*n) memory on huge scripts
+    if m > 5000:
+        a = a[:5000]
+        m = 5000
+    if n > 5000:
+        b = b[:5000]
+        n = 5000
+    prev = [0] * (n + 1)
+    best_len = 0
+    best_end = 0
+    for i in range(1, m + 1):
+        curr = [0] * (n + 1)
+        for j in range(1, n + 1):
+            if a[i - 1] == b[j - 1]:
+                curr[j] = prev[j - 1] + 1
+                if curr[j] > best_len:
+                    best_len = curr[j]
+                    best_end = i
+        prev = curr
+    return best_len, a[best_end - best_len:best_end]
+
+
+def compute_repetition_penalty(script: str, dwell_seconds: float = 0) -> dict:
+    """检测循环间字面重复，返回扣分信息。"""
+    if not dwell_seconds:
+        dwell_seconds = DEFAULT_DWELL_SECONDS
+    windows = _extract_windows(script, dwell_seconds)
+    if len(windows) < 2:
+        return {"penalty": 0, "repeat_ratio": 0, "longest_repeat": ""}
+
+    overlaps = []
+    longest_repeat = ""
+    for i in range(len(windows)):
+        for j in range(i + 1, len(windows)):
+            lcs_len, lcs_str = _longest_common_substring_len(windows[i], windows[j])
+            if lcs_len < REPETITION_MIN_LEN:
+                overlaps.append(0)
+                continue
+            min_len = min(len(windows[i]), len(windows[j]))
+            overlap = lcs_len / min_len if min_len > 0 else 0
+            overlaps.append(overlap)
+            if lcs_len > len(longest_repeat):
+                longest_repeat = lcs_str
+
+    repeat_ratio = sum(overlaps) / len(overlaps) if overlaps else 0
+    penalty = round(repeat_ratio * REPETITION_MAX_PENALTY, 1)
+    return {"penalty": penalty, "repeat_ratio": round(repeat_ratio, 3), "longest_repeat": longest_repeat}
+
+
 def score_script(script: str, scorer: LLMProvider, locked_constraints: list[dict] | None = None,
                  weight_config: dict | None = None, dwell_seconds: float = 0) -> dict:
     """用独立的 scorer LLM 评分。dwell_seconds>0时用窗口模式。"""
@@ -294,16 +352,22 @@ def score_script(script: str, scorer: LLMProvider, locked_constraints: list[dict
 
         merged_scores = {k: round(sum(v), 1) for k, v in all_scores.items()}
         merged_reasoning = {k: " | ".join(v) for k, v in all_reasoning.items()}
+        rep = compute_repetition_penalty(script, dwell_seconds)
+        static = compute_static_score(merged_scores, weight_config)
         return {
             "scores": merged_scores,
             "reasoning": merged_reasoning,
-            "static_score": compute_static_score(merged_scores, weight_config),
+            "static_score": round(max(0, static - rep["penalty"]), 1),
+            "repetition": rep,
         }
 
     prompt = build_scoring_prompt(script, locked_constraints, weight_config)
     response = scorer.generate(prompt, system=SCORER_SYSTEM_PROMPT)
     result = parse_rubric_scores(response)
-    result["static_score"] = compute_static_score(result["scores"], weight_config)
+    rep = compute_repetition_penalty(script, dwell_seconds)
+    static = compute_static_score(result["scores"], weight_config)
+    result["static_score"] = round(max(0, static - rep["penalty"]), 1)
+    result["repetition"] = rep
     return result
 
 
