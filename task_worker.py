@@ -242,6 +242,131 @@ def run_auto_iterate(task_id, params):
     _finish(task_id, "stopped" if _check_stop(task_id) else "completed", cand_result)
 
 
+def run_dedupe_optimize(task_id, params):
+    """跨脚本去重优化：对一个 prompt 方案，迭代降低多次生成的脚本之间重复率。"""
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+    from room import load_room, save_candidate, load_candidate
+    from llm import get_provider
+    from rubric import compute_cross_script_repetition
+    from hill_climb import generate_script_from_prompt, generate_dedupe_improvement
+    from models import RatchetState, Candidate
+    import uuid
+
+    room = load_room(params["room_id"])
+    source_cand = load_candidate(room, params["candidate_id"])
+    if not source_cand:
+        _finish(task_id, "failed", {"error": f"Candidate {params['candidate_id']} not found"})
+        return
+
+    sample_size = int(params.get("sample_size", 50))
+    max_rounds = int(params.get("max_rounds", 5))
+    state = RatchetState.load(room.ratchet_state_path())
+
+    best_prompt = source_cand.content
+    baseline_script = source_cand.generated_script or ""
+
+    def _gen_scripts(prompt_text: str, gen_provider_cfg: dict) -> list[str]:
+        """并发生成 N 个脚本，限制并发数 5。"""
+        scripts = []
+        def _call():
+            gen = get_provider(gen_provider_cfg["provider"], gen_provider_cfg["key"], gen_provider_cfg["model"])
+            return generate_script_from_prompt(prompt_text, gen, baseline_script=baseline_script)
+
+        with ThreadPoolExecutor(max_workers=5) as exe:
+            futures = [exe.submit(_call) for _ in range(sample_size)]
+            for i, fut in enumerate(as_completed(futures)):
+                if _check_stop(task_id):
+                    break
+                try:
+                    scripts.append(fut.result())
+                    _update(task_id, f"生成 {len(scripts)}/{sample_size}", None)
+                except Exception:
+                    pass
+        return scripts
+
+    # 初始评估
+    _update(task_id, f"初始评估：生成 {sample_size} 个脚本", 0, f"基线方案 {source_cand.id}")
+    initial_scripts = _gen_scripts(best_prompt, params["generator"])
+    if _check_stop(task_id) or len(initial_scripts) < 2:
+        _finish(task_id, "stopped" if _check_stop(task_id) else "failed",
+                {"error": "样本不足，无法评估"})
+        return
+    rep = compute_cross_script_repetition(initial_scripts)
+    best_rep_ratio = rep["avg_ratio"]
+    best_top_pairs = rep["top_pairs"]
+    _update(task_id, f"初始重复率 {best_rep_ratio*100:.1f}%", (1 - best_rep_ratio) * 100,
+            f"初始 avg={best_rep_ratio*100:.1f}% max={rep['max_ratio']*100:.1f}%")
+
+    initial_rep_ratio = best_rep_ratio
+    completed_rounds = 0
+    r = 0
+    while r < max_rounds:
+        r += 1
+        if _check_stop(task_id):
+            _update(task_id, f"已停止于轮{r}", (1 - best_rep_ratio) * 100, "用户停止")
+            break
+        try:
+            opt = get_provider(params["optimizer"]["provider"], params["optimizer"]["key"], params["optimizer"]["model"])
+            _update(task_id, f"轮{r}/{max_rounds}: 优化 prompt",
+                    (1 - best_rep_ratio) * 100, f"轮{r}: 生成新版提示词")
+
+            new_prompt = generate_dedupe_improvement(
+                best_prompt, best_rep_ratio, best_top_pairs,
+                state.locked_constraints, opt)
+
+            _update(task_id, f"轮{r}/{max_rounds}: 评估 {sample_size} 个新脚本",
+                    (1 - best_rep_ratio) * 100)
+            new_scripts = _gen_scripts(new_prompt, params["generator"])
+            if _check_stop(task_id):
+                break
+            if len(new_scripts) < 2:
+                max_rounds += 1
+                _update(task_id, f"轮{r}: 样本不足（已补偿+1轮）",
+                        (1 - best_rep_ratio) * 100, f"轮{r}: ⚠️ 生成失败过多")
+                continue
+
+            new_rep = compute_cross_script_repetition(new_scripts)
+            new_ratio = new_rep["avg_ratio"]
+
+            if new_ratio < best_rep_ratio:
+                old = best_rep_ratio
+                best_prompt = new_prompt
+                best_rep_ratio = new_ratio
+                best_top_pairs = new_rep["top_pairs"]
+                completed_rounds += 1
+                _update(task_id, f"轮{r}: {old*100:.1f}%→{new_ratio*100:.1f}% ✅",
+                        (1 - best_rep_ratio) * 100,
+                        f"轮{r}: 重复率 {old*100:.1f}%→{new_ratio*100:.1f}% ✅")
+            else:
+                _update(task_id, f"轮{r}: {new_ratio*100:.1f}% ❌（保留原版）",
+                        (1 - best_rep_ratio) * 100,
+                        f"轮{r}: 新版 {new_ratio*100:.1f}% ≥ 当前 {best_rep_ratio*100:.1f}% ❌")
+        except Exception as e:
+            max_rounds += 1
+            _update(task_id, f"轮{r}: 出错（已补偿+1轮）",
+                    (1 - best_rep_ratio) * 100, f"轮{r}: ⚠️ {str(e)[:100]}")
+            continue
+
+    cand_result = {"initial_rep_ratio": initial_rep_ratio, "final_rep_ratio": best_rep_ratio}
+    if best_rep_ratio < initial_rep_ratio:
+        new_cand = Candidate(
+            id=uuid.uuid4().hex[:8],
+            session_id=source_cand.session_id,
+            mode=source_cand.mode,
+            content=best_prompt,
+            generated_script=baseline_script,
+            total_score=source_cand.total_score,
+            static_scores=source_cand.static_scores,
+            effect_scores=source_cand.effect_scores,
+            created_at=datetime.now().isoformat(),
+            rounds=completed_rounds,
+        )
+        save_candidate(room, new_cand)
+        cand_result["candidate_id"] = new_cand.id
+
+    _finish(task_id, "stopped" if _check_stop(task_id) else "completed", cand_result)
+
+
 def main():
     if len(sys.argv) < 2:
         sys.exit(1)
@@ -255,6 +380,8 @@ def main():
             run_batch_score(task_id, task.params)
         elif task.op in ("auto_iterate", "continue_iterate"):
             run_auto_iterate(task_id, task.params)
+        elif task.op == "dedupe_optimize":
+            run_dedupe_optimize(task_id, task.params)
         else:
             _finish(task_id, "failed", {"error": f"Unknown op: {task.op}"})
     except Exception as e:

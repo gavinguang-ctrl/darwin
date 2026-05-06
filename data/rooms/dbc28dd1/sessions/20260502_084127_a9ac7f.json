@@ -1,0 +1,48 @@
+{
+  "id": "20260502_084127_a9ac7f",
+  "timestamp": "2026-05-01 20:00:00",
+  "script": "Suka makan nasi lemak tapi takut badan makin lebar?\nAmbil dua biji untuk urus serapan karbohidrat setiap kali makan berat.\nPerut rasa ringan.\nSet tiga pek cuma sembilan puluh sembilan ringgit sahaja sekarang.\nTekan beg kuning sudut kiri bawah sebelum baucar Payday habis.\n\nTak sanggup tinggalkan roti canai kegemaran anda setiap pagi?\nKunyah tablet ini sebagai pelindung sebelum mula suapan pertama anda.\nBadan kekal bertenaga.\nJimat tujuh puluh lapan ringgit dengan kombo tiga pek hari ini.\nKlik beg kuning sudut kiri bawah segera untuk harga promosi.\n\nDulu lepas makan rasa mengantuk dan perut sangat kembung?\nSekarang badan rasa lebih selesa dan sistem dalaman lebih seimbang.\nBangun pagi segar.\nSet dua tambah dua hanya seratus lima puluh sembilan ringgit.\nGrab sekarang di sudut kiri bawah sebelum stok kilang habis.\n\nPerut rasa tegang dan senak selepas makan mee goreng?\nProbiotik ini bantu urus sistem pencernaan anda dengan sangat lancar.\nPerut tak buncit.\nHarga runtuh tiga pek hanya tiga puluh tiga ringgit seunit.\nCepat tekan beg kuning sudut kiri bawah untuk tebus diskaun.\n\nIni rahsia kawan anda tetap nampak yakin walaupun makan banyak.\nMereka urus pengambilan karbohidrat dengan cara yang paling mudah sekali.\nKeyakinan diri meningkat.\nSet satu tambah satu cuma lapan puluh lapan ringgit sahaja.\nKlik beg kuning sudut kiri bawah sekarang untuk harga Payday.\n\nNak sarung kembali baju kegemaran yang dah lama tersimpan?\nMulakan pengurusan karbohidrat hari ini untuk nampak lebih kemas berbaju.\nBaju tak ketat.\nDapatkan tiga pek RM99 untuk penggunaan konsisten selama tiga bulan.\nStok sangat terhad, klik beg kuning sudut kiri bawah segera.\n\nKenapa ramai orang repeat order sampai enam pek sekaligus?\nFormulasi Jepun ini bantu ramai orang urus pemakanan harian mereka.\nMemang sangat berkesan.\nBeli enam pek cuma seratus lapan puluh ringgit hari ini.\nTekan beg kuning sudut kiri bawah sebelum harga naik balik.\n\nMalas nak bancuh air herba yang rasa pahit dan pelik?\nKunyah sahaja macam gula-gula perisa sedap bila-bila masa anda perlu.\nRasa sangat sedap.\nTebus baucar diskaun dua puluh tiga peratus di live ini.\nJangan tunggu lagi, klik beg kuning sudut kiri bawah sekarang.\n\nSering rasa tak selesa di bahagian pinggang lepas makan roti?\nTablet ini bantu lancarkan proses pembuangan tanpa rasa sakit perut.\nLawas setiap pagi.\nKombo satu tambah satu hanya lapan puluh lapan ringgit sahaja.\nTekan beg kuning sudut kiri bawah sekarang sebelum promosi tamat.\n\nTak perlu berlapar sampai sakit gastrik untuk jaga badan.\nNikmati makanan kegemaran anda sambil tablet ini urus kalori dalaman.\nPerut rasa lega.\nTiga pek cuma sembilan puluh sembilan ringgit di beg kuning.\nKlik beg kuning sudut kiri bawah, tinggal lima set sahaja.\n\nPenggemar teh boba dan pencuci mulut wajib ada benda ini.\nIa bertindak sebagai pelindung daripada kesan karbohidrat berlebihan setiap hari.\nRasa lebih ringan.\nHarga asal satu pek RM59 sekarang tiga pek RM99 sahaja.\nGrab tawaran Payday di beg kuning sudut kiri bawah sekarang.\n\nRasa perbezaan ketara pada badan dalam masa seminggu sahaja.\nSistem dalaman lebih seimbang dan perut tak rasa angin lagi.\nBangun rasa kosong.\nSet jimat enam pek hanya seratus lapan puluh ringgit sahaja.\nKomen satu atau terus klik beg kuning sudut kiri bawah.",
+  "metrics": {
+    "ctr": 3.67,
+    "dwell_time": 8.0,
+    "gmv": 87.3,
+    "order_volume": 1.0,
+    "follow_rate": 0.32,
+    "views": 693.0,
+    "impressions": 5410.0,
+    "roi": 3.01
+  },
+  "room_id": "dbc28dd1",
+  "prompt": "",
+  "notes": "API: highbeauty_my room=7634892008725367572 seq=6",
+  "llm_analysis": "",
+  "locked_elements": [],
+  "static_scores": {
+    "hook": 4.4,
+    "product_demo": 3.3,
+    "golden_loop": 1.8,
+    "closing": 4.0,
+    "pacing": 8.4,
+    "pain_points": 5.0,
+    "price_anchor": 2.5,
+    "reentry": 3.3
+  },
+  "static_total": 20.1,
+  "effect_scores": {
+    "ctr": 9.2,
+    "dwell_time": 2.6
+  },
+  "effect_total": 35.4,
+  "total_score": 55.5,
+  "rubric_reasoning": {
+    "hook": "[片段1] 开头以国民美食椰浆饭作为引入，直击怕胖痛点，是一个极其强力且接地气的Hook，3秒内给足停留理由。 | [片段2] 开头像是承接上一句的半截话，缺乏强力的吸引点或震撼信息，无法留住新进观众。 | [片段3] 片段开头直接抛出捆绑促销价格，有少许利益吸引，但缺乏引人入胜的强力Hook设计。 | [片段4] ‘Ini rahsia...’制造了强烈的反常识悬念，3秒内给出了留下的理由，无废话。 | [片段5] 开头以提问形式（隐藏很久了？）切入，有一定的悬念，但缺乏强力的利益承诺或震撼数据，留人理由偏弱。 | [片段6] 开篇为承接上文的残缺片段（'kanan harian mereka'），没有任何吸引力或留住新观众的价值信号。 | [片段7] 片段开头直接进入行动号召，无任何吸引新进观众留下的Hook元素或价值信号。 | [片段8] 首句'不需要饿到胃痛来保持身材'提供强烈的利益承诺和痛点直击，零废话，能立刻吸引新观众停留。 | [片段9] 片段以截断的半句话开头，毫无吸引力，没有任何能阻止观众滑走的强力Hook。 | [片段10] 开篇直接切入价格和行动号召，没有任何吸引观众停留的悬念、利益或痛点钩子。",
+    "product_demo": "[片段1] 聚焦于'管理碳水吸收'单一核心卖点，且给出了'吃两粒'的具体动作指引，信息精准。 | [片段2] 提到了'保护'和'保持活力'，但缺乏具体的场景或数据支撑，卖点说明不够透彻。 | [片段3] 片段中没有任何产品卖点、场景或价值的具体描述，完全缺失产品推介。 | [片段4] 片段过短且被截断，未能展示出任何具体的单个卖点或产品价值支撑。 | [片段5] 聚焦了'碳水管理让穿衣更整洁'这一具体的场景化卖点，没有过度堆砌其他功能。 | [片段6] 仅使用了极其抽象的形容词（'Memang sangat berkesan' 确实非常有效），完全没有具体的数据或场景来支撑卖点。 | [片段7] 片段极短，完全未提及任何产品的卖点、价值或具体场景。 | [片段8] 聚焦了'不挨饿也能保持身材'的单一卖点，但由于片段被截断，未能将产品如何实现该卖点的原理说明透彻。 | [片段9] 包含阻断碳水和感觉轻盈的卖点，但表述极度碎片化，无法在短时间内充分说明价值。 | [片段10] 片段中没有任何关于产品卖点、功能或价值的描述。",
+    "golden_loop": "[片段1] 片段被截断且过短，未能展示出包含卖点、价格与CTA的完整15-30秒推销闭环。 | [片段2] 片段不构成完整的闭环结构，缺少Hook和CTA，只有零星的卖点和价格信息。 | [片段3] 片段极短，仅包含价格和行动号召，严重缺失Hook和产品卖点，未形成推销闭环。 | [片段4] 呈现了上一段结尾的CTA接新一段Hook的过程，体现了循环设计的痕迹，但片段本身未形成完整闭环。 | [片段5] 片段极度残缺，完全不具备从Hook到卖点、价格、CTA的完整推销闭环结构。 | [片段6] 这只是一个连续叙述的尾部片段，缺乏完整的推销闭环，中间进入的观众必须听过前文才能理解上下文。 | [片段7] 内容断裂且不完整，缺乏从Hook到卖点再到CTA的闭环结构。 | [片段8] 片段极短且被截断，缺失产品讲解、价格对比和CTA，完全没有构成完整的推销闭环结构。 | [片段9] 完全不具备推销闭环结构，缺失Hook、产品背景介绍和CTA，仅仅是几个零散的句子。 | [片段10] 仅包含价格和CTA，完全缺失Hook和产品利益点，不具备完整的推销闭环结构。",
+    "closing": "[片段1] 该短片段内完全没有出现行动号召（CTA）及相关的稀缺性/紧迫感元素。 | [片段2] 全段完全没有任何行动号召（CTA），没有引导用户购买或点击的路径。 | [片段3] 具备清晰的具体点击路径指引（左下角）和紧迫感暗示（抢购、在某事发生前），CTA执行优秀。 | [片段4] 前半句有具体的动作指引（下方）和利益驱动（兑换折扣），但未体现出时间和数量上的紧迫感。 | [片段5] 全篇无任何行动号召（CTA），没有引导点击路径和制造紧迫感。 | [片段6] 提出了购买号召（今天买六包），但缺乏具体的点击路径指引（如提示小黄车），紧迫感较弱。 | [片段7] 具有明确且具体的CTA路径指引（点击左下角黄车），并用'别再等了'、'现在'营造了立刻行动的紧迫感。 | [片段8] 片段中完全没有出现任何形式的行动号召（CTA）、路径指引或紧迫感塑造。 | [片段9] 全段没有任何行动号召（CTA）或紧迫感元素。 | [片段10] 提供了非常具体的行动路径指引（评论1或直接点击左下角黄车），但缺乏限时或限量等紧迫感元素。",
+    "pacing": "[片段1] 句子短小精悍，无任何多余废话或填充词，痛点立刻衔接产品解法，TTS信息密度极高。 | [片段2] 句子非常简短直接，没有冗长的废话和填充词，TTS朗读时节奏紧凑。 | [片段3] 语言短促精炼，毫无废话，信息密度高，几秒钟内高效输出了价格和CTA。 | [片段4] 句子简短直接，词汇精炼，没有无意义的填充词，TTS朗读节奏紧凑。 | [片段5] 句子短小精悍，直接切入痛点和利益点，没有任何多余的填充词和废话。 | [片段6] 句子确实非常短，但由于是残缺片段，并没有构成有效的高密度信息推进，不过也没有冗长复杂的从句。 | [片段7] 句子简短无废话，指令直接，TTS朗读节奏紧凑，但因截断导致信息量有限。 | [片段8] 已有内容句子极短，信息密度极高，没有任何填充词或废话，TTS朗读节奏会非常紧凑。 | [片段9] 仅有的三句话极短且直接（如'Rasa lebih ringan'），没有废话，节奏相对较快。 | [片段10] 句子极短，直奔主题，没有任何废话或拖沓的过渡词，信息传递迅速。",
+    "pain_points": "[片段1] 极其具体可感知的痛点场景（吃Nasi Lemak怕变胖），一句话内直接带出产品解决方案。 | [片段2] 直接给出了产品利益点，但完全没有触及或描述任何具体的用户痛点。 | [片段3] 完全没有提及或触达任何用户痛点。 | [片段4] 前5秒立刻切入‘吃得多又要保持自信/身材’的痛点，场景具体且极易引发共鸣。 | [片段5] 开篇迅速通过暗示身材赘肉（隐藏很久了）直击痛点，并紧接着提供穿衣显瘦的解决方案，过渡极快。 | [片段6] 片段中完全没有任何具体或可感知的痛点描述。 | [片段7] 前5秒完全没有痛点描述，结尾仅有一句未完成的痛点提问，无法有效触达用户。 | [片段8] 前5秒立刻触达了'为了保持身材饿到胃痛'这一非常具体、有画面感且痛感强烈的痛点。 | [片段9] 稍微触及了'每天吃过量碳水'这一痛点，但缺乏深入描述及明确的解法过渡。 | [片段10] 完全没有提及任何用户痛点。",
+    "price_anchor": "[片段1] 片段中未提及任何商品价格、原价对比或竞品比价信息。 | [片段2] 提到了'节省78'（Jimat 78），有效建立了优惠力度的价格感知。 | [片段3] 提供了捆绑价（2加2只需159令吉）营造划算感，但没有明确的原价或竞品对比基准。 | [片段4] 该极短片段中完全没有提及任何价格信息或价格对比锚点。 | [片段5] 脚本片段中完全没有任何价格信息或价格对比锚点。 | [片段6] 直接报出了促销价格（只需180令吉），但没有提供任何原价或竞品价作为对比基准，无法建立'超值'感知。 | [片段7] 片段中完全缺失任何价格信息或价格对比锚点。 | [片段8] 片段中没有任何原价、直播价或竞品价格的对比锚点信息。 | [片段9] 报出了原价（RM59），但缺失直播价或折扣价，未能形成对比让观众感知到划算。 | [片段10] 虽然报出了180令吉的价格并用“仅仅（hanya...sahaja）”修饰，但缺乏明确的原价或竞品价格作为对比锚点。",
+    "reentry": "[片段1] 直接以独立话题切入，毫无前文依赖（如as mentioned等），新观众进入能零门槛听懂当前话题。 | [片段2] 完全没有提及产品名称或重置上下文，新进入的观众根本不知道在讲什么产品。 | [片段3] 缺失产品名称和上下文重置，新进观众只听到价格，完全不知道在卖什么。 | [片段4] 新片段直接抛出全新话题和悬念重置上下文，完全不依赖前文内容，新观众能立刻听懂。 | [片段5] 虽提及了话题概念，但缺乏具体的产品名称和清晰的上下文重置，新观众无法立刻得知具体推销的商品。 | [片段6] 完全没有重新提及产品名称，也没有上下文重置，新进入的观众根本不知道'有效'和'六包'指的是什么产品。 | [片段7] 未提及产品名称或重置上下文，新进观众立刻听到买单指令，完全不知在推销什么。 | [片段8] 新观众进入听到这句话能立刻明白当前讨论的痛点话题，但未提及具体产品名称，缺乏完整的上下文背景。 | [片段9] 无产品名称，无上下文重置，新观众听到截断的句子完全不知道在卖什么产品。 | [片段10] 完全没有提及产品名称，新进观众听到这段只知道价格，根本不知道在卖什么。"
+  },
+  "scorer_model": "google（官方）/gemini-3.1-pro-preview"
+}

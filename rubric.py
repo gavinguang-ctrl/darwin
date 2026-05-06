@@ -317,6 +317,43 @@ def compute_repetition_penalty(script: str, dwell_seconds: float = 0) -> dict:
     return {"penalty": penalty, "repeat_ratio": round(repeat_ratio, 3), "longest_repeat": longest_repeat}
 
 
+def compute_cross_script_repetition(scripts: list[str]) -> dict:
+    """检测多个脚本之间的字面重复。用于跨脚本去重优化。
+    返回 {avg_ratio, max_ratio, longest_repeat, top_pairs: [(i, j, lcs_str)]}
+    """
+    n = len(scripts)
+    if n < 2:
+        return {"avg_ratio": 0, "max_ratio": 0, "longest_repeat": "", "top_pairs": []}
+
+    overlaps = []
+    longest_repeat = ""
+    pair_results = []  # (ratio, i, j, lcs_str)
+    for i in range(n):
+        for j in range(i + 1, n):
+            lcs_len, lcs_str = _longest_common_substring_len(scripts[i], scripts[j])
+            if lcs_len < REPETITION_MIN_LEN:
+                overlaps.append(0)
+                continue
+            min_len = min(len(scripts[i]), len(scripts[j]))
+            overlap = lcs_len / min_len if min_len > 0 else 0
+            overlaps.append(overlap)
+            pair_results.append((overlap, i, j, lcs_str))
+            if lcs_len > len(longest_repeat):
+                longest_repeat = lcs_str
+
+    avg_ratio = sum(overlaps) / len(overlaps) if overlaps else 0
+    max_ratio = max(overlaps) if overlaps else 0
+    # Top 5 worst pairs with their LCS strings
+    pair_results.sort(reverse=True)
+    top_pairs = [(p[1], p[2], p[3]) for p in pair_results[:5]]
+    return {
+        "avg_ratio": round(avg_ratio, 3),
+        "max_ratio": round(max_ratio, 3),
+        "longest_repeat": longest_repeat,
+        "top_pairs": top_pairs,
+    }
+
+
 def score_script(script: str, scorer: LLMProvider, locked_constraints: list[dict] | None = None,
                  weight_config: dict | None = None, dwell_seconds: float = 0) -> dict:
     """用独立的 scorer LLM 评分。dwell_seconds>0时用窗口模式。"""

@@ -240,6 +240,49 @@ def generate_script_from_prompt(prompt_text: str, generator: LLMProvider, baseli
     return generator.generate(filled)
 
 
+def build_dedupe_improvement(base_prompt: str, avg_rep_ratio: float,
+                             top_repeat_examples: list[tuple], locked_constraints: list[dict]) -> str:
+    """为跨脚本去重生成 prompt 优化指令。"""
+    parts = ["## 任务\n"]
+    parts.append(f"以下直播脚本生成提示词在被执行多次时，生成的不同脚本之间字面重复率高达 {avg_rep_ratio*100:.1f}%。\n")
+    parts.append("需要优化该提示词，让每次生成的脚本在保持核心信息（产品、价格、CTA）相同的前提下，\n")
+    parts.append("用不同的措辞、句式、Hook、过渡句、CTA 表达——使多次生成的脚本之间字面重复最少。\n\n")
+
+    parts.append("## 跨脚本重复片段示例（这些片段在不同脚本中被完全复用，必须消除）\n")
+    for idx, (i, j, lcs) in enumerate(top_repeat_examples[:5], 1):
+        parts.append(f"示例{idx}（脚本{i+1} vs 脚本{j+1}）:\n")
+        parts.append(f"```\n{lcs[:300]}\n```\n\n")
+
+    parts.append("## 硬性约束\n")
+    parts.append("- 保留所有产品信息、价格、优惠细节（这些必须一致）\n")
+    parts.append("- 脚本用于AI数字人直播+TTS朗读，纯口播，无旁白/动作指示\n")
+    parts.append("- 保持15-30秒循环结构\n")
+    parts.append("- 提示词中必须包含完整的基准脚本，不能用占位符\n")
+    if locked_constraints:
+        parts.append("- 以下已锁定指令必须保留：\n")
+        for c in locked_constraints:
+            parts.append(f"  - {c['element']}\n")
+
+    parts.append("\n## 去重策略（在提示词中强制）\n")
+    parts.append("- 提供多套 Hook 模板池，每次随机选1套\n")
+    parts.append("- 提供多套 CTA 表达池，每个循环随机选1套\n")
+    parts.append("- 提供多套过渡句库，避免固定过渡句\n")
+    parts.append("- 明确要求：每次生成用不同的措辞重新组织，避免逐字复用示例\n")
+    parts.append("- 允许对卖点论述换角度/换比喻，但不改变产品信息本身\n\n")
+
+    parts.append(f"## 当前提示词\n```\n{base_prompt}\n```\n\n")
+    parts.append("## 输出\n请输出改进后的完整提示词。提示词中必须包含完整基准脚本，并加入明确的多样化生成指令和模板池。")
+    return "".join(parts)
+
+
+def generate_dedupe_improvement(base_prompt: str, avg_rep_ratio: float,
+                                top_repeat_examples: list[tuple],
+                                locked_constraints: list[dict],
+                                optimizer: LLMProvider) -> str:
+    prompt = build_dedupe_improvement(base_prompt, avg_rep_ratio, top_repeat_examples, locked_constraints)
+    return optimizer.generate(prompt, system=PROMPT_OPTIMIZER_SYSTEM_PROMPT)
+
+
 # === 自动迭代 ===
 
 def auto_iterate(

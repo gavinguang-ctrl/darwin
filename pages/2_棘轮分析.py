@@ -20,8 +20,10 @@ from priority import classify_priority
 from room import list_rooms, load_room, save_candidate, list_candidates, set_baseline
 from models import RatchetState, Candidate
 from zmeng_api import script_to_excel_bytes
+from task_manager import create_task, list_tasks, request_stop
 import audit
 import uuid
+import time as _time
 
 st.set_page_config(page_title="棘轮分析", page_icon="🔧", layout="wide")
 st.title("🔧 棘轮分析")
@@ -433,6 +435,45 @@ if candidates:
                     if st.button(f"⭐ 设为基线", key=f"baseline_{c.id}"):
                         set_baseline(room, c)
                         st.rerun()
+
+            # --- 跨脚本去重优化 ---
+            if c.mode == "prompt":
+                st.divider()
+                with st.expander("🎲 跨脚本去重优化（避免多次生成时被判定为预录制）"):
+                    st.caption("对此 prompt 方案跑多次生成脚本，迭代降低脚本间重复率。")
+                    dd1, dd2 = st.columns(2)
+                    with dd1:
+                        dedupe_samples = st.number_input("样本数量（每轮生成）", min_value=5, max_value=100,
+                                                         value=50, step=5, key=f"dd_samples_{c.id}")
+                    with dd2:
+                        dedupe_rounds = st.number_input("迭代轮数", min_value=1, max_value=20,
+                                                        value=5, step=1, key=f"dd_rounds_{c.id}")
+
+                    running_dd = next((t for t in list_tasks(room_id=room.id, status="running")
+                                       if t.op == "dedupe_optimize" and t.params.get("candidate_id") == c.id), None)
+                    if running_dd:
+                        st.info(f"🔄 后台运行中：{running_dd.progress}")
+                        if st.button("⏹ 停止", key=f"dd_stop_{c.id}"):
+                            request_stop(running_dd.id)
+                            st.rerun()
+                    else:
+                        if st.button("🚀 启动去重优化", type="primary", key=f"dd_go_{c.id}"):
+                            opt_key = _get_key(opt_provider_name)
+                            gen_key = _get_key(gen_provider_name)
+                            if not opt_key or not gen_key:
+                                st.error("请配置 API Key")
+                            else:
+                                task = create_task(room.id, "dedupe_optimize", {
+                                    "room_id": room.id,
+                                    "candidate_id": c.id,
+                                    "sample_size": int(dedupe_samples),
+                                    "max_rounds": int(dedupe_rounds),
+                                    "optimizer": {"provider": opt_provider_name, "key": opt_key, "model": opt_model_name},
+                                    "generator": {"provider": gen_provider_name, "key": gen_key, "model": gen_model_name},
+                                }, desc=f"「{room.name}」方案{c.id[:8]}去重优化 {int(dedupe_rounds)}轮×{int(dedupe_samples)}样本")
+                                st.success(f"后台去重优化已启动（任务 {task.id}）")
+                                _time.sleep(1)
+                                st.rerun()
 
             if c.is_baseline:
                 st.divider()
