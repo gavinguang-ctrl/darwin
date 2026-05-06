@@ -266,13 +266,14 @@ def run_dedupe_optimize(task_id, params):
     baseline_script = source_cand.generated_script or ""
 
     def _gen_scripts(prompt_text: str, gen_provider_cfg: dict) -> list[str]:
-        """并发生成 N 个脚本，限制并发数 5。"""
+        """并发生成 N 个脚本，限制并发数 3 避免触发限流。"""
         scripts = []
+        errors = []
         def _call():
             gen = get_provider(gen_provider_cfg["provider"], gen_provider_cfg["key"], gen_provider_cfg["model"])
             return generate_script_from_prompt(prompt_text, gen, baseline_script=baseline_script)
 
-        with ThreadPoolExecutor(max_workers=5) as exe:
+        with ThreadPoolExecutor(max_workers=3) as exe:
             futures = [exe.submit(_call) for _ in range(sample_size)]
             for i, fut in enumerate(as_completed(futures)):
                 if _check_stop(task_id):
@@ -280,8 +281,14 @@ def run_dedupe_optimize(task_id, params):
                 try:
                     scripts.append(fut.result())
                     _update(task_id, f"生成 {len(scripts)}/{sample_size}", None)
-                except Exception:
-                    pass
+                except Exception as e:
+                    errors.append(str(e)[:150])
+        if errors and len(scripts) < sample_size // 2:
+            # 记录最常见的错误前3条
+            from collections import Counter
+            top = Counter(errors).most_common(3)
+            _update(task_id, f"生成 {len(scripts)}/{sample_size}（失败 {len(errors)}）", None,
+                    f"⚠️ 主要错误: {top[0][0]}")
         return scripts
 
     # 初始评估

@@ -180,7 +180,8 @@ if st.session_state.get("show_config"):
             zmeng_token = st.text_input("众盟 Auth Token", value=cfg.get("ZMENG_AUTH_TOKEN", ""), type="password", key="cfg_zmeng")
             zmeng_cookie = st.text_area("众盟 Cookie", value=cfg.get("ZMENG_COOKIE", ""), height=68, key="cfg_zmeng_cookie")
         if st.button("💾 保存配置", type="primary"):
-            new_cfg = {
+            new_cfg = dict(cfg)  # 保留 USERS 等未在 UI 中编辑的字段
+            new_cfg.update({
                 "GOOGLE_API_KEY": google_key,
                 "GOOGLE_PROXY_KEY": google_proxy_key,
                 "GOOGLE_PROXY_URL": google_proxy_url,
@@ -193,7 +194,7 @@ if st.session_state.get("show_config"):
                 "DEFAULT_SCORER": scorer_choice,
                 "DEFAULT_OPTIMIZER": opt_choice,
                 "DEFAULT_GENERATOR": gen_choice,
-            }
+            })
             save_api_config(new_cfg)
             import os
             for k, v in new_cfg.items():
