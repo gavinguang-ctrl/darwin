@@ -263,31 +263,48 @@ REPETITION_MIN_LEN = 20
 REPETITION_MAX_PENALTY = 10
 
 
-def _longest_common_substring_len(a: str, b: str) -> tuple[int, str]:
-    """Return (length, substring) of the longest common substring."""
-    m, n = len(a), len(b)
-    if m == 0 or n == 0:
+def _longest_common_substring_len(a: str, b: str, min_len: int = None) -> tuple[int, str]:
+    """Find longest common substring using rolling-window + seed-and-extend.
+    Much faster than DP: O((m+n)*k) expected vs O(m*n).
+    Substrings shorter than min_len are ignored (returns 0 if nothing >= min_len).
+    """
+    if min_len is None:
+        min_len = REPETITION_MIN_LEN
+    if len(a) < min_len or len(b) < min_len:
         return 0, ""
-    # Optimize: limit to reasonable size to avoid O(m*n) memory on huge scripts
-    if m > 5000:
-        a = a[:5000]
-        m = 5000
-    if n > 5000:
-        b = b[:5000]
-        n = 5000
-    prev = [0] * (n + 1)
+    # Index all min_len substrings of b
+    b_subs: dict[str, int] = {}
+    for j in range(len(b) - min_len + 1):
+        seed = b[j:j + min_len]
+        if seed not in b_subs:
+            b_subs[seed] = j
+
     best_len = 0
-    best_end = 0
-    for i in range(1, m + 1):
-        curr = [0] * (n + 1)
-        for j in range(1, n + 1):
-            if a[i - 1] == b[j - 1]:
-                curr[j] = prev[j - 1] + 1
-                if curr[j] > best_len:
-                    best_len = curr[j]
-                    best_end = i
-        prev = curr
-    return best_len, a[best_end - best_len:best_end]
+    best_str = ""
+    i = 0
+    while i <= len(a) - min_len:
+        seed = a[i:i + min_len]
+        j = b_subs.get(seed)
+        if j is None:
+            i += 1
+            continue
+        # Extend right
+        end_a, end_b = i + min_len, j + min_len
+        while end_a < len(a) and end_b < len(b) and a[end_a] == b[end_b]:
+            end_a += 1
+            end_b += 1
+        # Extend left
+        start_a, start_b = i, j
+        while start_a > 0 and start_b > 0 and a[start_a - 1] == b[start_b - 1]:
+            start_a -= 1
+            start_b -= 1
+        length = end_a - start_a
+        if length > best_len:
+            best_len = length
+            best_str = a[start_a:end_a]
+        # Skip past this match in a to avoid redundant work
+        i = end_a - min_len + 1 if end_a - min_len + 1 > i + 1 else i + 1
+    return best_len, best_str
 
 
 def compute_repetition_penalty(script: str, dwell_seconds: float = 0) -> dict:
