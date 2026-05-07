@@ -322,11 +322,13 @@ def run_dedupe_optimize(task_id, params):
         return
     rep = compute_cross_script_repetition(initial_scripts)
     best_rep_ratio = rep["avg_ratio"]
+    best_max_ratio = rep["max_ratio"]
     best_top_pairs = rep["top_pairs"]
     _update(task_id, f"初始重复率 {best_rep_ratio*100:.1f}%", (1 - best_rep_ratio) * 100,
-            f"初始 avg={best_rep_ratio*100:.1f}% max={rep['max_ratio']*100:.1f}%")
+            f"初始 avg={best_rep_ratio*100:.1f}% max={best_max_ratio*100:.1f}%")
 
     initial_rep_ratio = best_rep_ratio
+    initial_max_ratio = best_max_ratio
     completed_rounds = 0
     r = 0
     while r < max_rounds:
@@ -356,28 +358,40 @@ def run_dedupe_optimize(task_id, params):
 
             new_rep = compute_cross_script_repetition(new_scripts)
             new_ratio = new_rep["avg_ratio"]
+            new_max = new_rep["max_ratio"]
 
-            if new_ratio < best_rep_ratio:
-                old = best_rep_ratio
+            # 优先比较均值，均值相同时比较最大值
+            improved = (new_ratio < best_rep_ratio) or (new_ratio == best_rep_ratio and new_max < best_max_ratio)
+            if improved:
+                old_avg, old_max = best_rep_ratio, best_max_ratio
                 best_prompt = new_prompt
                 best_rep_ratio = new_ratio
+                best_max_ratio = new_max
                 best_top_pairs = new_rep["top_pairs"]
                 completed_rounds += 1
-                _update(task_id, f"轮{r}: {old*100:.1f}%→{new_ratio*100:.1f}% ✅",
+                tag = "✅" if new_ratio < old_avg else "✅(max优化)"
+                _update(task_id, f"轮{r}: avg {old_avg*100:.1f}%→{new_ratio*100:.1f}% max {old_max*100:.1f}%→{new_max*100:.1f}% {tag}",
                         (1 - best_rep_ratio) * 100,
-                        f"轮{r}: 重复率 {old*100:.1f}%→{new_ratio*100:.1f}% ✅")
+                        f"轮{r}: avg {old_avg*100:.1f}%→{new_ratio*100:.1f}% max {old_max*100:.1f}%→{new_max*100:.1f}% {tag}")
             else:
-                _update(task_id, f"轮{r}: {new_ratio*100:.1f}% ❌（保留原版）",
+                _update(task_id, f"轮{r}: avg {new_ratio*100:.1f}% max {new_max*100:.1f}% ❌（保留原版）",
                         (1 - best_rep_ratio) * 100,
-                        f"轮{r}: 新版 {new_ratio*100:.1f}% ≥ 当前 {best_rep_ratio*100:.1f}% ❌")
+                        f"轮{r}: 新版 avg {new_ratio*100:.1f}% max {new_max*100:.1f}% 未优于当前 avg {best_rep_ratio*100:.1f}% max {best_max_ratio*100:.1f}% ❌")
         except Exception as e:
             max_rounds += 1
             _update(task_id, f"轮{r}: 出错（已补偿+1轮）",
                     (1 - best_rep_ratio) * 100, f"轮{r}: ⚠️ {str(e)[:100]}")
             continue
 
-    cand_result = {"initial_rep_ratio": initial_rep_ratio, "final_rep_ratio": best_rep_ratio}
-    if best_rep_ratio < initial_rep_ratio:
+    cand_result = {
+        "initial_rep_ratio": initial_rep_ratio,
+        "final_rep_ratio": best_rep_ratio,
+        "initial_max_ratio": initial_max_ratio,
+        "final_max_ratio": best_max_ratio,
+    }
+    improved_overall = (best_rep_ratio < initial_rep_ratio) or \
+                       (best_rep_ratio == initial_rep_ratio and best_max_ratio < initial_max_ratio)
+    if improved_overall:
         new_cand = Candidate(
             id=uuid.uuid4().hex[:8],
             session_id=source_cand.session_id,

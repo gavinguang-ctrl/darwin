@@ -1,0 +1,2 @@
+timestamp	session_id	old_score	new_score	status	dimension	priority	scorer_model	note
+2026-05-07T15:54:27	20260507_143734_263c77	0	31.4	baseline	-	-	google（官方）/gemini-3.1-pro-preview	评分
