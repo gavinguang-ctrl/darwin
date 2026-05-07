@@ -239,6 +239,28 @@ def run_auto_iterate(task_id, params):
         set_baseline(room, cand)
         cand_result = {"candidate_id": cand.id, "total_score": best_total, "rounds": prev_rounds + completed_rounds}
 
+        # 自动链式触发跨脚本去重（仅 prompt 模式且未被用户停止时）
+        if mode == "prompt" and not _check_stop(task_id) and params.get("generator"):
+            try:
+                from task_manager import create_task
+                dedupe_params = {
+                    "room_id": room.id,
+                    "candidate_id": cand.id,
+                    "sample_size": 50,
+                    "max_rounds": 3,
+                    "optimizer": params["optimizer"],
+                    "generator": params["generator"],
+                }
+                dedupe_task = create_task(
+                    room.id, "dedupe_optimize", dedupe_params,
+                    desc=f"「{room.name}」方案{cand.id[:8]}去重优化 3轮×50样本（自动触发）",
+                )
+                cand_result["dedupe_task_id"] = dedupe_task.id
+            except Exception as e:
+                # 自动触发失败不影响主任务完成
+                _update(task_id, f"已完成，但自动去重触发失败", best_total,
+                        f"⚠️ 自动去重触发失败: {str(e)[:100]}")
+
     _finish(task_id, "stopped" if _check_stop(task_id) else "completed", cand_result)
 
 
