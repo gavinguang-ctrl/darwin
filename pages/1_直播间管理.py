@@ -305,6 +305,40 @@ with tabs[2]:
                         st.success("已保存")
                         st.rerun()
 
+                with st.expander("🔒 锁定提示词描述（棘轮迭代时必遵守）"):
+                    from config import get_global_locked_prompt as _get_gl
+                    _global_locked = _get_gl()
+                    _use_global = st.checkbox(
+                        "使用全局锁定描述",
+                        value=r.use_global_locked_prompt,
+                        key=f"ulg_{r.id}",
+                        help="勾选则迭代时使用首页配置的全局锁定描述；取消勾选后在下方填写本直播间专属内容。",
+                    )
+                    if _use_global:
+                        st.text_area(
+                            "当前生效（来自全局，只读）",
+                            value=_global_locked if _global_locked else "（全局未配置，迭代时不会注入锁定段）",
+                            height=150,
+                            disabled=True,
+                            key=f"gl_show_{r.id}",
+                        )
+                        _override_text = r.locked_prompt_description
+                    else:
+                        _seed = r.locked_prompt_description or _global_locked
+                        _override_text = st.text_area(
+                            "本直播间专用锁定描述（默认以全局内容为基础，可增删改）",
+                            value=_seed,
+                            height=200,
+                            placeholder="示例：所有价格保留原币种符号；禁用「最」「第一」等极限词；主播自称必须用「我们」不用「我」。",
+                            key=f"lpd_{r.id}",
+                        )
+                    if st.button("💾 保存锁定描述", key=f"save_lpd_{r.id}"):
+                        r.use_global_locked_prompt = _use_global
+                        r.locked_prompt_description = _override_text
+                        r.save()
+                        st.success("已保存，下一次迭代立即生效")
+                        st.rerun()
+
                 # Scored sessions with rescore checkboxes
                 scored_sessions = [s for s in sessions if s.total_score > 0]
                 if scored_sessions:

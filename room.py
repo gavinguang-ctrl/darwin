@@ -17,6 +17,8 @@ class Room:
     base_prompt: str = ""
     original_prompt: str = ""
     baseline_session_id: str = ""
+    locked_prompt_description: str = ""
+    use_global_locked_prompt: bool = True
 
     def to_dict(self):
         return asdict(self)

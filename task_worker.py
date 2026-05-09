@@ -120,6 +120,9 @@ def run_auto_iterate(task_id, params):
     max_rounds = params.get("max_rounds", 5)
     prev_rounds = 0
 
+    from config import get_effective_locked_prompt
+    locked_desc = get_effective_locked_prompt(room)
+
     # continue_iterate: 从 candidate 状态继续
     cand_id = params.get("candidate_id")
     if cand_id:
@@ -185,10 +188,13 @@ def run_auto_iterate(task_id, params):
                 new_content = generate_prompt_improvement(
                     best_content, best_script, dim_target, best_static,
                     state.locked_constraints, opt, room.product_info,
-                    original_prompt=room.original_prompt)
-                new_script = generate_script_from_prompt(new_content, gen, baseline_script=best_script)
+                    original_prompt=room.original_prompt,
+                    locked_description=locked_desc)
+                new_script = generate_script_from_prompt(new_content, gen, baseline_script=best_script,
+                                                         locked_description=locked_desc)
             else:
-                new_content = generate_improvement(best_script, dim_target, best_static, state.locked_constraints, opt)
+                new_content = generate_improvement(best_script, dim_target, best_static, state.locked_constraints, opt,
+                                                   locked_description=locked_desc)
                 new_script = new_content
 
             nr = score_script(new_script, scorer, state.locked_constraints, wc, dwell_seconds=dwell)
@@ -284,6 +290,9 @@ def run_dedupe_optimize(task_id, params):
     max_rounds = int(params.get("max_rounds", 5))
     state = RatchetState.load(room.ratchet_state_path())
 
+    from config import get_effective_locked_prompt
+    locked_desc = get_effective_locked_prompt(room)
+
     best_prompt = source_cand.content
     baseline_script = source_cand.generated_script or ""
 
@@ -293,7 +302,8 @@ def run_dedupe_optimize(task_id, params):
         errors = []
         def _call():
             gen = get_provider(gen_provider_cfg["provider"], gen_provider_cfg["key"], gen_provider_cfg["model"])
-            return generate_script_from_prompt(prompt_text, gen, baseline_script=baseline_script)
+            return generate_script_from_prompt(prompt_text, gen, baseline_script=baseline_script,
+                                               locked_description=locked_desc)
 
         with ThreadPoolExecutor(max_workers=3) as exe:
             futures = [exe.submit(_call) for _ in range(sample_size)]
@@ -343,7 +353,7 @@ def run_dedupe_optimize(task_id, params):
 
             new_prompt = generate_dedupe_improvement(
                 best_prompt, best_rep_ratio, best_top_pairs,
-                state.locked_constraints, opt)
+                state.locked_constraints, opt, locked_description=locked_desc)
 
             _update(task_id, f"轮{r}/{max_rounds}: 评估 {sample_size} 个新脚本",
                     (1 - best_rep_ratio) * 100)
@@ -410,6 +420,50 @@ def run_dedupe_optimize(task_id, params):
     _finish(task_id, "stopped" if _check_stop(task_id) else "completed", cand_result)
 
 
+def run_translate(task_id, params):
+    """翻译候选方案的提示词到指定语言。"""
+    from room import load_room, load_candidate
+    from llm import get_provider
+    from prompts import TRANSLATION_SYSTEM_PROMPT, build_translation_prompt
+
+    room = load_room(params["room_id"])
+    cand = load_candidate(room, params["candidate_id"])
+    if not cand:
+        _finish(task_id, "failed", {"error": f"Candidate {params['candidate_id']} not found"})
+        return
+
+    target_language = params["target_language"]
+    target_label = params.get("target_label", target_language)
+
+    if _check_stop(task_id):
+        _finish(task_id, "stopped", {})
+        return
+
+    _update(task_id, f"翻译为 {target_label} 中…", None, f"调用 {params['optimizer']['provider']}/{params['optimizer']['model']}")
+
+    try:
+        translator = get_provider(params["optimizer"]["provider"], params["optimizer"]["key"], params["optimizer"]["model"])
+        output = translator.generate(
+            build_translation_prompt(cand.content, target_language),
+            system=TRANSLATION_SYSTEM_PROMPT,
+        )
+    except Exception as e:
+        _finish(task_id, "failed", {"error": str(e)[:500]})
+        return
+
+    if _check_stop(task_id):
+        _finish(task_id, "stopped", {})
+        return
+
+    _finish(task_id, "completed", {
+        "translation": output,
+        "target_language": target_language,
+        "target_label": target_label,
+        "candidate_id": cand.id,
+        "chars": len(output),
+    })
+
+
 def main():
     if len(sys.argv) < 2:
         sys.exit(1)
@@ -425,6 +479,8 @@ def main():
             run_auto_iterate(task_id, task.params)
         elif task.op == "dedupe_optimize":
             run_dedupe_optimize(task_id, task.params)
+        elif task.op == "translate":
+            run_translate(task_id, task.params)
         else:
             _finish(task_id, "failed", {"error": f"Unknown op: {task.op}"})
     except Exception as e:

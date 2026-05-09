@@ -5,7 +5,7 @@ from models import RatchetState
 from data_io import list_sessions, save_session
 from ratchet import compare_metrics, get_improvement_targets, ratchet_step
 from llm import get_provider, PROVIDERS
-from prompts import SYSTEM_PROMPT, build_analysis_prompt, build_generation_prompt
+from prompts import SYSTEM_PROMPT, build_analysis_prompt, build_generation_prompt, TRANSLATION_SYSTEM_PROMPT, build_translation_prompt
 from rubric import (
     STATIC_DIMENSIONS, EFFECT_METRICS,
     score_script, compute_effect_score, compute_total_score, find_weakest_dimension,
@@ -24,6 +24,22 @@ from task_manager import create_task, list_tasks, request_stop
 import audit
 import uuid
 import time as _time
+
+TRANSLATION_LANGUAGES = {
+    "— 选择语言 —": None,
+    "英语 (English)": "English",
+    "法语 (Français)": "French",
+    "德语 (Deutsch)": "German",
+    "西班牙语 (Español)": "Spanish",
+    "葡萄牙语 (Português)": "Portuguese",
+    "日语 (日本語)": "Japanese",
+    "韩语 (한국어)": "Korean",
+    "泰语 (ภาษาไทย)": "Thai",
+    "马来语 (Bahasa Melayu)": "Malay",
+    "越南语 (Tiếng Việt)": "Vietnamese",
+    "印尼语 (Bahasa Indonesia)": "Indonesian",
+    "菲律宾语 (Filipino/Tagalog)": "Filipino",
+}
 
 st.set_page_config(page_title="棘轮分析", page_icon="🔧", layout="wide")
 st.title("🔧 棘轮分析")
@@ -101,6 +117,42 @@ room_options = {f"{r.name} ({r.id})": r for r in rooms}
 selected_room_label = st.selectbox("选择直播间", list(room_options.keys()))
 room = room_options[selected_room_label]
 state = RatchetState.load(room.ratchet_state_path())
+
+with st.expander("🔒 锁定提示词描述（棘轮迭代必遵守）"):
+    from config import get_global_locked_prompt as _get_gl, get_effective_locked_prompt as _get_eff
+    _global_locked = _get_gl()
+    _use_global = st.checkbox(
+        "使用全局锁定描述",
+        value=room.use_global_locked_prompt,
+        key=f"ra_ulg_{room.id}",
+        help="勾选则迭代时使用首页配置的全局锁定描述；取消勾选后填写本直播间专属内容。",
+    )
+    if _use_global:
+        st.text_area(
+            "当前生效（来自全局，只读）",
+            value=_global_locked if _global_locked else "（全局未配置，迭代时不会注入锁定段）",
+            height=150,
+            disabled=True,
+            key=f"ra_gl_show_{room.id}",
+        )
+        _override_text = room.locked_prompt_description
+    else:
+        _seed = room.locked_prompt_description or _global_locked
+        _override_text = st.text_area(
+            "本直播间专用锁定描述（默认以全局内容为基础，可增删改）",
+            value=_seed,
+            height=200,
+            placeholder="示例：所有价格保留原币种符号；禁用「最」「第一」等极限词；主播自称必须用「我们」不用「我」。",
+            key=f"ra_lpd_{room.id}",
+        )
+    _eff_preview = _get_eff(room).strip() if (_use_global == room.use_global_locked_prompt and _override_text == room.locked_prompt_description) else (_global_locked if _use_global else _override_text).strip()
+    st.caption(f"当前生效长度：{len(_eff_preview)} 字 — 为空则迭代时不注入锁定段")
+    if st.button("💾 保存锁定描述", key=f"ra_save_lpd_{room.id}"):
+        room.use_global_locked_prompt = _use_global
+        room.locked_prompt_description = _override_text
+        room.save()
+        st.success("已保存，下一次迭代立即生效")
+        st.rerun()
 
 sessions = list_sessions(room.id)
 if not sessions:
@@ -243,15 +295,19 @@ if session.static_scores:
                 with st.spinner("提炼基线优点 + 优化提示词中..."):
                     optimizer = get_provider(opt_provider_name, opt_key, opt_model_name)
                     baseline_strengths = extract_baseline_strengths(scores, session.script, optimizer)
+                    from config import get_effective_locked_prompt as _gelp0
+                    _locked_desc0 = _gelp0(room)
                     new_prompt = generate_prompt_improvement(
                         current_prompt, session.script, target, scores,
                         state.locked_constraints, optimizer, room.product_info,
-                        baseline_strengths=baseline_strengths, original_prompt=room.original_prompt)
+                        baseline_strengths=baseline_strengths, original_prompt=room.original_prompt,
+                        locked_description=_locked_desc0)
                 st.subheader("📝 优化后的提示词")
                 st.markdown(new_prompt)
                 with st.spinner("用新提示词生成脚本..."):
                     gen = get_provider(gen_provider_name, gen_key, gen_model_name)
-                    new_script = generate_script_from_prompt(new_prompt, gen, baseline_script=session.script)
+                    new_script = generate_script_from_prompt(new_prompt, gen, baseline_script=session.script,
+                                                             locked_description=_locked_desc0)
                 with st.expander("生成的新脚本"):
                     st.text(new_script)
                 with st.spinner("独立重评中..."):
@@ -297,7 +353,9 @@ if session.static_scores:
                     st.error("请配置 API Key"); st.stop()
                 with st.spinner("优化中..."):
                     optimizer = get_provider(opt_provider_name, opt_key, opt_model_name)
-                    improved = generate_improvement(session.script, target, scores, state.locked_constraints, optimizer)
+                    from config import get_effective_locked_prompt as _gelp1
+                    improved = generate_improvement(session.script, target, scores, state.locked_constraints, optimizer,
+                                                    locked_description=_gelp1(room))
                 st.markdown(improved)
                 if not check_length(session.script, improved):
                     st.warning("脚本超过 150%，建议精简。")
@@ -439,6 +497,69 @@ if candidates:
             # --- 跨脚本去重优化 ---
             if c.mode == "prompt":
                 st.divider()
+                # --- 多语言翻译（后台任务） ---
+                with st.expander("🌐 翻译提示词（非中文部分 → 目标语言）"):
+                    st.caption("只翻译提示词里的非中文内容，保留所有中文原样。调用侧边栏已选的「优化模型」。翻译作为后台任务运行，可离开页面。")
+                    tcol1, tcol2 = st.columns([3, 1])
+                    with tcol1:
+                        tr_lang_label = st.selectbox("目标语言", list(TRANSLATION_LANGUAGES.keys()),
+                                                     index=0, key=f"tr_lang_{c.id}")
+                    tr_lang = TRANSLATION_LANGUAGES[tr_lang_label]
+
+                    # 查这个方案下所有翻译任务（按创建时间倒序）
+                    all_tr_tasks = [t for t in list_tasks(room_id=room.id)
+                                    if t.op == "translate" and t.params.get("candidate_id") == c.id]
+                    running_tr = next((t for t in all_tr_tasks
+                                       if t.status == "running" and t.params.get("target_language") == tr_lang), None)
+                    completed_tr = next((t for t in all_tr_tasks
+                                         if t.status == "completed" and t.params.get("target_language") == tr_lang
+                                         and t.result.get("translation")), None)
+
+                    with tcol2:
+                        st.write("")
+                        if running_tr:
+                            if st.button("⏹ 停止", key=f"tr_stop_{c.id}", use_container_width=True):
+                                request_stop(running_tr.id)
+                                st.rerun()
+                        else:
+                            tr_clicked = st.button("🌐 翻译", key=f"tr_run_{c.id}", use_container_width=True,
+                                                   disabled=(tr_lang is None))
+                            if tr_clicked:
+                                opt_key = _get_key(opt_provider_name)
+                                if not opt_key:
+                                    st.error("请在侧边栏配置「优化提供商」的 API Key。")
+                                else:
+                                    task = create_task(room.id, "translate", {
+                                        "room_id": room.id,
+                                        "candidate_id": c.id,
+                                        "target_language": tr_lang,
+                                        "target_label": tr_lang_label,
+                                        "optimizer": {"provider": opt_provider_name, "key": opt_key, "model": opt_model_name},
+                                    }, desc=f"「{room.name}」方案{c.id[:8]}翻译→{tr_lang_label}")
+                                    st.success(f"后台翻译已启动（任务 {task.id}）")
+                                    _time.sleep(0.5)
+                                    st.rerun()
+
+                    if running_tr:
+                        st.info(f"🔄 后台运行中：{running_tr.progress or '等待启动…'}")
+
+                    if completed_tr:
+                        tr_output = completed_tr.result["translation"]
+                        st.text_area(f"翻译结果（{tr_lang_label}）", tr_output, height=300,
+                                     key=f"tr_view_{c.id}_{tr_lang_label}", disabled=True)
+                        st.download_button(
+                            "📥 下载译文 .txt",
+                            tr_output.encode("utf-8"),
+                            f"{room.name}_提示词_{c.id}_{tr_lang_label.replace(' ', '')}.txt",
+                            "text/plain",
+                            key=f"tr_dl_{c.id}_{tr_lang_label}",
+                        )
+                    elif tr_lang and not running_tr:
+                        failed_tr = next((t for t in all_tr_tasks
+                                          if t.status == "failed" and t.params.get("target_language") == tr_lang), None)
+                        if failed_tr:
+                            st.error(f"上次翻译失败：{failed_tr.result.get('error', '未知错误')[:200]}")
+
                 with st.expander("🎲 跨脚本去重优化（避免多次生成时被判定为预录制）"):
                     st.caption("对此 prompt 方案跑多次生成脚本，迭代降低脚本间重复率。")
                     dd1, dd2 = st.columns(2)
@@ -498,14 +619,19 @@ if candidates:
                             dim_target = max(cands_list, key=lambda x: x["gain"])
                             st.write(f"优化维度: **{dim_target['name']}**（{dim_target['score']}/10，潜在增益 {dim_target['gain']:.0f}）")
                             with st.spinner("生成优化方案..."):
+                                from config import get_effective_locked_prompt as _gelp2
+                                _locked_desc2 = _gelp2(room)
                                 if c.mode == "prompt":
                                     new_content = generate_prompt_improvement(c.content, c_script, dim_target, c_scores,
                                                                               state.locked_constraints, optimizer, room.product_info,
-                                                                              original_prompt=room.original_prompt)
+                                                                              original_prompt=room.original_prompt,
+                                                                              locked_description=_locked_desc2)
                                     st.write("✓ 提示词优化完成")
-                                    new_script = generate_script_from_prompt(new_content, optimizer, baseline_script=c_script)
+                                    new_script = generate_script_from_prompt(new_content, optimizer, baseline_script=c_script,
+                                                                             locked_description=_locked_desc2)
                                 else:
-                                    new_content = generate_improvement(c_script, dim_target, c_scores, state.locked_constraints, optimizer)
+                                    new_content = generate_improvement(c_script, dim_target, c_scores, state.locked_constraints, optimizer,
+                                                                       locked_description=_locked_desc2)
                                     new_script = new_content
                                     st.write("✓ 脚本优化完成")
                             with st.expander("查看优化结果"):
@@ -585,6 +711,9 @@ if st.button("🔒 确认锁定并生成下一轮提示词", type="primary", use
     gen_prompt = build_generation_prompt(
         locked_constraints=new_state.locked_constraints, improvement_targets=targets,
         baselines=new_state.baselines, session_count=new_state.iteration_count)
+    from config import get_effective_locked_prompt as _gelp
+    from hill_climb import _locked_block as _lb
+    gen_prompt = _lb(_gelp(room)) + gen_prompt
     st.success(f"棘轮已更新！迭代 #{new_state.iteration_count}")
     with st.spinner("生成下一轮优化提示词..."):
         optimizer = get_provider(opt_provider_name, opt_key, opt_model_name)

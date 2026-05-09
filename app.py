@@ -180,7 +180,7 @@ if st.session_state.get("show_config"):
             zmeng_token = st.text_input("众盟 Auth Token", value=cfg.get("ZMENG_AUTH_TOKEN", ""), type="password", key="cfg_zmeng")
             zmeng_cookie = st.text_area("众盟 Cookie", value=cfg.get("ZMENG_COOKIE", ""), height=68, key="cfg_zmeng_cookie")
         if st.button("💾 保存配置", type="primary"):
-            new_cfg = dict(cfg)  # 保留 USERS 等未在 UI 中编辑的字段
+            new_cfg = dict(cfg)  # 保留 USERS / GLOBAL_LOCKED_PROMPT 等未在 UI 中编辑的字段
             new_cfg.update({
                 "GOOGLE_API_KEY": google_key,
                 "GOOGLE_PROXY_KEY": google_proxy_key,
@@ -209,6 +209,27 @@ if _saved:
     for k, v in _saved.items():
         if v and isinstance(v, str):
             os.environ[k] = v
+
+st.divider()
+
+# --- 全局锁定提示词描述 ---
+with st.container(border=True):
+    st.subheader("🔒 全局锁定提示词描述")
+    st.caption("这段描述会作为硬性约束注入到每次棘轮迭代的 prompt 里，optimizer 不能修改，每次迭代必须严格遵守。直播间默认继承全局，也可在「直播间管理」或「棘轮分析」侧边栏里单独覆盖。")
+    _cur_locked = load_api_config().get("GLOBAL_LOCKED_PROMPT", "")
+    _locked_val = st.text_area(
+        "锁定描述（可留空）",
+        value=_cur_locked,
+        height=200,
+        placeholder="示例：所有价格保留原币种符号；禁用「最」「第一」「唯一」等极限词；主播自称必须用「我们」不用「我」。",
+        key="cfg_locked_prompt",
+        label_visibility="collapsed",
+    )
+    if st.button("💾 保存锁定描述", type="primary", key="save_locked_prompt"):
+        _cfg = load_api_config()
+        _cfg["GLOBAL_LOCKED_PROMPT"] = _locked_val
+        save_api_config(_cfg)
+        st.success("全局锁定描述已保存，下一次迭代立即生效")
 
 st.divider()
 

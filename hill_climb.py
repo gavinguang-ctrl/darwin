@@ -8,6 +8,22 @@ from llm import LLMProvider
 from prompts import OPTIMIZER_SYSTEM_PROMPT, PROMPT_OPTIMIZER_SYSTEM_PROMPT
 
 
+def _locked_block(locked_description: str) -> str:
+    """把用户配置的「锁定提示词描述」包装成硬性约束段，放在任何优化/生成 prompt 最前面。"""
+    t = (locked_description or "").strip()
+    if not t:
+        return ""
+    return (
+        "## 🔒 全局锁定要求（必须严格遵守，禁止修改、稀释、省略）\n"
+        "以下内容是直播间运营方的硬性要求，优先级高于本次迭代的其他优化目标。\n"
+        "你的输出必须完整体现这些要求；若与本次优化维度冲突，以此为准。\n"
+        "**禁止把本段内容搬运进你的输出**（它是你的约束，不是你要生成的文本）。\n"
+        "------\n"
+        f"{t}\n"
+        "------\n\n"
+    )
+
+
 def diagnose(static_scores: dict[str, int], effect_scores: dict[str, float],
              weight_config: dict | None = None) -> dict:
     weakest = find_weakest_dimension(static_scores, effect_scores, weight_config)
@@ -45,10 +61,15 @@ def build_improvement_prompt(
     target: dict,
     static_scores: dict[str, int],
     locked_constraints: list[dict],
+    locked_description: str = "",
 ) -> str:
     dim = _get_dim_detail(target["id"])
 
-    parts = [f"## 任务\n针对「{target['name']}」维度（当前 {target['score']}/10 分）优化以下直播脚本。\n"]
+    parts = []
+    lb = _locked_block(locked_description)
+    if lb:
+        parts.append(lb)
+    parts.append(f"## 任务\n针对「{target['name']}」维度（当前 {target['score']}/10 分）优化以下直播脚本。\n")
 
     if dim:
         parts.append(f"## 维度定义\n- 含义: {dim['desc']}\n")
@@ -74,8 +95,13 @@ def build_improvement_prompt(
     return "".join(parts)
 
 
-def build_rewrite_prompt(script: str, static_scores: dict[str, int], locked_constraints: list[dict]) -> str:
-    parts = ["## 任务\n对以下直播脚本进行全局重构（不是微调，是重新组织结构和表达方式）。\n"]
+def build_rewrite_prompt(script: str, static_scores: dict[str, int], locked_constraints: list[dict],
+                         locked_description: str = "") -> str:
+    parts = []
+    lb = _locked_block(locked_description)
+    if lb:
+        parts.append(lb)
+    parts.append("## 任务\n对以下直播脚本进行全局重构（不是微调，是重新组织结构和表达方式）。\n")
     parts.append("## 当前评分\n")
     for d in STATIC_DIMENSIONS:
         s = static_scores.get(d["id"], 0)
@@ -92,14 +118,16 @@ def build_rewrite_prompt(script: str, static_scores: dict[str, int], locked_cons
 
 
 def generate_improvement(script: str, target: dict, static_scores: dict[str, int],
-                         locked_constraints: list[dict], optimizer: LLMProvider) -> str:
-    prompt = build_improvement_prompt(script, target, static_scores, locked_constraints)
+                         locked_constraints: list[dict], optimizer: LLMProvider,
+                         locked_description: str = "") -> str:
+    prompt = build_improvement_prompt(script, target, static_scores, locked_constraints, locked_description)
     return optimizer.generate(prompt, system=OPTIMIZER_SYSTEM_PROMPT)
 
 
 def generate_rewrite(script: str, static_scores: dict[str, int],
-                     locked_constraints: list[dict], optimizer: LLMProvider) -> str:
-    prompt = build_rewrite_prompt(script, static_scores, locked_constraints)
+                     locked_constraints: list[dict], optimizer: LLMProvider,
+                     locked_description: str = "") -> str:
+    prompt = build_rewrite_prompt(script, static_scores, locked_constraints, locked_description)
     return optimizer.generate(prompt, system=OPTIMIZER_SYSTEM_PROMPT)
 
 
@@ -126,6 +154,7 @@ def build_prompt_improvement(
     product_info: str = "",
     baseline_strengths: str = "",
     original_prompt: str = "",
+    locked_description: str = "",
 ) -> str:
     filled_prompt = base_prompt
     for placeholder in ["(此处插入基准脚本)", "（此处插入基准脚本）", "{基准脚本}", "{baseline_script}"]:
@@ -133,6 +162,9 @@ def build_prompt_improvement(
             filled_prompt = filled_prompt.replace(placeholder, current_script[:3000])
 
     parts = []
+    lb = _locked_block(locked_description)
+    if lb:
+        parts.append(lb)
     # 约束条件放最前面
     parts.append("## 硬性约束（优化时必须遵守）\n")
     parts.append("- 脚本用于AI数字人直播+TTS朗读，不能有旁白、场景描述、动作指示，不能有中文\n")
@@ -180,8 +212,13 @@ def build_prompt_rewrite(
     static_scores: dict[str, int],
     locked_constraints: list[dict],
     product_info: str = "",
+    locked_description: str = "",
 ) -> str:
-    parts = ["## 任务\n对以下直播脚本生成提示词进行全局重构。\n"]
+    parts = []
+    lb = _locked_block(locked_description)
+    if lb:
+        parts.append(lb)
+    parts.append("## 任务\n对以下直播脚本生成提示词进行全局重构。\n")
     if product_info:
         parts.append(f"## 产品信息\n{product_info}\n\n")
     parts.append("## 当前评分\n")
@@ -218,32 +255,41 @@ def extract_baseline_strengths(static_scores: dict[str, int], script: str, optim
 def generate_prompt_improvement(base_prompt: str, current_script: str, target: dict,
                                 static_scores: dict[str, int], locked_constraints: list[dict],
                                 optimizer: LLMProvider, product_info: str = "",
-                                baseline_strengths: str = "", original_prompt: str = "") -> str:
+                                baseline_strengths: str = "", original_prompt: str = "",
+                                locked_description: str = "") -> str:
     prompt = build_prompt_improvement(base_prompt, current_script, target, static_scores,
-                                      locked_constraints, product_info, baseline_strengths, original_prompt)
+                                      locked_constraints, product_info, baseline_strengths,
+                                      original_prompt, locked_description)
     return optimizer.generate(prompt, system=PROMPT_OPTIMIZER_SYSTEM_PROMPT)
 
 
 def generate_prompt_rewrite(base_prompt: str, static_scores: dict[str, int],
                             locked_constraints: list[dict], optimizer: LLMProvider,
-                            product_info: str = "") -> str:
-    prompt = build_prompt_rewrite(base_prompt, static_scores, locked_constraints, product_info)
+                            product_info: str = "", locked_description: str = "") -> str:
+    prompt = build_prompt_rewrite(base_prompt, static_scores, locked_constraints, product_info, locked_description)
     return optimizer.generate(prompt, system=PROMPT_OPTIMIZER_SYSTEM_PROMPT)
 
 
-def generate_script_from_prompt(prompt_text: str, generator: LLMProvider, baseline_script: str = "") -> str:
+def generate_script_from_prompt(prompt_text: str, generator: LLMProvider, baseline_script: str = "",
+                                locked_description: str = "") -> str:
     filled = prompt_text
     if baseline_script:
         for placeholder in ["(此处插入基准脚本)", "（此处插入基准脚本）", "{基准脚本}", "{baseline_script}"]:
             if placeholder in filled:
                 filled = filled.replace(placeholder, baseline_script[:3000])
+    filled = _locked_block(locked_description) + filled
     return generator.generate(filled)
 
 
 def build_dedupe_improvement(base_prompt: str, avg_rep_ratio: float,
-                             top_repeat_examples: list[tuple], locked_constraints: list[dict]) -> str:
+                             top_repeat_examples: list[tuple], locked_constraints: list[dict],
+                             locked_description: str = "") -> str:
     """为跨脚本去重生成 prompt 优化指令。"""
-    parts = ["## 任务\n"]
+    parts = []
+    lb = _locked_block(locked_description)
+    if lb:
+        parts.append(lb)
+    parts.append("## 任务\n")
     parts.append(f"以下直播脚本生成提示词在被执行多次时，生成的不同脚本之间字面重复率高达 {avg_rep_ratio*100:.1f}%。\n")
     parts.append("需要优化该提示词，让每次生成的脚本在保持核心信息（产品、价格、CTA）相同的前提下，\n")
     parts.append("用不同的措辞、句式、Hook、过渡句、CTA 表达——使多次生成的脚本之间字面重复最少。\n\n")
@@ -278,8 +324,10 @@ def build_dedupe_improvement(base_prompt: str, avg_rep_ratio: float,
 def generate_dedupe_improvement(base_prompt: str, avg_rep_ratio: float,
                                 top_repeat_examples: list[tuple],
                                 locked_constraints: list[dict],
-                                optimizer: LLMProvider) -> str:
-    prompt = build_dedupe_improvement(base_prompt, avg_rep_ratio, top_repeat_examples, locked_constraints)
+                                optimizer: LLMProvider,
+                                locked_description: str = "") -> str:
+    prompt = build_dedupe_improvement(base_prompt, avg_rep_ratio, top_repeat_examples,
+                                      locked_constraints, locked_description)
     return optimizer.generate(prompt, system=PROMPT_OPTIMIZER_SYSTEM_PROMPT)
 
 
@@ -303,6 +351,7 @@ def auto_iterate(
     callback=None,
     history_sessions: list | None = None,
     dwell_seconds: float = 0,
+    locked_description: str = "",
 ) -> dict:
     """
     自动迭代爬山。始终优化静态维度，实效通过预估。
@@ -346,10 +395,12 @@ def auto_iterate(
             if mode == "prompt" and best_content:
                 new_content = generate_prompt_improvement(
                     best_content, best_script, target, best_static, locked_constraints, optimizer, product_info,
-                    baseline_strengths=baseline_strengths)
-                new_script = generate_script_from_prompt(new_content, optimizer, baseline_script=best_script)
+                    baseline_strengths=baseline_strengths, locked_description=locked_description)
+                new_script = generate_script_from_prompt(new_content, optimizer, baseline_script=best_script,
+                                                         locked_description=locked_description)
             else:
-                new_content = generate_improvement(best_script, target, best_static, locked_constraints, optimizer)
+                new_content = generate_improvement(best_script, target, best_static, locked_constraints, optimizer,
+                                                   locked_description=locked_description)
                 new_script = new_content
 
             # 独立评分（静态）

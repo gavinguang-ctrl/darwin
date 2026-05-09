@@ -61,3 +61,21 @@ DEFAULT_METRICS = [
     {"name": "用户停留时长", "key": "dwell_time", "direction": "higher", "weight": 1.0},
     {"name": "转粉率", "key": "follow_rate", "direction": "higher", "weight": 1.0},
 ]
+
+
+def get_global_locked_prompt() -> str:
+    """读取全局锁定提示词描述，取不到返回空串。"""
+    _cfg_file = BASE_DIR / "config.json"
+    if not _cfg_file.exists():
+        return ""
+    try:
+        return json.loads(_cfg_file.read_text(encoding="utf-8")).get("GLOBAL_LOCKED_PROMPT", "") or ""
+    except Exception:
+        return ""
+
+
+def get_effective_locked_prompt(room) -> str:
+    """直播间覆盖优先；勾选使用全局时回退到全局；都空则空串。"""
+    if not getattr(room, "use_global_locked_prompt", True):
+        return (getattr(room, "locked_prompt_description", "") or "").strip()
+    return get_global_locked_prompt().strip()

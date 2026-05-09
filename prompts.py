@@ -124,3 +124,61 @@ def build_generation_prompt(
 5. 提示词应该可以直接喂给 AI 来生成完整脚本""")
 
     return "\n".join(parts)
+
+
+TRANSLATION_SYSTEM_PROMPT = """You are a senior localization translator specialized in TikTok livestream and e-commerce copywriting. You translate non-Chinese text into the target language as a native speaker would naturally say it in a livestream selling context — idiomatic, punchy, and culturally appropriate. You are NOT a literal machine translator. You adapt tone, rhythm, filler words, and product-selling vocabulary to sound truly native. You also convert all monetary amounts into the target market's local currency using realistic current exchange rates and round to psychologically natural livestream price anchors."""
+
+
+LANGUAGE_CURRENCY = {
+    "English":    {"code": "USD", "symbol": "$",   "name": "US Dollar",         "format_example": "$19.99 / $199"},
+    "French":     {"code": "EUR", "symbol": "€",   "name": "Euro",              "format_example": "19,99 € / 199 €"},
+    "German":     {"code": "EUR", "symbol": "€",   "name": "Euro",              "format_example": "19,99 € / 199 €"},
+    "Spanish":    {"code": "EUR", "symbol": "€",   "name": "Euro",              "format_example": "19,99 € / 199 €"},
+    "Portuguese": {"code": "BRL", "symbol": "R$",  "name": "Brazilian Real",    "format_example": "R$ 19,99 / R$ 199"},
+    "Japanese":   {"code": "JPY", "symbol": "¥",   "name": "Japanese Yen",      "format_example": "¥1,980 / ¥19,800"},
+    "Korean":     {"code": "KRW", "symbol": "₩",   "name": "Korean Won",        "format_example": "₩19,900 / ₩199,000"},
+    "Thai":       {"code": "THB", "symbol": "฿",   "name": "Thai Baht",         "format_example": "฿199 / ฿1,990"},
+    "Malay":      {"code": "MYR", "symbol": "RM",  "name": "Malaysian Ringgit", "format_example": "RM19.90 / RM199"},
+    "Vietnamese": {"code": "VND", "symbol": "₫",   "name": "Vietnamese Dong",   "format_example": "199.000₫ / 1.990.000₫"},
+    "Indonesian": {"code": "IDR", "symbol": "Rp",  "name": "Indonesian Rupiah", "format_example": "Rp99.000 / Rp999.000"},
+    "Filipino":   {"code": "PHP", "symbol": "₱",   "name": "Philippine Peso",   "format_example": "₱199 / ₱1,999"},
+}
+
+
+def build_translation_prompt(content: str, target_language: str) -> str:
+    cur = LANGUAGE_CURRENCY.get(target_language, {"code": "(target locale currency)", "symbol": "", "name": "(target locale currency)", "format_example": ""})
+    cur_code = cur["code"]
+    cur_name = cur["name"]
+    cur_symbol = cur["symbol"]
+    cur_example = cur["format_example"]
+
+    return f"""Translate the following mixed-language text into **{target_language}**, following these STRICT rules:
+
+1. **KEEP ALL CHINESE CHARACTERS UNCHANGED.** Any Chinese character (汉字), Chinese punctuation, Chinese labels, Chinese instructions, Chinese section headers — leave them EXACTLY as they are. Do not translate, do not transliterate, do not paraphrase Chinese content. Chinese is the working language for the Chinese operator reading this document; it must stay in Chinese.
+
+2. **Translate only the non-Chinese portions** into native {target_language}. This includes English text, text in the source target-market language, product descriptions, host dialogue lines, example phrases, etc.
+
+3. **Native, not literal.** Produce the way a native {target_language} livestream host / e-commerce copywriter would actually phrase it. Avoid word-for-word machine-translation style. Use natural idioms, native sentence rhythm, appropriate livestream fillers, and culturally resonant product-selling vocabulary.
+
+4. **Currency conversion — MANDATORY.** Detect every monetary amount in the source (VND/₫, USD/$, EUR/€, THB/฿, IDR/Rp, PHP/₱, any price written with digits + a currency marker, or prices like "只要99块") and convert them to **{cur_name} ({cur_code})**.
+   - Use realistic, current exchange rates as of your latest training knowledge.
+   - Round converted prices to **psychologically natural livestream price anchors** used in the {cur_code} market (commonly prices ending in 9, 99, 900, 990, 9.900, 99.000 etc. depending on the currency scale). Do NOT leave raw decimal arithmetic like "17,283.45 ₫" — round to a clean anchor a native host would actually say.
+   - **Preserve all price relationships** between original price, discount price, compare-at price, bundle price, per-unit price. If the source says "原价 999₫, 现价 599₫" (a ~40% discount), the converted prices must keep the same ~40% discount ratio in {cur_code}.
+   - Format prices in the native {cur_code} convention. Examples: {cur_example}
+   - If a price appears inside a placeholder (e.g. `{{price}}`, `[PRICE]`), do NOT convert — leave the placeholder intact.
+   - If a specific number is clearly NOT a price (SKU code, quantity "买2送1", timestamp, rating "4.9 stars"), do NOT convert it.
+
+5. **Preserve the original structure exactly:**
+   - Line breaks, blank lines, indentation
+   - Numbered lists, bullet points, headings
+   - Markdown symbols (**, ##, ```, etc.)
+   - Placeholders like {{product_name}}, {{price}}, [TAG], <var> — never translate or alter
+   - Original punctuation structure (convert only punctuation that belongs to the translated segment, never touch Chinese punctuation)
+
+6. **Output only the translated result.** No commentary, no explanations, no "Here is the translation", no wrapping code fences, no conversion notes.
+
+---
+
+TEXT TO PROCESS:
+
+{content}"""
