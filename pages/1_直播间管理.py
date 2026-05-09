@@ -10,6 +10,14 @@ from task_manager import request_stop, list_tasks, cleanup_dead
 from ui_helpers import import_sessions_from_api, scorer_selector, launch_batch_score
 import time as _time
 
+
+def _latest_session_date(sessions) -> str:
+    """从 sessions 里返回最近一场的日期 (YYYY-MM-DD)，没有就返回空串。"""
+    ts_list = [s.timestamp for s in sessions if getattr(s, "timestamp", "")]
+    if not ts_list:
+        return ""
+    return max(ts_list)[:10]
+
 st.set_page_config(page_title="直播间管理", page_icon="🏠", layout="wide")
 st.title("🏠 直播间管理")
 
@@ -206,6 +214,12 @@ with tabs[1]:
         room_options = {f"{r.name} ({r.id})": r for r in rooms}
         selected = st.selectbox("选择直播间", list(room_options.keys()), key="add_room")
         room = room_options[selected]
+        _existing_sessions = list_sessions(room.id)
+        _latest = _latest_session_date(_existing_sessions)
+        if _latest:
+            st.caption(f"📅 系统内最近一场：**{_latest}**（共 {len(_existing_sessions)} 场）— 请从此日期之后添加")
+        else:
+            st.caption("📅 该直播间暂无历史场次")
         add_method = st.radio("添加方式", ["API自动获取", "上传Excel", "手动输入"],
                               horizontal=True, key="add_method_radio")
         if add_method == "API自动获取":
@@ -281,7 +295,9 @@ with tabs[2]:
             sessions = list_sessions(r.id)
             baseline_tag = f" | 基线: {r.baseline_session_id[:15]}" if r.baseline_session_id else ""
             prompt_tag = " | 有基线提示词" if r.base_prompt else ""
-            with st.expander(f"**{r.name}** — {len(sessions)} 场{baseline_tag}{prompt_tag}"):
+            latest_date = _latest_session_date(sessions)
+            latest_tag = f" | 最近一场: {latest_date}" if latest_date else ""
+            with st.expander(f"**{r.name}** — {len(sessions)} 场{latest_tag}{baseline_tag}{prompt_tag}"):
                 st.caption(f"产品: {r.product_info[:100]}  |  ID: {r.id}  |  创建: {r.created_at[:10]}")
                 with st.expander("📌 原始提示词模板"):
                     orig_prompt = st.text_area("原始提示词", value=r.original_prompt, height=200,

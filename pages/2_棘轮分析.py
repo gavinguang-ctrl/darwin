@@ -260,20 +260,80 @@ if session.static_scores:
         fig.update_layout(polar=dict(radialaxis=dict(range=[0, 10])), height=300, margin=dict(t=20, b=20))
         st.plotly_chart(fig, use_container_width=True)
 
+    priority = classify_priority(comparison, scores, state.history)
+    badge = {"P0": "🔴", "P1": "🟠", "P2": "🟡", "P3": "🟢"}
+    st.caption(
+        f"{badge.get(priority['level'], '⚪')} **{priority['level']}** — {priority['reason']}  ·  建议: {priority['action']}"
+    )
+
     for d in STATIC_DIMENSIONS:
         s = scores.get(d["id"], 0)
         r = reasoning.get(d["id"], "")
         st.write(f"**{d['name']}** {s}/10 — {r}")
 
-    # --- C: 优先级诊断 ---
+    # --- D: 自动迭代模式 ---
     st.divider()
-    st.subheader("🚦 优先级诊断")
-    priority = classify_priority(comparison, scores, state.history)
-    badge = {"P0": "🔴", "P1": "🟠", "P2": "🟡", "P3": "🟢"}
-    st.write(f"{badge.get(priority['level'], '⚪')} **{priority['level']}** — {priority['reason']}")
-    st.write(f"建议: {priority['action']}")
+    st.subheader("🤖 自动迭代模式")
+    st.caption("后台运行，可切换页面不影响。点停止后以当前最高分保存。")
 
-    # --- D: 爬山优化 ---
+    from task_manager import create_task, load_task, request_stop, list_tasks, cleanup_dead
+    import time as _time
+
+    cleanup_dead(room.id)
+    running_tasks = list_tasks(room_id=room.id, status="running")
+    active_task = next((t for t in running_tasks if t.op in ("auto_iterate", "continue_iterate")), None)
+
+    if active_task:
+        st.info(f"🔄 后台迭代中：{active_task.progress}")
+        st.caption(f"当前最高分：{active_task.best_score:.1f}")
+        if active_task.log:
+            with st.expander("日志", expanded=False):
+                for entry in active_task.log[-10:]:
+                    st.write(entry)
+        if st.button("⏹ 停止迭代", type="primary"):
+            request_stop(active_task.id)
+            st.rerun()
+        _time.sleep(3)
+        st.rerun()
+    else:
+        recent_done = [t for t in list_tasks(room_id=room.id) if t.op in ("auto_iterate", "continue_iterate") and t.status in ("completed", "stopped")]
+        if recent_done:
+            last = recent_done[0]
+            if last.result.get("candidate_id"):
+                st.success(f"上次迭代完成：最高分 {last.best_score:.1f}，方案 {last.result['candidate_id']}")
+            elif last.status == "stopped":
+                st.info(f"上次迭代已停止：最高分 {last.best_score:.1f}")
+
+        auto_col1, auto_col2 = st.columns(2)
+        with auto_col1:
+            threshold = st.number_input("提升阈值 (%)", min_value=1.0, max_value=100.0, value=10.0, step=1.0, key="auto_threshold")
+        with auto_col2:
+            max_rounds = st.number_input("最大轮数", min_value=1, max_value=50, value=10, step=1, key="auto_rounds")
+
+        if st.button("🚀 开始自动迭代", type="primary", use_container_width=True):
+            opt_key, scorer_key, gen_key = _get_key(opt_provider_name), _get_key(scorer_provider_name), _get_key(gen_provider_name)
+            if not opt_key or not scorer_key or not gen_key:
+                st.error("请配置 API Key"); st.stop()
+
+            current_prompt = session.prompt or room.base_prompt
+            mode = "prompt" if is_prompt_mode and current_prompt else "script"
+
+            task = create_task(room.id, "auto_iterate", {
+                "room_id": room.id,
+                "session_id": session.id,
+                "mode": mode,
+                "threshold": threshold,
+                "max_rounds": int(max_rounds),
+                "weight_config": new_wc,
+                "scorer": {"provider": scorer_provider_name, "key": scorer_key, "model": scorer_model_name},
+                "optimizer": {"provider": opt_provider_name, "key": opt_key, "model": opt_model_name},
+                "generator": {"provider": gen_provider_name, "key": gen_key, "model": gen_model_name},
+            }, desc=f"「{room.name}」{mode}自动迭代 {int(max_rounds)}轮")
+            st.success(f"后台迭代已启动（任务 {task.id}）")
+            _time.sleep(1)
+            st.rerun()
+
+    # --- E: 单维度爬山优化 ---
     st.divider()
     eff_scores = session.effect_scores or {}
     diag = diagnose(scores, eff_scores, new_wc)
@@ -390,73 +450,11 @@ if session.static_scores:
                                        scorer_model=session.scorer_model, note="script模式", room_id=room.id)
                     state.stagnation_count += 1; state.save(room.ratchet_state_path())
 
-    # --- E: 探索性重写 ---
+    # --- F: 探索性重写 ---
     if check_stagnation(state.stagnation_count):
         st.divider()
         st.subheader("🔄 探索性重写")
         st.warning(f"连续 {state.stagnation_count} 次回滚，建议全局重构。")
-
-    # --- F: 自动迭代模式 ---
-    st.divider()
-    st.subheader("🤖 自动迭代模式")
-    st.caption("后台运行，可切换页面不影响。点停止后以当前最高分保存。")
-
-    from task_manager import create_task, load_task, request_stop, list_tasks, cleanup_dead
-    import time as _time
-
-    cleanup_dead(room.id)
-    running_tasks = list_tasks(room_id=room.id, status="running")
-    active_task = next((t for t in running_tasks if t.op in ("auto_iterate", "continue_iterate")), None)
-
-    if active_task:
-        st.info(f"🔄 后台迭代中：{active_task.progress}")
-        st.caption(f"当前最高分：{active_task.best_score:.1f}")
-        if active_task.log:
-            with st.expander("日志", expanded=False):
-                for entry in active_task.log[-10:]:
-                    st.write(entry)
-        if st.button("⏹ 停止迭代", type="primary"):
-            request_stop(active_task.id)
-            st.rerun()
-        _time.sleep(3)
-        st.rerun()
-    else:
-        recent_done = [t for t in list_tasks(room_id=room.id) if t.op in ("auto_iterate", "continue_iterate") and t.status in ("completed", "stopped")]
-        if recent_done:
-            last = recent_done[0]
-            if last.result.get("candidate_id"):
-                st.success(f"上次迭代完成：最高分 {last.best_score:.1f}，方案 {last.result['candidate_id']}")
-            elif last.status == "stopped":
-                st.info(f"上次迭代已停止：最高分 {last.best_score:.1f}")
-
-        auto_col1, auto_col2 = st.columns(2)
-        with auto_col1:
-            threshold = st.number_input("提升阈值 (%)", min_value=1.0, max_value=100.0, value=10.0, step=1.0, key="auto_threshold")
-        with auto_col2:
-            max_rounds = st.number_input("最大轮数", min_value=1, max_value=50, value=10, step=1, key="auto_rounds")
-
-        if st.button("🚀 开始自动迭代", type="primary", use_container_width=True):
-            opt_key, scorer_key, gen_key = _get_key(opt_provider_name), _get_key(scorer_provider_name), _get_key(gen_provider_name)
-            if not opt_key or not scorer_key or not gen_key:
-                st.error("请配置 API Key"); st.stop()
-
-            current_prompt = session.prompt or room.base_prompt
-            mode = "prompt" if is_prompt_mode and current_prompt else "script"
-
-            task = create_task(room.id, "auto_iterate", {
-                "room_id": room.id,
-                "session_id": session.id,
-                "mode": mode,
-                "threshold": threshold,
-                "max_rounds": int(max_rounds),
-                "weight_config": new_wc,
-                "scorer": {"provider": scorer_provider_name, "key": scorer_key, "model": scorer_model_name},
-                "optimizer": {"provider": opt_provider_name, "key": opt_key, "model": opt_model_name},
-                "generator": {"provider": gen_provider_name, "key": gen_key, "model": gen_model_name},
-            }, desc=f"「{room.name}」{mode}自动迭代 {int(max_rounds)}轮")
-            st.success(f"后台迭代已启动（任务 {task.id}）")
-            _time.sleep(1)
-            st.rerun()
 
 # --- G: 胜出方案列表 ---
 st.divider()

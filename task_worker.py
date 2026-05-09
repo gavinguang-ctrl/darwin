@@ -253,13 +253,13 @@ def run_auto_iterate(task_id, params):
                     "room_id": room.id,
                     "candidate_id": cand.id,
                     "sample_size": 50,
-                    "max_rounds": 3,
+                    "max_rounds": 5,
                     "optimizer": params["optimizer"],
                     "generator": params["generator"],
                 }
                 dedupe_task = create_task(
                     room.id, "dedupe_optimize", dedupe_params,
-                    desc=f"「{room.name}」方案{cand.id[:8]}去重优化 3轮×50样本（自动触发）",
+                    desc=f"「{room.name}」方案{cand.id[:8]}去重优化 5轮×50样本（自动触发）",
                 )
                 cand_result["dedupe_task_id"] = dedupe_task.id
             except Exception as e:
