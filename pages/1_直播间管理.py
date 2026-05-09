@@ -8,6 +8,8 @@ from room import create_room, list_rooms, load_room
 from zmeng_api import fetch_live_data, extract_script_from_excel, fetch_host_rooms, fetch_rooms_by_ids
 from task_manager import request_stop, list_tasks, cleanup_dead
 from ui_helpers import import_sessions_from_api, scorer_selector, launch_batch_score
+from llm import PROVIDERS
+from hill_climb import generate_script_from_prompt
 import time as _time
 
 
@@ -128,6 +130,97 @@ def _manual_input_ui(room, prefix):
                 st.rerun()
 
 
+def _cold_start_ui(room, prefix):
+    """冷启动模式：按用户提供的提示词生成一份脚本，合成默认指标的 session，自动评分。"""
+    from config import (get_default_models, get_effective_locked_prompt,
+                        OPENAI_API_KEY, ANTHROPIC_API_KEY, GOOGLE_API_KEY)
+    from llm import get_provider
+
+    st.caption("未开播的冷启动模式：系统按你给的提示词生成一份脚本，"
+               "用默认指标合成一场 session 并自动评分；等真实直播数据进来后再覆盖。")
+
+    cold_prompt = st.text_area(
+        "原始提示词（必填）",
+        value=room.original_prompt, height=280, key=f"{prefix}_prompt",
+        placeholder="粘贴你准备让数字人跑的完整原始提示词...",
+    )
+    c1, c2 = st.columns(2)
+    with c1:
+        default_ctr = st.number_input("默认 CTR (%)", min_value=0.1, max_value=20.0,
+                                      value=3.0, step=0.1, key=f"{prefix}_ctr")
+    with c2:
+        default_dwell = st.number_input("默认停留时长 (秒)", min_value=1, max_value=600,
+                                        value=15, step=1, key=f"{prefix}_dwell")
+
+    defs = get_default_models()
+    st.markdown("**脚本生成模型**")
+    prov_keys = list(PROVIDERS.keys())
+    gprov_col, gmodel_col = st.columns(2)
+    with gprov_col:
+        default_gidx = prov_keys.index(defs["generator"]["provider"]) if defs["generator"]["provider"] in prov_keys else 0
+        gen_prov = st.selectbox("生成提供商", prov_keys, index=default_gidx, key=f"{prefix}_gprov")
+    gen_models = PROVIDERS[gen_prov]["models"]
+    with gmodel_col:
+        gmidx = gen_models.index(defs["generator"]["model"]) if gen_prov == defs["generator"]["provider"] and defs["generator"]["model"] in gen_models else 0
+        gen_model = st.selectbox("生成模型", gen_models, index=gmidx, key=f"{prefix}_gmodel")
+
+    st.markdown("**评分模型**")
+    sprov, smodel, skey = scorer_selector(f"{prefix}_score")
+
+    gkey_map = {"openai": OPENAI_API_KEY, "anthropic": ANTHROPIC_API_KEY,
+                "google（代理）": GOOGLE_API_KEY, "google（官方）": GOOGLE_API_KEY}
+    gen_key = gkey_map.get(gen_prov, "")
+    if not gen_key:
+        gen_key = st.text_input("生成模型 API Key", type="password", key=f"{prefix}_gkey")
+
+    if st.button("🚀 生成脚本并自动评分", type="primary", use_container_width=True, key=f"{prefix}_go"):
+        if not cold_prompt.strip():
+            st.error("请粘贴原始提示词"); return
+        if not gen_key or not skey:
+            st.error("请配置生成模型和评分模型的 API Key"); return
+
+        room.original_prompt = cold_prompt.strip()
+        if not room.base_prompt:
+            room.base_prompt = cold_prompt.strip()
+        room.save()
+
+        with st.spinner("用提示词生成脚本中..."):
+            locked_desc = get_effective_locked_prompt(room)
+            gen = get_provider(gen_prov, gen_key, gen_model)
+            try:
+                script = generate_script_from_prompt(
+                    cold_prompt.strip(), gen,
+                    baseline_script="",
+                    locked_description=locked_desc,
+                )
+            except Exception as e:
+                st.error(f"生成失败：{e}"); return
+
+        if not script or not script.strip():
+            st.error("生成器返回空脚本，请检查模型和网络"); return
+
+        session = Session(
+            id=new_session_id(),
+            timestamp=datetime.now().isoformat(),
+            script=script.strip(),
+            metrics={"ctr": float(default_ctr) / 100.0,
+                     "dwell_time": float(default_dwell)},
+            room_id=room.id,
+            prompt=cold_prompt.strip(),
+            notes=(f"冷启动合成：ctr={default_ctr}%, dwell={default_dwell}s, "
+                   f"gen={gen_prov}/{gen_model}"),
+        )
+        save_session(session)
+
+        launch_batch_score(room.id, room.name, sprov, skey, smodel,
+                           desc=f"「{room.name}」冷启动首场评分",
+                           session_ids=[session.id])
+        st.success(f"脚本已生成并提交评分（session {session.id[:12]}）。"
+                   f"切到「管理直播间」可查看进度；评分完成后即可进「棘轮分析」迭代。")
+        _time.sleep(1)
+        st.rerun()
+
+
 def _batch_score_ui(room_id, room_name, prefix):
     cleanup_dead(room_id)
     running = next((t for t in list_tasks(room_id=room_id, status="running") if t.op == "batch_score"), None)
@@ -171,12 +264,11 @@ def _batch_score_ui(room_id, room_name, prefix):
 with tabs[0]:
     st.subheader("创建新直播间")
     room_name = st.text_input("直播间名称", placeholder="例：美妆直播间-口红系列")
-    product_info = st.text_area("产品信息", height=100, placeholder="产品名称、卖点、价格区间等")
     if st.button("✅ 创建直播间", type="primary"):
         if not room_name.strip():
             st.error("请输入直播间名称")
         else:
-            room = create_room(room_name.strip(), product_info.strip())
+            room = create_room(room_name.strip(), "")
             st.success(f"直播间「{room.name}」已创建！")
             st.session_state["new_room_id"] = room.id
             st.rerun()
@@ -184,22 +276,31 @@ with tabs[0]:
         room_id = st.session_state["new_room_id"]
         room = load_room(room_id)
         st.divider()
-        st.subheader(f"📥 为「{room.name}」导入历史场次")
-        method = st.radio("导入方式", ["API自动获取", "上传Excel", "手动输入"], horizontal=True, key="imp_method")
-        if method == "API自动获取":
-            _api_search_import_ui(room, "imp_api")
-        elif method == "上传Excel":
-            _excel_import_ui(room, "imp_excel")
+        create_mode = st.radio(
+            "模式",
+            ["导入历史场次（已开播）", "全新直播间（冷启动，未开播）"],
+            horizontal=True, key="create_mode",
+        )
+        if create_mode.startswith("导入"):
+            st.subheader(f"📥 为「{room.name}」导入历史场次")
+            method = st.radio("导入方式", ["API自动获取", "上传Excel", "手动输入"], horizontal=True, key="imp_method")
+            if method == "API自动获取":
+                _api_search_import_ui(room, "imp_api")
+            elif method == "上传Excel":
+                _excel_import_ui(room, "imp_excel")
+            else:
+                _manual_input_ui(room, "imp_manual")
+            existing = list_sessions(room_id)
+            if existing:
+                st.write(f"已导入 {len(existing)} 场")
+                if st.button("🎯 完成导入，自动评分选基线", type="primary", use_container_width=True):
+                    st.session_state["ready_to_score"] = room_id
+            if st.session_state.get("ready_to_score") == room_id:
+                st.divider()
+                _batch_score_ui(room_id, room.name, "new_batch")
         else:
-            _manual_input_ui(room, "imp_manual")
-        existing = list_sessions(room_id)
-        if existing:
-            st.write(f"已导入 {len(existing)} 场")
-            if st.button("🎯 完成导入，自动评分选基线", type="primary", use_container_width=True):
-                st.session_state["ready_to_score"] = room_id
-        if st.session_state.get("ready_to_score") == room_id:
-            st.divider()
-            _batch_score_ui(room_id, room.name, "new_batch")
+            st.subheader(f"🧬 「{room.name}」冷启动生成首场")
+            _cold_start_ui(room, "imp_cold")
 
 # ============================================================
 # Tab 2: 添加场次
@@ -298,7 +399,7 @@ with tabs[2]:
             latest_date = _latest_session_date(sessions)
             latest_tag = f" | 最近一场: {latest_date}" if latest_date else ""
             with st.expander(f"**{r.name}** — {len(sessions)} 场{latest_tag}{baseline_tag}{prompt_tag}"):
-                st.caption(f"产品: {r.product_info[:100]}  |  ID: {r.id}  |  创建: {r.created_at[:10]}")
+                st.caption(f"ID: {r.id}  |  创建: {r.created_at[:10]}")
                 with st.expander("📌 原始提示词模板"):
                     orig_prompt = st.text_area("原始提示词", value=r.original_prompt, height=200,
                                                key=f"orig_prompt_{r.id}", placeholder="输入原始提示词模板...")
