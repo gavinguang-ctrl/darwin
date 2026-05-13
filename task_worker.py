@@ -122,6 +122,7 @@ def run_auto_iterate(task_id, params):
 
     from config import get_effective_locked_prompt
     locked_desc = get_effective_locked_prompt(room)
+    reference_snippet = params.get("reference_snippet", "")
 
     # continue_iterate: 从 candidate 状态继续
     cand_id = params.get("candidate_id")
@@ -189,12 +190,14 @@ def run_auto_iterate(task_id, params):
                     best_content, best_script, dim_target, best_static,
                     state.locked_constraints, opt, room.product_info,
                     original_prompt=room.original_prompt,
-                    locked_description=locked_desc)
+                    locked_description=locked_desc,
+                    reference_snippet=reference_snippet)
                 new_script = generate_script_from_prompt(new_content, gen, baseline_script=best_script,
                                                          locked_description=locked_desc)
             else:
                 new_content = generate_improvement(best_script, dim_target, best_static, state.locked_constraints, opt,
-                                                   locked_description=locked_desc)
+                                                   locked_description=locked_desc,
+                                                   reference_snippet=reference_snippet)
                 new_script = new_content
 
             nr = score_script(new_script, scorer, state.locked_constraints, wc, dwell_seconds=dwell)

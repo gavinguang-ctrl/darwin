@@ -62,6 +62,7 @@ def build_improvement_prompt(
     static_scores: dict[str, int],
     locked_constraints: list[dict],
     locked_description: str = "",
+    reference_snippet: str = "",
 ) -> str:
     dim = _get_dim_detail(target["id"])
 
@@ -89,6 +90,12 @@ def build_improvement_prompt(
         parts.append("- 以下已锁定要素必须保留：\n")
         for c in locked_constraints:
             parts.append(f"  - {c['element']}\n")
+
+    if reference_snippet:
+        parts.append("\n## 📝 参考脚本段落（请学习其精髓并融入优化）\n")
+        parts.append("以下是用户提供的优秀脚本示例。请分析其话术节奏、结构、表达技巧，\n")
+        parts.append("并将其精髓融入你优化后的脚本中（不要照搬原文，要提炼后融合）。\n")
+        parts.append(f"```\n{reference_snippet[:3000]}\n```\n")
 
     parts.append(f"\n## 当前脚本\n{script}\n")
     parts.append("\n## 输出\n请输出改进后的完整脚本，并在开头用一句话说明你改了什么。")
@@ -119,8 +126,9 @@ def build_rewrite_prompt(script: str, static_scores: dict[str, int], locked_cons
 
 def generate_improvement(script: str, target: dict, static_scores: dict[str, int],
                          locked_constraints: list[dict], optimizer: LLMProvider,
-                         locked_description: str = "") -> str:
-    prompt = build_improvement_prompt(script, target, static_scores, locked_constraints, locked_description)
+                         locked_description: str = "", reference_snippet: str = "") -> str:
+    prompt = build_improvement_prompt(script, target, static_scores, locked_constraints,
+                                      locked_description, reference_snippet)
     return optimizer.generate(prompt, system=OPTIMIZER_SYSTEM_PROMPT)
 
 
@@ -155,6 +163,7 @@ def build_prompt_improvement(
     baseline_strengths: str = "",
     original_prompt: str = "",
     locked_description: str = "",
+    reference_snippet: str = "",
 ) -> str:
     filled_prompt = base_prompt
     for placeholder in ["(此处插入基准脚本)", "（此处插入基准脚本）", "{基准脚本}", "{baseline_script}"]:
@@ -199,6 +208,11 @@ def build_prompt_improvement(
         parts.append(f"## 产品信息\n{product_info}\n\n")
     if baseline_strengths:
         parts.append(f"## 基线脚本的优点（必须保留）\n{baseline_strengths}\n\n")
+    if reference_snippet:
+        parts.append("## 📝 参考脚本段落（请学习其精髓并融入优化）\n")
+        parts.append("以下是用户提供的优秀脚本示例。请分析其话术节奏、结构、表达技巧，\n")
+        parts.append("并将其精髓融入你优化后的提示词/脚本中（不要照搬原文，要提炼后融合）。\n")
+        parts.append(f"```\n{reference_snippet[:3000]}\n```\n\n")
     if original_prompt and original_prompt != base_prompt:
         parts.append(f"## 原始提示词格式（输出格式必须与此一致）\n```\n{original_prompt[:2000]}\n```\n\n")
     parts.append(f"## 当前提示词\n```\n{filled_prompt}\n```\n")
@@ -256,10 +270,11 @@ def generate_prompt_improvement(base_prompt: str, current_script: str, target: d
                                 static_scores: dict[str, int], locked_constraints: list[dict],
                                 optimizer: LLMProvider, product_info: str = "",
                                 baseline_strengths: str = "", original_prompt: str = "",
-                                locked_description: str = "") -> str:
+                                locked_description: str = "",
+                                reference_snippet: str = "") -> str:
     prompt = build_prompt_improvement(base_prompt, current_script, target, static_scores,
                                       locked_constraints, product_info, baseline_strengths,
-                                      original_prompt, locked_description)
+                                      original_prompt, locked_description, reference_snippet)
     return optimizer.generate(prompt, system=PROMPT_OPTIMIZER_SYSTEM_PROMPT)
 
 
@@ -352,6 +367,7 @@ def auto_iterate(
     history_sessions: list | None = None,
     dwell_seconds: float = 0,
     locked_description: str = "",
+    reference_snippet: str = "",
 ) -> dict:
     """
     自动迭代爬山。始终优化静态维度，实效通过预估。
@@ -395,12 +411,14 @@ def auto_iterate(
             if mode == "prompt" and best_content:
                 new_content = generate_prompt_improvement(
                     best_content, best_script, target, best_static, locked_constraints, optimizer, product_info,
-                    baseline_strengths=baseline_strengths, locked_description=locked_description)
+                    baseline_strengths=baseline_strengths, locked_description=locked_description,
+                    reference_snippet=reference_snippet)
                 new_script = generate_script_from_prompt(new_content, optimizer, baseline_script=best_script,
                                                          locked_description=locked_description)
             else:
                 new_content = generate_improvement(best_script, target, best_static, locked_constraints, optimizer,
-                                                   locked_description=locked_description)
+                                                   locked_description=locked_description,
+                                                   reference_snippet=reference_snippet)
                 new_script = new_content
 
             # 独立评分（静态）

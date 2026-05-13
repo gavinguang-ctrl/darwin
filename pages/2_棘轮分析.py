@@ -310,6 +310,13 @@ if session.static_scores:
         with auto_col2:
             max_rounds = st.number_input("最大轮数", min_value=1, max_value=50, value=10, step=1, key="auto_rounds")
 
+        auto_ref_snippet = st.text_area(
+            "📝 参考脚本段落（可选）",
+            height=150, key="auto_ref_snippet",
+            placeholder="粘贴一段你认为优秀的脚本片段，系统会学习其精髓融入迭代...",
+            help="提供一个好的脚本示例作为优化方向参考。留空则不影响迭代。",
+        )
+
         if st.button("🚀 开始自动迭代", type="primary", use_container_width=True):
             opt_key, scorer_key, gen_key = _get_key(opt_provider_name), _get_key(scorer_provider_name), _get_key(gen_provider_name)
             if not opt_key or not scorer_key or not gen_key:
@@ -325,6 +332,7 @@ if session.static_scores:
                 "threshold": threshold,
                 "max_rounds": int(max_rounds),
                 "weight_config": new_wc,
+                "reference_snippet": auto_ref_snippet.strip(),
                 "scorer": {"provider": scorer_provider_name, "key": scorer_key, "model": scorer_model_name},
                 "optimizer": {"provider": opt_provider_name, "key": opt_key, "model": opt_model_name},
                 "generator": {"provider": gen_provider_name, "key": gen_key, "model": gen_model_name},
@@ -348,6 +356,10 @@ if session.static_scores:
             st.info(f"最弱维度是实效指标「{target['name']}」，建议先跑一场验证。")
         else:
             st.write(f"最弱维度: **{target['name']}**（{target['score']}/10），潜在增益 +{diag['max_gain']:.1f}")
+            _ref_snippet_prompt = st.text_area(
+                "📝 参考脚本段落（可选）", height=120, key="single_ref_snippet_prompt",
+                placeholder="粘贴一段优秀脚本片段作为优化参考...",
+            )
             if st.button("🧗 优化提示词", use_container_width=True):
                 opt_key, scorer_key, gen_key = _get_key(opt_provider_name), _get_key(scorer_provider_name), _get_key(gen_provider_name)
                 if not opt_key or not scorer_key or not gen_key:
@@ -361,7 +373,8 @@ if session.static_scores:
                         current_prompt, session.script, target, scores,
                         state.locked_constraints, optimizer, room.product_info,
                         baseline_strengths=baseline_strengths, original_prompt=room.original_prompt,
-                        locked_description=_locked_desc0)
+                        locked_description=_locked_desc0,
+                        reference_snippet=_ref_snippet_prompt.strip())
                 st.subheader("📝 优化后的提示词")
                 st.markdown(new_prompt)
                 with st.spinner("用新提示词生成脚本..."):
@@ -407,6 +420,10 @@ if session.static_scores:
             st.info(f"最弱维度是实效指标「{target['name']}」，建议先跑一场验证。")
         else:
             st.write(f"最弱维度: **{target['name']}**（{target['score']}/10），潜在增益 +{diag['max_gain']:.1f}")
+            _ref_snippet_script = st.text_area(
+                "📝 参考脚本段落（可选）", height=120, key="single_ref_snippet_script",
+                placeholder="粘贴一段优秀脚本片段作为优化参考...",
+            )
             if st.button("🧗 针对该维度优化脚本", use_container_width=True):
                 opt_key, scorer_key = _get_key(opt_provider_name), _get_key(scorer_provider_name)
                 if not opt_key or not scorer_key:
@@ -415,7 +432,8 @@ if session.static_scores:
                     optimizer = get_provider(opt_provider_name, opt_key, opt_model_name)
                     from config import get_effective_locked_prompt as _gelp1
                     improved = generate_improvement(session.script, target, scores, state.locked_constraints, optimizer,
-                                                    locked_description=_gelp1(room))
+                                                    locked_description=_gelp1(room),
+                                                    reference_snippet=_ref_snippet_script.strip())
                 st.markdown(improved)
                 if not check_length(session.script, improved):
                     st.warning("脚本超过 150%，建议精简。")
