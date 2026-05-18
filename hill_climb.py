@@ -8,16 +8,25 @@ from llm import LLMProvider
 from prompts import OPTIMIZER_SYSTEM_PROMPT, PROMPT_OPTIMIZER_SYSTEM_PROMPT
 
 
-def _locked_block(locked_description: str) -> str:
+def _locked_block(locked_description: str, mode: str = "script") -> str:
     """把用户配置的「锁定提示词描述」包装成硬性约束段，放在任何优化/生成 prompt 最前面。"""
     t = (locked_description or "").strip()
     if not t:
         return ""
+    if mode == "prompt":
+        return (
+            "## 🔒 锁定要求（必须严格遵守，禁止修改、稀释、省略）\n"
+            "以下内容是直播间运营方的硬性要求，优先级高于本次迭代的其他优化目标。\n"
+            "你优化提示词时必须确保这些要求能被执行，但**不要把本段原文照搬进你输出的提示词**——\n"
+            "系统会在运行时自动注入这些约束。你只需确保优化后的提示词内容不与以下要求冲突。\n"
+            "------\n"
+            f"{t}\n"
+            "------\n\n"
+        )
     return (
-        "## 🔒 全局锁定要求（必须严格遵守，禁止修改、稀释、省略）\n"
+        "## 🔒 锁定要求（必须严格遵守，禁止修改、稀释、省略）\n"
         "以下内容是直播间运营方的硬性要求，优先级高于本次迭代的其他优化目标。\n"
         "你的输出必须完整体现这些要求；若与本次优化维度冲突，以此为准。\n"
-        "**禁止把本段内容搬运进你的输出**（它是你的约束，不是你要生成的文本）。\n"
         "------\n"
         f"{t}\n"
         "------\n\n"
@@ -171,7 +180,7 @@ def build_prompt_improvement(
             filled_prompt = filled_prompt.replace(placeholder, current_script[:3000])
 
     parts = []
-    lb = _locked_block(locked_description)
+    lb = _locked_block(locked_description, mode="prompt")
     if lb:
         parts.append(lb)
     # 约束条件放最前面
@@ -229,7 +238,7 @@ def build_prompt_rewrite(
     locked_description: str = "",
 ) -> str:
     parts = []
-    lb = _locked_block(locked_description)
+    lb = _locked_block(locked_description, mode="prompt")
     if lb:
         parts.append(lb)
     parts.append("## 任务\n对以下直播脚本生成提示词进行全局重构。\n")
@@ -301,7 +310,7 @@ def build_dedupe_improvement(base_prompt: str, avg_rep_ratio: float,
                              locked_description: str = "") -> str:
     """为跨脚本去重生成 prompt 优化指令。"""
     parts = []
-    lb = _locked_block(locked_description)
+    lb = _locked_block(locked_description, mode="prompt")
     if lb:
         parts.append(lb)
     parts.append("## 任务\n")

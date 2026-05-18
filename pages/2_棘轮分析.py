@@ -114,7 +114,14 @@ if not rooms:
     st.stop()
 
 room_options = {f"{r.name} ({r.id})": r for r in rooms}
-selected_room_label = st.selectbox("选择直播间", list(room_options.keys()))
+_room_keys = list(room_options.keys())
+if st.session_state.get("goto_room_id"):
+    _goto_id = st.session_state.pop("goto_room_id")
+    for k in _room_keys:
+        if _goto_id in k:
+            st.session_state["room_selector"] = k
+            break
+selected_room_label = st.selectbox("选择直播间", _room_keys, key="room_selector")
 room = room_options[selected_room_label]
 state = RatchetState.load(room.ratchet_state_path())
 
@@ -310,6 +317,13 @@ if session.static_scores:
         with auto_col2:
             max_rounds = st.number_input("最大轮数", min_value=1, max_value=50, value=10, step=1, key="auto_rounds")
 
+        dwell_window_mode = st.radio(
+            "评分时间窗口",
+            ["全部观众（15-30s，默认）", "成交用户（实际停留×6）"],
+            horizontal=True, key="auto_dwell_window",
+            help="「全部观众」按实际平均停留评分（适合优化 Hook 和循环结构）；「成交用户」模拟买家的更长停留，评分窗口 = 实际停留×6（适合优化深度说服力和转化链路）。",
+        )
+
         auto_ref_snippet = st.text_area(
             "📝 参考脚本段落（可选）",
             height=150, key="auto_ref_snippet",
@@ -333,6 +347,7 @@ if session.static_scores:
                 "max_rounds": int(max_rounds),
                 "weight_config": new_wc,
                 "reference_snippet": auto_ref_snippet.strip(),
+                "dwell_multiplier": 6 if "成交" in dwell_window_mode else 1,
                 "scorer": {"provider": scorer_provider_name, "key": scorer_key, "model": scorer_model_name},
                 "optimizer": {"provider": opt_provider_name, "key": opt_key, "model": opt_model_name},
                 "generator": {"provider": gen_provider_name, "key": gen_key, "model": gen_model_name},
@@ -343,6 +358,9 @@ if session.static_scores:
 
     # --- E: 单维度爬山优化 ---
     st.divider()
+    _raw_dwell = session.metrics.get("dwell_time", 0)
+    _dwell_mult = 6 if "成交" in dwell_window_mode else 1
+    _dwell_for_scoring = _raw_dwell * _dwell_mult
     eff_scores = session.effect_scores or {}
     diag = diagnose(scores, eff_scores, new_wc)
     target = diag["target"]
@@ -385,7 +403,7 @@ if session.static_scores:
                     st.text(new_script)
                 with st.spinner("独立重评中..."):
                     scorer = get_provider(scorer_provider_name, scorer_key, scorer_model_name)
-                    nr = score_script(new_script, scorer, state.locked_constraints, new_wc, dwell_seconds=session.metrics.get("dwell_time", 0))
+                    nr = score_script(new_script, scorer, state.locked_constraints, new_wc, dwell_seconds=_dwell_for_scoring)
                     new_static = nr["static_score"]
                     all_metrics = [s.metrics for s in sessions]
                     new_eff, _ = compute_effect_score(session.metrics, state.effect_baselines, new_wc, all_sessions_metrics=all_metrics)
@@ -439,7 +457,7 @@ if session.static_scores:
                     st.warning("脚本超过 150%，建议精简。")
                 with st.spinner("独立重评中..."):
                     scorer = get_provider(scorer_provider_name, scorer_key, scorer_model_name)
-                    nr = score_script(improved, scorer, state.locked_constraints, new_wc, dwell_seconds=session.metrics.get("dwell_time", 0))
+                    nr = score_script(improved, scorer, state.locked_constraints, new_wc, dwell_seconds=_dwell_for_scoring)
                     new_static = nr["static_score"]
                     all_metrics = [s.metrics for s in sessions]
                     new_eff, _ = compute_effect_score(session.metrics, state.effect_baselines, new_wc, all_sessions_metrics=all_metrics)
@@ -655,7 +673,7 @@ if candidates:
                                     st.text_area("优化后提示词", new_content, height=150, key=f"cont_prompt_{c.id}", disabled=True)
                                 st.text_area("优化后脚本", new_script[:2000], height=200, key=f"cont_script_{c.id}", disabled=True)
                             with st.spinner("独立评分中..."):
-                                dwell = session.metrics.get("dwell_time", 0)
+                                dwell = session.metrics.get("dwell_time", 0) * _dwell_mult
                                 nr = score_script(new_script, scorer_inst, state.locked_constraints, new_wc, dwell_seconds=dwell)
                                 all_metrics = [s.metrics for s in sessions]
                                 new_eff, _ = compute_effect_score(session.metrics, state.effect_baselines, new_wc, all_sessions_metrics=all_metrics)
@@ -729,7 +747,7 @@ if st.button("🔒 确认锁定并生成下一轮提示词", type="primary", use
         baselines=new_state.baselines, session_count=new_state.iteration_count)
     from config import get_effective_locked_prompt as _gelp
     from hill_climb import _locked_block as _lb
-    gen_prompt = _lb(_gelp(room)) + gen_prompt
+    gen_prompt = _lb(_gelp(room), mode="prompt") + gen_prompt
     st.success(f"棘轮已更新！迭代 #{new_state.iteration_count}")
     with st.spinner("生成下一轮优化提示词..."):
         optimizer = get_provider(opt_provider_name, opt_key, opt_model_name)
