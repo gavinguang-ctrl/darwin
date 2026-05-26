@@ -93,7 +93,7 @@ def build_improvement_prompt(
         for tech in dim["techniques"]:
             parts.append(f"- {tech}\n")
 
-    parts.append("\n## 约束\n- 只改进这一个维度，不要大幅改动其他部分\n- 不要改变产品/优惠本身，只优化表达方式\n- 保持15-30秒循环结构：每个循环是Hook→单个卖点→价格→CTA的完整闭环\n")
+    parts.append("\n## 约束\n- 只改进这一个维度，不要大幅改动其他部分\n- 不要改变产品/优惠本身，只优化表达方式\n- 保持30-45秒循环结构：每个循环是 强Hook→卖点深度介绍→社交证明→CTA+价格 的完整闭环\n")
 
     if locked_constraints:
         parts.append("- 以下已锁定要素必须保留：\n")
@@ -129,7 +129,7 @@ def build_rewrite_prompt(script: str, static_scores: dict[str, int], locked_cons
             parts.append(f"- {c['element']}\n")
 
     parts.append(f"\n## 当前脚本\n{script}\n")
-    parts.append("\n## 要求\n- 按15-30秒循环结构重组：每个循环 = Hook(3-5秒) → 一个卖点+价格锚(8-15秒) → 社交证明(3-5秒) → CTA(3-5秒)\n- 每个循环只聚焦一个卖点，多个卖点分布在不同循环中\n- 每个循环自成一体，新观众从任何位置进入15-30秒内可获得完整推销\n- 保留所有锁定要素\n- 不改变产品/优惠本身\n- 输出完整脚本")
+    parts.append("\n## 要求\n- 按30-45秒循环结构重组：每个循环 = Hook(3-5秒) → 卖点深度介绍(15-22秒) → 社交证明(3-5秒) → CTA+价格(8-13秒)\n- 每个循环只聚焦一个卖点并用数据/场景/原理/对比说透，多个卖点分布在不同循环中\n- 每个循环自成一体，新观众从任何位置进入30-45秒内可获得完整推销\n- CTA 简洁明确即可，不要高频重复逼单\n- 保留所有锁定要素\n- 不改变产品/优惠本身\n- 输出完整脚本")
     return "".join(parts)
 
 
@@ -326,7 +326,7 @@ def build_dedupe_improvement(base_prompt: str, avg_rep_ratio: float,
     parts.append("## 硬性约束\n")
     parts.append("- 保留所有产品信息、价格、优惠细节（这些必须一致）\n")
     parts.append("- 脚本用于AI数字人直播+TTS朗读，纯口播，无旁白/动作指示\n")
-    parts.append("- 保持15-30秒循环结构\n")
+    parts.append("- 保持30-45秒循环结构\n")
     parts.append("- 提示词中必须包含完整的基准脚本，不能用占位符\n")
     if locked_constraints:
         parts.append("- 以下已锁定指令必须保留：\n")

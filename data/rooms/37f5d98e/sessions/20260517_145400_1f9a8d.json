@@ -1,0 +1,48 @@
+{
+  "id": "20260517_145400_1f9a8d",
+  "timestamp": "2026-05-16 19:00:00",
+  "script": "Pernah tak korang rasa semak gila bila tisu bersepah atas meja? Gantung je Royo Panda ni kat dinding guna hook percuma yang sis bagi. Ruang tamu terus nampak kemas dan teratur. Takkan korang sanggup bayar dua puluh sembilan ringgit sembilan puluh sembilan sen kat kedai luar tu? Grab laju-laju kat troli kuning belah kiri tu sementara masih ada.\n\nJangan biarkan kulit muka korang pedih sebab pakai tisu kasar sangat. Tukar sekarang dekat tisu buluh yang lembut macam kusyen udara ni. Rasa dia memang manja habis kat kulit. Biasa harga cecah puluh-puluh tapi harini sis bagi harga jatuh menjunam gila. Klik je beg kuning tu sekarang sebelum stok kena rembat orang lain.\n\nSakit hati betul kan bila tisu baru kena air terus hancur berkecai? Pakai yang ni sebab dia jenis tebal dan susah nak koyak. Lap tangan basah-basah pun still tak hancur tau. Lupakan pasal harga dua puluh sembilan ringgit sembilan puluh sembilan sen tu, harini punya harga memang paling jimat poket. Checkout terus kat bakul kuning tu sebab promo ni kejap je.\n\nRamai tak tahu sebenarnya beli borong dua belas pek macam ni jauh lebih untung. Korang dapat stok banyak terus, pakai la puas-puas satu famili untuk sebulan. Kualiti premium tahap hotel tapi harga harini betul-betul macam harga kawan-kawan je. Suami pun dah tak bising sebab stok tisu sentiasa ada kat dapur. Sambar terus kat beg kuning tu sekarang sementara kilang belum tukar harga.",
+  "metrics": {
+    "ctr": 3.42,
+    "dwell_time": 8.0,
+    "gmv": 162.67,
+    "order_volume": 7.0,
+    "follow_rate": 0.28,
+    "views": 735.0,
+    "impressions": 5100.0,
+    "roi": 5.77
+  },
+  "room_id": "37f5d98e",
+  "prompt": "",
+  "notes": "API: hc3z7a5 room=7640442798549895954 seq=203",
+  "llm_analysis": "",
+  "locked_elements": [],
+  "static_scores": {
+    "hook": 3.9,
+    "product_demo": 4.8,
+    "golden_loop": 2.3,
+    "closing": 2.9,
+    "pacing": 7.8,
+    "pain_points": 3.9,
+    "price_anchor": 2.2,
+    "reentry": 3.3
+  },
+  "static_total": 18.2,
+  "effect_scores": {
+    "ctr": 10.0,
+    "dwell_time": 3.9
+  },
+  "effect_total": 41.7,
+  "total_score": 59.9,
+  "rubric_reasoning": {
+    "hook": "[片段1] 前3秒直接用桌上纸巾散乱的具体痛点提问，有较强停留理由，但冲击力和利益承诺还不算满分。 | [片段2] 开头是半句内容，只有“kemas dan teratur”的结果描述，没有强Hook或明确留下理由。 | [片段3] 开头是半截CTA，缺少明确利益承诺或强痛点Hook，新进用户3秒内不容易理解为什么要留下。 | [片段4] 开头直接描述柔软感，但不是强Hook，没有痛点、利益承诺或反常识信息，3秒内吸引力较弱。 | [片段5] 开头只听到残句“menjunam gila”，有降价刺激但上下文缺失，3秒内不够完整明确。 | [片段6] 开头是截断词“rkecai?”，虽可能涉及纸巾易碎痛点，但不完整，3秒内Hook不够清晰。 | [片段7] 开头是截断的价格片段，虽有低价信号，但没有明确强Hook或完整利益承诺。 | [片段8] 有“Ramai tak tahu”制造一点反常识兴趣，并提到批发更划算，但开头是残句“ap je.”，前3秒价值信号不够完整。 | [片段9] 开头是截断内容，'untuk sebulan' 信息不完整，前3秒没有明确强Hook，只隐约有价格/周期信息。 | [片段10] 开头是半句延续内容，没有强Hook、数据、提问或明确利益点，新观众3秒内难以被吸引。",
+    "product_demo": "[片段1] 只聚焦一个卖点：挂墙解决桌面杂乱，听众能快速理解价值；但缺少数字、对比或更具体场景说明。 | [片段2] 只提到整齐有序这一点，但没有说明产品是什么，也缺少具体场景或支撑。 | [片段3] 只提到脸部刺痛这一问题，没有说明具体产品、核心卖点或解决方式，卖点不完整。 | [片段4] 基本聚焦在竹纤维纸巾柔软这一单点卖点，有触感比喻，但缺少数字、场景或对比支撑。 | [片段5] 没有清楚说明产品和单一卖点，只能推测在讲价格或库存，价值支撑不足。 | [片段6] 基本聚焦一个卖点：厚、不容易破，且用湿手擦的场景说明，卖点较具体。 | [片段7] 基本只聚焦价格便宜这一点，但没有说明产品是什么，也没有具体场景或支撑。 | [片段8] 基本只聚焦“买12包装更划算”一个卖点，但缺少具体数字、场景或对比说明，价值没有说透。 | [片段9] 主要围绕酒店级品质和便宜价格两个点，卖点较集中但表达偏抽象，缺少具体材质、场景或数字支撑。 | [片段10] 只暗示适合厨房常备，但没有说明具体产品和单一卖点价值，缺少数字、场景或对比支撑。",
+    "golden_loop": "[片段1] 片段有Hook和单一Benefit，但没有价格和CTA，不构成完整Hook→Benefit→Price→CTA闭环。 | [片段2] 片段明显依赖前文，不具备独立的Hook、卖点、价格、CTA闭环结构。 | [片段3] 片段不像完整15-30秒闭环，缺少清晰的Hook、卖点说明、价格信息和完整收束。 | [片段4] 片段不是完整闭环，只有卖点描述和不完整价格开头，没有Hook→卖点→价格→CTA结构。 | [片段5] 包含CTA和稀缺感，但缺少完整Hook、产品说明、卖点和价格闭环。 | [片段6] 只是连续口播中的一个卖点片段，没有完整Hook、价格和CTA闭环。 | [片段7] 片段只有价格和不完整CTA，缺少完整Hook→卖点→价格→CTA闭环。 | [片段8] 片段不是完整闭环，只有卖点开头，没有明确价格、CTA或完整结构，新用户听到后无法形成购买决策。 | [片段9] 片段不是完整闭环，没有清晰的Hook、Benefit、Price、CTA结构，用户从中间进入理解有限。 | [片段10] 片段只有简单CTA和涨价暗示，没有完整Hook→卖点→价格→CTA闭环，且依赖前文理解。",
+    "closing": "[片段1] 完全没有点击路径、下单指引、紧迫感或稀缺性。 | [片段2] 没有任何明确点击路径、购买指令、紧迫感或稀缺性。 | [片段3] 有较具体的点击路径信号“troli kuning belah kiri”和稀缺感“sementara masih ada”，但表达像半截句，行动指令不够完整。 | [片段4] 没有任何明确CTA，也没有点击路径、限时或稀缺信息。 | [片段5] 有明确点击路径“beg kuning”和紧迫感“stok kena rembat orang lain”，CTA较强。 | [片段6] 没有任何点击路径、购买指令、限时或稀缺信息。 | [片段7] 只有截断的“Checkou”，没有具体点击路径，也没有明确紧迫感或稀缺性。 | [片段8] 没有任何明确行动号召，也没有点击路径、限时或稀缺信息。 | [片段9] 没有任何明确CTA，也没有点击路径、限时或稀缺提醒。 | [片段10] 有明确行动指令“beg kuning”并带有工厂未调价的紧迫感，但路径不够完整，未说明点击位置。",
+    "pacing": "[片段1] 句子短，信息密度高，没有废话或冗余过渡，适合TTS快速传达。 | [片段2] 句子较短，口播节奏不拖沓，但信息量有限。 | [片段3] 句子短，信息密度较高，没有明显废话或填充词，适合TTS快节奏口播。 | [片段4] 句子短，信息密度尚可，没有明显废话或冗长铺垫，适合TTS快速朗读。 | [片段5] 句子短，节奏快，几乎没有废话，适合TTS快速推动行动。 | [片段6] 句子短，信息密度较高，没有明显废话，适合TTS快速朗读。 | [片段7] 句子短，信息直接，没有明显废话，TTS节奏较紧凑。 | [片段8] 句子较短，信息推进相对直接，没有明显冗长填充，但内容被截断，信息密度有限。 | [片段9] 句子较短，信息密度尚可，没有明显废话或填充词，但内容被截断影响效率。 | [片段10] 句子短，信息密度较高，没有明显废话或填充词，TTS节奏较紧凑。",
+    "pain_points": "[片段1] 前5秒明确戳中纸巾散落、桌面凌乱的具体痛点，并立刻给出挂墙解法。 | [片段2] 隐约涉及杂乱需要整理的痛点，但表达不完整，前5秒不够直接具体。 | [片段3] 提到“kulit muka pedih”是具体可感知痛点，但出现前有CTA干扰，且没有在一句话内完成痛点到解法的过渡。 | [片段4] 没有直接点出具体痛点，例如粗糙、擦脸刺痛、敏感肌不适等，只是在描述舒适感。 | [片段5] “Sakit hati”有情绪痛点，但不具体，也没有直接说明产品如何解决。 | [片段6] 有触及湿手擦拭、容易破的具体痛点，但开头被截断，新观众未必能立刻理解。 | [片段7] “jimat poket”暗示省钱，但痛点较泛，前5秒没有具体可感知的问题。 | [片段8] 没有直接击中具体痛点，只是泛泛说买批发更划算，未描述用户正在面临的成本或用量问题。 | [片段9] 没有具体痛点描述，未在前5秒指出用户问题或需求。 | [片段10] 没有在前5秒击中具体痛点，只说厨房常备，痛点不明确，也没有清晰痛点到解法的过渡。",
+    "price_anchor": "[片段1] 没有任何价格信息，也没有原价、竞品价或直播价对比。 | [片段2] 出现了RM29.90价格，但没有原价、竞品价或价值对比，超值感不足。 | [片段3] 完全没有价格、原价、直播价或对比锚点，无法形成超值感。 | [片段4] 出现“Biasa harga”但内容被截断，没有完整原价、直播价或价格对比，无法形成超值感。 | [片段5] 暗示价格暴跌，但没有明确原价、直播价或对比基准，超值感不完整。 | [片段6] 完全没有价格、原价、竞品价或超值对比。 | [片段7] 有当前价格信息，但没有原价、竞品价或其他对比锚点。 | [片段8] 没有具体价格、原价、直播价或竞品对比，无法建立超值感。 | [片段9] 有'harga harini'和'harga kawan-kawan'的低价暗示，但没有明确原价、竞品价或具体价格对比。 | [片段10] 提到工厂还没改价，制造价格紧迫感，但没有原价、直播价或竞品价格对比，无法形成明确超值感。",
+    "reentry": "[片段1] 开头直接说明痛点并提到Royo Panda，新进入观众基本能立刻理解在卖什么和解决什么问题。 | [片段2] 新观众从这里进入不知道产品是什么，也不知道前文语境，理解成本较高。 | [片段3] 没有产品名或当前主题重置，新进入用户只能听到购物车和皮肤刺痛，难以判断在卖什么。 | [片段4] 能听出是在讲竹纤维纸巾和柔软卖点，但开头像承接前文，新进用户仍可能缺少完整上下文。 | [片段5] 新观众进入时不知道具体产品、优惠内容和前文语境，理解依赖前一句。 | [片段6] 没有明确产品名或上下文重置，用户从这里进入只能猜测是在讲纸巾或擦手用品。 | [片段7] 新观众从这里进入不知道产品是什么，且开头为截断词，强依赖前文。 | [片段8] 没有产品名，且使用“macam ni”依赖画面或前文，开头还有残句，新进入观众难以立即理解具体商品。 | [片段9] 没有重新说明产品名或当前话题，且开头被截断，新进入观众难以立即理解在卖什么。 | [片段10] 没有重新提及产品名或当前主题，新进入观众不知道卖的是什么，存在明显上下文缺失。"
+  },
+  "scorer_model": "openai/gpt-5.5"
+}

@@ -23,3 +23,7 @@ data/sessions/
 snow/
 gemini-batch-6-1776771271546/
 越南ph/
+
+# Build output
+dist/
+python/

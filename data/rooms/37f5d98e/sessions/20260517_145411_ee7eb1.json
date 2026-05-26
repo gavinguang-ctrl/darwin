@@ -1,0 +1,48 @@
+{
+  "id": "20260517_145411_ee7eb1",
+  "timestamp": "2026-05-14 08:00:00",
+  "script": "Rahsia dapur Sis nampak kemas memanjang sebenarnya senang je. Gantung je tisu Royo Panda ni kat dinding guna hook percuma yang kita bagi. Ruang sempit pun nampak luas sebab tak bersepah atas meja. Memang nampak eksklusif gila. Daripada korang pergi bayar dua puluh sembilan ringgit sembilan puluh sembilan sen kat pasar raya. Baik grab laju-laju kat beg kuning bawah tu sebab harga tengah junam sekarang.\n\nPernah tak korang rasa pedih muka lepas lap guna tisu biasa? Korang wajib tukar pakai tisu buluh air cushion ni sekarang juga. Tekstur dia lembut macam awan, memang manjakan kulit muka korang. Tak ada lagi rasa kasar atau kulit merah-merah lepas ni. Kualiti taraf hotel lima bintang macam ni selalunya kena bayar dua puluh sembilan ringgit sembilan puluh sembilan sen tau. Tapi harini harga kita bagi memang tak masuk akal murahnya. Klik cepat troli kuning kat situ sebelum kuota habis.\n\nSakit hati kan bila tengah lap meja tiba-tiba tisu hancur berkecai? Pakai tisu Royo Panda ni, tebal dan tak mudah koyak walaupun kena air banyak. Serap air memang laju, guna sekeping pun dah cukup lap tangan. Memang jimat sangat sebab kualiti dia sangat padu. Lupakan pasal harga dua puluh sembilan ringgit sembilan puluh sembilan sen yang mahal tu. Sambar terus kat bakul kuning sekarang sementara kilang tengah baik hati bagi diskaun.\n\nJangan bazir duit lagi beli tisu yang sikit-sikit tiap kali keluar barang dapur. Borong terus set dua belas pek ni, memang puas hati pakai lama untuk satu rumah. Stok banyak macam ni baru la tenang sikit hati tak payah fikir nak beli lagi. Tunggu je abang kurier hantar kotak besar depan pagar rumah korang nanti. Ikutkan harga asal memang dua puluh sembilan ringgit sembilan puluh sembilan sen. Tapi harini korang checkout kat beg kuning belah kiri tu dengan harga menjerit punya murah. Cepat tau sebelum stok licin.",
+  "metrics": {
+    "ctr": 0.57,
+    "dwell_time": 12.0,
+    "gmv": 0.0,
+    "order_volume": 0.0,
+    "follow_rate": 0.81,
+    "views": 114.0,
+    "impressions": 680.0,
+    "roi": 0.0
+  },
+  "room_id": "37f5d98e",
+  "prompt": "",
+  "notes": "API: hc3z7a5 room=7639530461962455826 seq=101",
+  "llm_analysis": "",
+  "locked_elements": [],
+  "static_scores": {
+    "hook": 3.7,
+    "product_demo": 4.2,
+    "golden_loop": 2.2,
+    "closing": 2.4,
+    "pacing": 7.2,
+    "pain_points": 3.5,
+    "price_anchor": 1.6,
+    "reentry": 3.2
+  },
+  "static_total": 16.3,
+  "effect_scores": {
+    "ctr": 1.4,
+    "dwell_time": 5.5
+  },
+  "effect_total": 20.7,
+  "total_score": 37.0,
+  "rubric_reasoning": {
+    "hook": "[片段1] 开头用“厨房一直看起来整洁的秘密”作为利益承诺，有一定吸引力，但冲击力不强，未在3秒内制造强痛点或紧迫感。 | [片段2] 开头有“nampak eksklusif gila”的价值信号，但偏抽象，不是强痛点、强利益或反常识Hook，3秒内留人力度有限。 | [片段3] 前3秒有具体痛点提问，能抓住有类似经历的观众，但开头有残缺词句，冲击力不够完整。 | [片段4] 开头是截断句，缺少明确强Hook；虽很快提到皮肤粗糙、泛红，但不是完整的3秒吸引点。 | [片段5] 前3秒有“价格不合理地便宜”的利益信号，但以“Tapi”承接前文开头，Hook不完整，缺少明确产品和强冲击信息。 | [片段6] 开头是半截句子，只有产品描述，没有强力Hook、利益承诺或反常识信息，3秒内吸引力弱。 | [片段7] 开头直接是价格残句，没有明确震撼点、利益承诺或痛点，3秒内缺少强Hook。 | [片段8] 开头是截断句，虽然提到每次买厨房用品都要买纸巾的场景，但前3秒没有强力利益承诺或明确Hook。 | [片段9] 开头是截断句，3秒内没有明确利益、痛点或反常识Hook，新观众缺少留下理由。 | [片段10] 开头直接让用户去结账，没有明确震撼利益、痛点或反常识Hook，3秒内留下理由较弱。",
+    "product_demo": "[片段1] 基本聚焦在一个卖点：把Royo Panda纸巾挂在墙上让厨房更整洁，但说明较浅，缺少具体场景、对比或完整价值解释。 | [片段2] 片段主要围绕外观高级感和价格对比，卖点相对单一，但缺少产品信息和具体支撑。 | [片段3] 只聚焦在普通纸巾导致脸部刺痛这一点，但产品名称和具体解决卖点未完整出现，价值说明不足。 | [片段4] 主要围绕不粗糙、不泛红和酒店级品质，但卖点支撑不足，且略有堆叠。 | [片段5] 片段基本只围绕价格便宜和点击购物车，没有堆砌卖点，但也没有具体说明产品价值、数字或使用场景。 | [片段6] 主要围绕纸巾厚、不易破、吸水快，卖点相关但略有堆叠，缺少数字、场景或对比支撑。 | [片段7] 片段只提到价格和购买动作，没有说明产品是什么，也没有聚焦并说透任何具体卖点。 | [片段8] 基本只围绕一次囤12包纸巾这个卖点，方向单一，但缺少更具体的价值说明和数字对比。 | [片段9] 只提到等快递送大箱子，隐约有配送场景，但没有明确产品或具体卖点支撑。 | [片段10] 主要只强调价格便宜，卖点单一但缺少具体产品、数字、场景或对比支撑。",
+    "golden_loop": "[片段1] 片段不是完整闭环，只有Hook和部分卖点，没有价格、CTA，也没有形成15-30秒独立循环结构。 | [片段2] 没有形成完整的Hook→卖点→价格→CTA闭环，只是连续话术中的一小段。 | [片段3] 片段不是完整闭环，只有痛点和未说完的转化，没有价格、CTA或完整Benefit结构。 | [片段4] 只是连续叙述片段，没有完整Hook→卖点→价格→CTA闭环。 | [片段5] 能看到价格刺激和CTA，但缺少完整Hook、产品说明、卖点展开和清晰闭环，且片段明显依赖前后文。 | [片段6] 片段不是完整闭环，没有Hook、价格和CTA，像连续话术中间部分，新观众难以获得完整推销信息。 | [片段7] 不是完整闭环，缺少清晰Hook、产品卖点、价格价值说明和完整CTA，明显依赖前文。 | [片段8] 片段不是完整闭环，只有痛点和囤货建议，没有价格、CTA或完整的Hook到转化结构。 | [片段9] 不是完整独立循环，没有Hook、卖点、价格和CTA，且明显依赖前文。 | [片段10] 包含CTA和紧迫感，但缺少完整的Hook、产品说明和明确价格，闭环不完整。",
+    "closing": "[片段1] 完全没有行动号召，没有点击路径、限时限量或任何促单信息。 | [片段2] 片段内完全没有明确CTA，也没有点击路径、限时或稀缺提示。 | [片段3] 没有任何明确CTA、点击路径或紧迫感。 | [片段4] 完全没有点击路径、购买指令或紧迫感。 | [片段5] 有明确路径提示“Klik cepat troli kuning”，并带有“快速点击”的紧迫感，但缺少明确稀缺数量或时间限制，且句子被截断。 | [片段6] 完全没有行动号召，也没有点击路径、限时或稀缺提醒。 | [片段7] 有类似CTA的“Sambar terus kat bak”，但路径不够完整，也没有紧迫感或稀缺性。 | [片段8] 完全没有明确行动号召，也没有点击路径、限时限量等紧迫感。 | [片段9] 没有任何明确点击路径、购买指令、紧迫感或稀缺性。 | [片段10] 有较明确点击路径“beg kuning belah kiri”和库存紧迫感，CTA较强，但表达略截断。",
+    "pacing": "[片段1] 句子较短，口语化，信息推进快，适合TTS朗读，冗余较少。 | [片段2] 句子较短，口语化强，信息推进较快，没有明显冗长铺垫。 | [片段3] 句子较短，口语化直接，信息密度尚可，但片段残缺影响连贯性。 | [片段4] 句子较短，信息密度尚可，没有明显填充词。 | [片段5] 句子短，信息密度较高，没有明显废话，适合TTS快速推动行动。 | [片段6] 句子较短，信息密度尚可，没有明显废话，但片段被截断，表达不完整。 | [片段7] 句子很短，信息密度尚可，没有明显冗余填充，但内容本身信息不足。 | [片段8] 句子较短，口播节奏不拖沓，信息密度尚可，但内容不完整。 | [片段9] 句子较短，TTS节奏不算拖沓，但信息量很低且内容截断。 | [片段10] 句子短，信息密度较高，基本无废话，适合TTS快节奏口播。",
+    "pain_points": "[片段1] 隐含痛点是厨房不够整洁或纸巾摆放不方便，但没有直接点出具体困扰，痛点感知不够强。 | [片段2] 隐含了‘不要多花钱’的痛点，但前5秒主要在说外观高级，痛点不够直接具体。 | [片段3] 前5秒直接提到擦普通纸巾后脸会刺痛，痛点具体且可感知，与纸巾类产品强相关。 | [片段4] 前5秒内提到粗糙和皮肤红红，痛点具体且与产品可能相关，但解法表达不完整。 | [片段5] 没有具体痛点描述，也没有痛点到解决方案的过渡。 | [片段6] 没有直接点出具体痛点，只隐含纸巾遇水易破、吸水慢的问题，前5秒痛点不够明确。 | [片段7] 没有任何具体痛点描述，也没有痛点到解决方案的过渡。 | [片段8] 有触及每次买厨房用品都要顺手买纸巾的麻烦感，痛点较具体，但表达被截断，冲击力一般。 | [片段9] 前5秒没有具体痛点，也没有痛点到解决方案的转化。 | [片段10] 没有具体痛点描述，也没有痛点到解决方案的过渡。",
+    "price_anchor": "[片段1] 没有任何价格信息，也没有原价、竞品价或直播价对比。 | [片段2] 出现了竞品或外部价格“二十九令吉九十”的开头，但直播价或完整对比未出现，价格锚点不完整。 | [片段3] 完全没有价格、原价、直播价或任何对比锚点。 | [片段4] 没有任何价格、原价、直播价或对比锚点。 | [片段5] 只说价格很便宜，没有原价、竞品价、直播价或任何价格对比锚点。 | [片段6] 没有任何价格信息，也没有原价、竞品价或直播价对比。 | [片段7] 只出现RM29.99当前价格，没有原价、竞品价或价值对比，无法形成超值感。 | [片段8] 没有任何价格信息，也没有原价、竞品价或日均成本对比。 | [片段9] 完全没有价格、原价、直播价或对比锚点。 | [片段10] 只说价格很便宜，没有具体价格、原价或竞品价对比，无法形成清晰价格锚点。",
+    "reentry": "[片段1] 开头自然说明当前话题是厨房整洁，并提到Royo Panda产品，新进观众基本能理解，但产品用途表达被截断，完整度不足。 | [片段2] 没有重新说明产品是什么，新进入观众只听到‘看起来高级’，上下文不足。 | [片段3] 新观众能大致理解在讲普通纸巾刺激脸部的问题，但产品名和当前销售对象没有完整重置。 | [片段4] 新观众无法立即知道具体产品是什么，开头还像是承接前文。 | [片段5] 没有产品名或当前话题重置，并以“Tapi”开头，强烈依赖前文，新进观众难以立即理解在卖什么。 | [片段6] 提到了产品名和当前卖点，新观众大致能知道在讲纸巾质量，但开头是截断句，上下文重置不完整。 | [片段7] 新观众无法知道产品是什么、为什么买，片段像从中间截断，缺少上下文重置。 | [片段8] 新观众能大致听出在讲纸巾和12包装，但开头明显承接前文，缺少完整上下文重置。 | [片段9] 没有产品名和上下文重置，开头还是残句，新进入观众难以理解正在卖什么。 | [片段10] 新进用户能听懂要点是点击黄色购物袋，但不知道具体产品是什么，上下文重置不足。"
+  },
+  "scorer_model": "openai/gpt-5.5"
+}

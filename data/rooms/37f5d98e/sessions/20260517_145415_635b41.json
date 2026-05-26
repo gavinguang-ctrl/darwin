@@ -1,0 +1,48 @@
+{
+  "id": "20260517_145415_635b41",
+  "timestamp": "2026-05-13 17:00:00",
+  "script": "Asyik kena topup tisu setiap minggu? Penat kan bila asyik habis saja? Sayang kena cuba set Royo Panda ni. Sis bagi terus dua belas pek besar sekali jalan. Tak payah pening kepala nak beli banyak kali lagi. Memang jimat teruk untuk bajet dapur korang. Saiz dia pun ngam seratus tujuh puluh milimeter. Puas hati sangat guna hari-hari. Sambar kat beg kuning sekarang. Laju sikit sebelum harga promo ni hilang.\n\nKenapa lap muka tapi rasa macam kena gosok kertas pasir? Kesian kulit tu kalau kasar sangat sayang. Tukar ke tisu bamboo pulp ni cepat. Tekstur air cushion dia memang lembut macam sutera. Sesuai sangat untuk korang yang jaga kulit muka. Tak perlu risau kulit rasa pedih lagi. Ramai dah jatuh cinta dengan kelembutan dia tau. Tekan troli kuning bawah tu. Grab terus waktu harga tengah junam ni.\n\nMeja makan penuh dengan kotak tisu sampai tak ada ruang? Sakit mata tengok bila bersepah kan. Cuba pakai jenis gantung macam ni. Sangkut saja kat dinding terus nampak kemas satu rumah. Nak guna pun senang, tarik-tarik saja terus dapat. Walaupun dua lapis tapi liat tau. Tak mudah hancur kalau terkena air sikit. Memang memudahkan kerja rumah korang. Cek bakul kuning sekarang juga. Stok tengah laku keras ni sayang.\n\nMana lagi nak dapat tisu kualiti padu tapi harga mampu milik? Royo Panda ni memang juara kalau bab nak berjimat. Dapat terus dua belas bungkus untuk stok satu famili. Guna kat dapur boleh, buat lap tangan pun boleh sangat. Kualiti dia memang buat korang rasa berbaloi sangat. Sesuai untuk kegunaan harian yang lebih praktikal. Memang pilihan bijak untuk keselesaan seisi rumah. Produk ini adalah barangan keperluan harian rumah, tidak boleh dimakan.",
+  "metrics": {
+    "ctr": 3.22,
+    "dwell_time": 14.0,
+    "gmv": 61.53,
+    "order_volume": 3.0,
+    "follow_rate": 0.0,
+    "views": 338.0,
+    "impressions": 1070.0,
+    "roi": 15.74
+  },
+  "room_id": "37f5d98e",
+  "prompt": "",
+  "notes": "API: hc3z7a5 room=7639298593312230151 seq=24",
+  "llm_analysis": "",
+  "locked_elements": [],
+  "static_scores": {
+    "hook": 3.5,
+    "product_demo": 4.3,
+    "golden_loop": 1.5,
+    "closing": 1.8,
+    "pacing": 7.3,
+    "pain_points": 3.8,
+    "price_anchor": 1.2,
+    "reentry": 3.2
+  },
+  "static_total": 15.3,
+  "effect_scores": {
+    "ctr": 8.8,
+    "dwell_time": 6.3
+  },
+  "effect_total": 45.3,
+  "total_score": 60.6,
+  "rubric_reasoning": {
+    "hook": "[片段1] 开头直接用频繁补纸巾的痛点提问，前3秒有明确停留理由，但冲击力不算特别强。 | [片段2] 开头是承接前文的半句话，没有明确震撼点、利益承诺或强Hook，新观众3秒内难以被抓住。 | [片段3] 开头是断句式内容，只有促销即将消失的弱紧迫感，没有明确强Hook，新观众3秒内难以理解价值。 | [片段4] 开头没有明确强Hook，只是描述材质，3秒内缺少痛点、利益承诺或反常识信息。 | [片段5] 开头是承接前文的半句话，没有明确Hook、利益承诺或痛点，新进观众3秒内难以理解价值。 | [片段6] 开头直接提到“bersepah”有一定痛点感，但表达较弱且像承接前文，缺少强利益承诺或反常识钩子。 | [片段7] 开头是半句承接，没有明确震撼点、利益承诺或痛点直击，3秒内吸引力弱。 | [片段8] 开头用反问直接抛出'高质量但价格可负担'的利益点，3秒内有留下理由，但冲击力和具体性不足。 | [片段9] 开头直接承接前文场景，没有强Hook、利益承诺或痛点信号，新观众3秒内缺少留下理由。 | [片段10] 片段开头是残缺句子，没有震撼信息、利益承诺或痛点，3秒内缺乏留下理由。",
+    "product_demo": "[片段1] 基本聚焦在纸巾很快用完这一单点，但没有具体说明产品卖点、数量、耐用性或对比价值。 | [片段2] 主要提到省厨房预算和尺寸合适，但卖点不够集中，也缺少数字、场景或具体对比支撑。 | [片段3] 片段大致围绕擦脸不舒服这一痛点，但没有明确产品卖点、数字、场景对比或具体支撑。 | [片段4] 基本聚焦在bamboo pulp和柔软触感这一卖点，但表达偏抽象，没有数字、场景或对比支撑。 | [片段5] 只提到“kelembutan”这种抽象卖点，没有具体产品名、场景、数字或对比支撑。 | [片段6] 基本聚焦一个卖点：挂墙收纳、减少凌乱，场景清楚，但缺少数字、对比或更具体价值说明。 | [片段7] 基本聚焦在耐用、防水、不易破这个卖点，但缺少数字、具体场景或对比支撑。 | [片段8] 聚焦在纸巾质量和价格实惠，但只停留在'kualiti padu'、'harga mampu milik'等抽象表达，没有数字、场景或对比支撑。 | [片段9] 主要提到可用于厨房和擦手，偏向一个使用场景卖点，但同时带有泛泛的质量夸奖，缺少数字、对比或具体支撑。 | [片段10] 只提到家庭舒适和日常家居必需品，卖点较抽象，没有具体数字、场景或对比支撑。",
+    "golden_loop": "[片段1] 片段只有痛点和初步引出产品，没有形成Hook→Benefit→Price→CTA的完整闭环。 | [片段2] 片段不是完整的15-30秒销售闭环，没有Hook、价格和CTA，明显依赖上下文。 | [片段3] 没有形成完整Hook→卖点→价格→CTA闭环，且像是从上一段中间截入，结构不独立。 | [片段4] 片段不是完整闭环，没有Hook、价格和CTA，用户从这里进入无法形成完整购买决策。 | [片段5] 片段不是完整闭环，缺少清晰的Hook和完整卖点说明，仅有简单CTA和模糊价格提示。 | [片段6] 片段只有痛点和简单解决方式，没有完整的Hook→Benefit→Price→CTA闭环。 | [片段7] 没有形成完整的Hook→卖点→价格→CTA闭环，更像连续话术中的一个片段。 | [片段8] 片段不像完整15-30秒闭环，只有Hook和卖点开头，没有完整Benefit、Price和CTA结构。 | [片段9] 只是连续话术中的片段，没有完整Hook、卖点、价格和CTA闭环，新观众从这里进入难以获得完整推销信息。 | [片段10] 不是完整的15-30秒销售闭环，缺少Hook、价格和CTA，且内容明显像连续叙述的一部分。",
+    "closing": "[片段1] 没有任何明确行动号召，也没有点击路径、限时或稀缺信息。 | [片段2] 完全没有行动号召，没有点击路径，也没有限时、限量等紧迫感。 | [片段3] 有催促和促销即将消失的紧迫感，但点击路径不清晰，CTA不完整。 | [片段4] 完全没有行动号召，也没有点击路径、限时或稀缺信息。 | [片段5] 有明确点击路径“Tekan troli kuning bawah tu”，并有“harga tengah”带一点紧迫感，但稀缺性和时间/数量信息不明确。 | [片段6] 没有任何明确行动号召，也没有点击路径、限时或稀缺提示。 | [片段7] 完全没有行动号召，也没有点击路径、限时或稀缺信息。 | [片段8] 没有任何明确行动号召，也没有点击路径、限时或稀缺信息。 | [片段9] 没有任何明确行动号召，也没有点击路径、限时限量或紧迫感。 | [片段10] 片段中没有任何明确行动号召，也没有点击路径、限时或稀缺信息。",
+    "pacing": "[片段1] 句子短，口播节奏紧凑，没有明显废话或填充词。 | [片段2] 句子较短，信息密度尚可，没有明显废话，但内容推进有限。 | [片段3] 句子短，信息密度较高，TTS节奏不拖沓，几乎没有填充废话。 | [片段4] 句子较短，没有明显废话或填充词，TTS节奏相对紧凑。 | [片段5] 句子较短，TTS节奏不拖沓，但信息量有限，部分表达不完整。 | [片段6] 句子短，信息密度尚可，适合TTS朗读，冗余较少。 | [片段7] 句子较短，信息表达直接，TTS朗读节奏相对紧凑，冗余较少。 | [片段8] 句子短，口播节奏紧凑，没有明显废话或填充词，但信息量有限。 | [片段9] 句子较短，口播节奏相对紧凑，废话不多，但信息密度有限，缺少推动行动的信息。 | [片段10] 句子不算特别冗长，但信息密度一般，且片段残缺导致表达推进有限。",
+    "pain_points": "[片段1] 前5秒清楚击中每周都要补纸巾、纸巾很快用完的具体痛点，和产品关联直接。 | [片段2] 有触及厨房预算压力这一痛点，但表达较弱，且没有在前5秒内形成清晰痛点到解决方案的闭环。 | [片段3] 后半句有具体痛点：擦脸像被磨，但出现较晚且没有立刻连接到解决方案。 | [片段4] 前5秒没有具体痛点描述，也没有痛点到解决方案的快速过渡。 | [片段5] 前5秒没有具体痛点描述，也没有痛点到产品解决方案的直接过渡。 | [片段6] 前5秒能听到具体痛点“bersepah”，并马上给出挂墙方案，痛点与产品关联直接。 | [片段7] 提到遇水不易坏和方便家务，但没有在前5秒明确戳中具体痛点。 | [片段8] 前5秒触及了消费者想要质量好但价格低的需求，但痛点不够具体，例如没有提到纸巾薄、易破、用得快等可感知问题。 | [片段9] 没有具体痛点描述，也没有痛点到解决方案的快速转化。 | [片段10] 没有具体痛点描述，未指出用户面临的可感知问题，也没有痛点到解决方案的快速过渡。",
+    "price_anchor": "[片段1] 完全没有价格、原价、直播价或任何价格对比信息。 | [片段2] 没有任何价格、原价、直播价或竞品对比，无法建立超值感。 | [片段3] 只提到promo价格会消失，没有原价、直播价或竞品价对比，无法形成价格锚点。 | [片段4] 没有任何价格信息或价格对比，无法建立超值感。 | [片段5] 提到价格正在下降或优惠，但没有原价、直播价或竞品价对比，无法形成清晰价格锚点。 | [片段6] 完全没有价格、原价、直播价或任何对比锚点。 | [片段7] 没有任何价格、原价、直播价或竞品对比信息。 | [片段8] 没有具体价格，也没有原价、竞品价或直播价对比，无法建立超值感。 | [片段9] 完全没有价格、原价、直播价或竞品对比，无法建立超值感。 | [片段10] 完全没有价格、原价、直播价或竞品对比，无法建立超值感。",
+    "reentry": "[片段1] 新观众能理解是在讲纸巾消耗问题，但产品名出现较晚且信息不完整，当前商品上下文不够清晰。 | [片段2] 没有重新说明产品是什么，开头还像前文延续，新进入观众难以立即理解当前商品和话题。 | [片段3] 没有产品名和完整上下文，开头断裂，新进观众很难立刻知道正在卖什么。 | [片段4] 提到bamboo pulp和质感，但没有清楚说明具体产品是什么，且使用'dia'依赖前文，新进用户理解有限。 | [片段5] 没有重新说明产品名或当前话题，且开头依赖前文，新进入观众难以立即理解在卖什么。 | [片段6] 新观众能大致理解是在讲收纳，但没有产品名，且“macam ni”依赖画面或前文，纯口播下上下文不足。 | [片段7] 没有产品名和上下文重置，且以'pun'开头明显依赖前文，新进观众难以立即理解。 | [片段8] 开头自然提到产品类型和Royo Panda，新进入观众基本能理解在讲纸巾产品。 | [片段9] 没有重新说明产品名或当前售卖对象，只听到用途片段，新进入观众需要依赖前文理解。 | [片段10] 虽然提到这是家居日用品，但开头残缺且没有清晰产品名，新进入观众难以立即理解具体在卖什么。"
+  },
+  "scorer_model": "openai/gpt-5.5"
+}

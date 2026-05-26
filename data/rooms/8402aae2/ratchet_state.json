@@ -1,0 +1,33 @@
+{
+  "baselines": {
+    "dwell_time": 15.0
+  },
+  "locked_constraints": [],
+  "improvement_targets": [],
+  "iteration_count": 1,
+  "history": [
+    {
+      "session_id": "20260508_160302_96f344",
+      "metrics_snapshot": {
+        "dwell_time": 15.0
+      },
+      "baselines_after": {
+        "dwell_time": 15.0
+      },
+      "new_locks": [],
+      "comparison": [
+        {
+          "key": "dwell_time",
+          "current": 15.0,
+          "baseline": null,
+          "status": "NEW"
+        }
+      ],
+      "total_score": 25.2
+    }
+  ],
+  "effect_baselines": {
+    "dwell_time": 15.0
+  },
+  "stagnation_count": 0
+}

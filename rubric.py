@@ -23,65 +23,65 @@ def calibrate_dwell_time(dwell_seconds: float, timestamp: str) -> float:
 
 STATIC_DIMENSIONS = [
     {
-        "id": "hook", "name": "黄金3秒", "weight": 7,
-        "desc": "每个15-30秒循环的前3秒是否有强力Hook，能否阻止新进观众滑走",
-        "ten": "每个循环前3秒有明确Hook（震撼数据/反常识提问/利益承诺/痛点直击），零废话，新观众3秒内获得留下的理由",
-        "one": "开头是寒暄、自我介绍或冗长铺垫，3秒内无任何价值信号",
-        "techniques": ["震撼数据: '30,000 repeat buyers can't be wrong...'", "反常识提问: 'Why are you still paying $50 for something that costs $12?'", "利益前置: 'Save 70% right now...'", "痛点直击: 'Still struggling with dry skin every winter?'", "制造好奇: 'I'm about to show you something most people don't know...'"],
+        "id": "hook", "name": "黄金3秒", "weight": 9,
+        "desc": "每个30-45秒循环的前3-5秒是否有强力Hook，1句话抓兴趣并预告本循环的核心价值",
+        "ten": "每个循环前3-5秒有明确Hook（震撼数据/反常识提问/利益承诺/痛点直击），1句话同时抓兴趣+预告价值，新观众3-5秒内获得继续听下去的强烈理由",
+        "one": "开头是寒暄、自我介绍或冗长铺垫，3-5秒内无任何价值信号或仅平淡陈述",
+        "techniques": ["震撼数据: '30,000 repeat buyers can't be wrong...'", "反常识提问: 'Why are you still paying $50 for something that costs $12?'", "利益前置: 'Save 70% right now...'", "痛点直击: 'Still struggling with dry skin every winter?'", "制造好奇 + 预告: 'I'm about to show you the one ingredient that...'", "Hook + 价值预告: 在抓兴趣的同一句里暗示本循环要讲的卖点"],
         "affects": ["dwell_time"],
     },
     {
-        "id": "product_demo", "name": "单点卖点", "weight": 5,
-        "desc": "每个循环是否只聚焦一个卖点并说透？多个卖点应分布在不同循环中，不要在一个循环内堆砌",
-        "ten": "每个循环聚焦一个卖点，用数字/场景/对比具体说明，听众5秒内明白该卖点的价值",
-        "one": "一个循环里堆砌3-5个卖点，或只有抽象形容词（'very good quality'），无具体支撑",
-        "techniques": ["单点聚焦: 每个循环只说一个卖点，说透", "具体数字: 'lasts 12 hours' not 'long-lasting'", "使用前后对比: 'Before: oily by noon. After: fresh until midnight'", "场景化: 'Picture yourself waking up with perfect skin...'", "感官描述: 描述触感/效果而非成分列表"],
+        "id": "product_demo", "name": "单点卖点深度介绍", "weight": 7,
+        "desc": "每个循环用15-22秒深度介绍一个卖点，用数据/场景/原理/对比把卖点讲透，让观众听完能复述",
+        "ten": "每个循环聚焦一个卖点，用具体数据+使用场景+作用原理+前后对比把卖点讲透，听众听完30秒能清楚转述这个卖点的价值",
+        "one": "一个循环里堆砌3-5个卖点，或只有抽象形容词（'very good quality'），无具体支撑，听众听完不知道产品好在哪",
+        "techniques": ["单点聚焦深化: 每个循环只说一个卖点，用15-22秒说透", "具体数字: 'lasts 12 hours' not 'long-lasting'", "原理说明: 解释为什么有效（成分/工艺/技术原理）", "使用前后对比: 'Before: oily by noon. After: fresh until midnight'", "场景化演示: 'Picture yourself on a 10-hour flight...'", "感官描述: 触感/视觉/效果而非成分列表", "权威背书: 临床数据/认证/专家推荐"],
         "affects": ["ctr", "dwell_time"],
     },
     {
         "id": "golden_loop", "name": "循环结构", "weight": 7,
-        "desc": "脚本是否由多个15-30秒独立循环组成？每个循环是一个完整推销闭环（Hook→单个卖点+价格→CTA），不同循环换不同卖点",
-        "ten": "脚本清晰分为多个15-30秒循环，每个循环结构完整（Hook→Benefit→Price→CTA），循环间无冗长过渡，不同循环切入角度不同",
-        "one": "脚本是一整块连续叙述，无循环结构，用户从中间进入需要听完前文才能理解",
-        "techniques": ["按15-30秒切分脚本为独立循环块", "每个循环必须包含Hook→单个卖点→价格→CTA完整闭环", "不同循环用不同卖点/角度推同一产品", "循环间用1句话自然过渡而非长段落", "每个循环自成一体，无需前文即可理解"],
+        "desc": "脚本是否由多个30-45秒独立循环组成？每个循环结构：Hook(3-5s)→卖点深化(15-22s)→社交证明(3-5s)→CTA+价格(8-13s)",
+        "ten": "脚本清晰分为多个30-45秒循环，每个循环结构完整（Hook→卖点深化→社交证明→CTA+价格），循环间无冗长过渡，不同循环切入角度不同",
+        "one": "脚本是一整块连续叙述，无循环结构；或循环过短（<25秒）卖点未说透，或循环过长（>50秒）信息冗余",
+        "techniques": ["按30-45秒切分脚本为独立循环块", "每循环包含: Hook(3-5s) → 卖点深化(15-22s) → 社交证明(3-5s) → CTA+价格(8-13s)", "不同循环用不同卖点/角度推同一产品", "循环间用1句话自然过渡而非长段落", "每个循环自成一体，无需前文即可理解"],
         "affects": ["dwell_time", "ctr"],
     },
     {
-        "id": "closing", "name": "行动号召CTA", "weight": 7,
-        "desc": "每个循环末尾是否有明确CTA？包括具体点击路径指引+紧迫感/稀缺性",
-        "ten": "每个循环有具体CTA路径（'click the yellow basket bottom left'）+FOMO元素（数量/时间稀缺），不同循环CTA表述有变化",
-        "one": "全篇无CTA，或CTA模糊（'go check it out'），无任何紧迫感",
-        "techniques": ["具体路径指引: 'Click the yellow basket in the bottom left corner'", "数量稀缺: 'Only 5 left at this price'", "时间稀缺: 'This deal ends when the livestream ends'", "互动引导: 'Type 1 in the chat if you want the link'", "CTA变体: 每个循环换不同表达避免听觉疲劳"],
+        "id": "closing", "name": "行动号召CTA", "weight": 3,
+        "desc": "循环末尾8-13秒是否从容讲清价格对比+具体路径指引？要清晰但不重复逼单，不喧宾夺主",
+        "ten": "循环末尾8-13秒包含清晰的价格对比+具体路径指引（'click the yellow basket bottom left'）+适度紧迫感，CTA简洁不重复，不同循环CTA表述有变化",
+        "one": "全篇无CTA，或CTA模糊（'go check it out'）；或反向：高频重复CTA轰炸（每5秒喊一次'快下单'）",
+        "techniques": ["具体路径指引: 'Click the yellow basket in the bottom left corner'", "适度紧迫感: 'Only 5 left at this price'（不要每个循环都喊）", "CTA简洁: 1-2句话讲清，不要反复重复", "CTA变体: 每个循环换不同表达，避免听觉疲劳", "CTA前置价值: 在CTA前先讲清值得购买的理由（已在卖点深化里）"],
         "affects": ["ctr"],
     },
     {
         "id": "pacing", "name": "节奏密度", "weight": 5,
-        "desc": "句子是否短而密集？无废话、无冗余过渡、无空洞填充词，TTS播放时保持高信息密度",
-        "ten": "平均句长15词以内，无填充词，每句话推进信息或推动行动，节奏紧凑",
-        "one": "长复杂句（30+词），大量填充词（'you know', 'basically'），信息稀疏，TTS播放拖沓",
-        "techniques": ["短句: 每句不超过15个词", "删填充词: 去掉 'you know', 'basically', 'honestly'", "信息密度: 每句至少一个有价值信息点", "节奏变化: 用3-5词超短句制造强调（'Trust me.' 'Game changer.'）", "删冗余过渡: 去掉 'moving on to', 'let me tell you about'"],
+        "desc": "信息密度高但允许必要展开。短句推进节奏，但讲卖点原理/场景时允许更长的解释句，避免单纯追求短句导致信息缺失",
+        "ten": "Hook和CTA用短句推进节奏，卖点深化部分允许15-25词的解释句来讲透原理/场景，整体无填充词，每句推进信息",
+        "one": "全篇短句堆砌但卖点说不透；或长复杂句（30+词）+大量填充词（'you know', 'basically'），信息稀疏",
+        "techniques": ["Hook/CTA用短句（≤10词）制造节奏", "卖点深化允许15-25词的解释句", "删填充词: 去掉 'you know', 'basically', 'honestly'", "信息密度: 每句至少一个有价值信息点", "节奏变化: 用3-5词超短句制造强调（'Trust me.' 'Game changer.'）"],
         "affects": ["dwell_time"],
     },
     {
         "id": "pain_points", "name": "痛点速击", "weight": 5,
-        "desc": "用户听到的前5秒内是否被戳中痛点？痛点必须具体、可感知、与产品解决方案直接关联",
-        "ten": "每个循环前5秒触达一个具体痛点，痛点→解法过渡在一句话内完成",
+        "desc": "每个循环前8-12秒（Hook 之后、卖点深化之前）是否触达一个具体痛点？痛点→解法过渡自然",
+        "ten": "每个循环前8-12秒触达一个具体痛点，痛点→产品解法过渡在2句话内完成，痛点具体可感知",
         "one": "无痛点描述，或痛点抽象（'you have problems'），或痛点与产品无关",
-        "techniques": ["场景痛点: 'Tired of foundation sliding off by noon?'", "金钱痛点: 'Stop wasting money on products that don't work'", "社交痛点: 'Embarrassed by flaky skin at meetings?'", "痛点→解法一句话: '...that's exactly why we created...'", "痛点堆叠: 先戳痛再放大（'And it gets worse when...'）"],
+        "techniques": ["场景痛点: 'Tired of foundation sliding off by noon?'", "金钱痛点: 'Stop wasting money on products that don't work'", "社交痛点: 'Embarrassed by flaky skin at meetings?'", "痛点→解法过渡: '...that's exactly why we created...'", "痛点堆叠: 先戳痛再放大（'And it gets worse when...'）"],
         "affects": ["dwell_time", "ctr"],
     },
     {
         "id": "price_anchor", "name": "价格锚点", "weight": 5,
-        "desc": "每个循环是否建立价格对比？原价→直播价 或 竞品价→直播价，让观众10秒内感知'超值'",
-        "ten": "每个循环有清晰价格锚（原价/竞品/日均成本对比），价格在卖点之后、CTA之前",
-        "one": "全篇无价格信息，或只报当前价格无对比基准",
-        "techniques": ["原价对比: 'Original price $99, today only $39'", "竞品对比: 'Similar products cost $80, ours...'", "日均成本: 'Less than a dollar a day for perfect skin'", "价格位置: 放在卖点之后、CTA之前（先建价值再报价）", "价格+赠品: '$39 and you also get a free travel size'"],
+        "desc": "每个循环在卖点深化之后、CTA之中（8-13秒CTA区间内）从容建立价格对比：原价/竞品/日均成本",
+        "ten": "每个循环有清晰价格锚（原价/竞品/日均成本对比），从容讲清而非快速带过；价格在卖点说透之后出现",
+        "one": "全篇无价格信息；或价格出现在卖点之前（未建立价值就报价）；或只报当前价格无对比基准",
+        "techniques": ["原价对比: 'Original price $99, today only $39'", "竞品对比: 'Similar products cost $80, ours...'", "日均成本: 'Less than a dollar a day for perfect skin'", "价格位置: 卖点深化之后、与CTA一起放在循环末尾8-13秒", "价格+赠品: '$39 and you also get a free travel size'", "从容讲清: 至少花5-8秒讲价格对比，不要1秒带过"],
         "affects": ["ctr"],
     },
     {
         "id": "reentry", "name": "入场信号", "weight": 4,
-        "desc": "脚本是否每15-30秒有上下文重置？新进入的观众立即理解当前在讲什么，无需听过前文",
-        "ten": "每个循环开头自然重新提及产品名和当前话题，新观众无需前文即可跟上",
+        "desc": "脚本是否每30-45秒有上下文重置？新进入的观众立即理解当前在讲什么，无需听过前文",
+        "ten": "每个循环开头自然重新提及产品名和当前卖点话题，新观众无需前文即可跟上",
         "one": "大量'as I mentioned', 'like I said earlier'等前文依赖表达，新观众一头雾水",
         "techniques": ["每个循环开头重新提及产品名/品牌名", "避免'as I was saying'等前文引用", "'If you just joined, we're talking about...'类重置句（每3-4个循环一次）", "每个循环自带足够上下文，不依赖前文", "用产品名代替代词（'this product' → 'the XYZ serum'）"],
         "affects": ["dwell_time"],
@@ -132,11 +132,15 @@ SCORER_SYSTEM_PROMPT = """你是一位严格的 TikTok 直播脚本质量评审�
 
 核心前提：
 - 脚本用于AI数字人直播+TTS朗读，纯口播内容（无动作/表情/画面辅助）
-- 观众随机时刻进入直播间，平均只停留15-30秒
-- 你评分的是：如果观众从任意位置开始听15-30秒，这段内容的效果如何
+- 观众随机时刻进入直播间，平均停留30-45秒
+- 你评分的是：如果观众从任意位置开始听30-45秒，这段内容的效果如何
+
+评分优先级：
+- **强 Hook + 卖点深度** 是核心：Hook 是否能抓兴趣并预告价值，卖点是否被用数据/场景/原理/对比说透
+- CTA 简洁明确即可，**不奖励高频重复逼单**——把 closing 维度看作"循环末尾有清晰路径指引"而非"反复喊话"
 
 评分原则：
-- 10分：每个15-30秒片段都完美体现该维度，参见各维度的满分标准
+- 10分：每个30-45秒片段都完美体现该维度，参见各维度的满分标准
 - 7-9分：多数片段做到了，有少量遗漏
 - 4-6分：部分片段做到了，但不一致
 - 1-3分：几乎没有体现该维度，参见各维度的最差标准
@@ -146,7 +150,7 @@ SCORER_SYSTEM_PROMPT = """你是一位严格的 TikTok 直播脚本质量评审�
 
 
 WORDS_PER_MINUTE = 250
-DEFAULT_DWELL_SECONDS = 30
+DEFAULT_DWELL_SECONDS = 38
 NUM_WINDOWS = 10
 
 

@@ -1,0 +1,48 @@
+{
+  "id": "20260508_072013_58f782",
+  "timestamp": "2026-05-02 05:25:00",
+  "script": "Suka makan nasi lemak tapi bimbang badan makin lebar?\nKunyah dua biji sebelum makan untuk urus serapan karbohidrat.\nPerut tak rasa sebu.\nJimat tujuh puluh lapan ringgit dengan set tiga pek RM99.\nTekan beg kuning bawah kiri sekarang sebelum stok habis.\n\nRibuan orang dah tak risau perut kembung lepas makan!\nLepas belasah mee goreng malam, perut kekal ringan dan selesa.\nBangun rasa sangat segar.\nHarga runtuh tiga pek cuma RM99 khas untuk Payday ini.\nKlik beg kuning sudut kiri bawah segera sebelum promo tamat.\n\nKenapa perlu berlapar kalau nak jaga penampilan diri?\nAmalkan dua tablet sehari untuk pastikan badan sentiasa seimbang.\nSangant mudah diamalkan selalu.\nCuma RM1.10 sehari untuk kualiti hidup yang lebih baik.\nTuntut baucar Payday dan klik beg kuning kiri bawah sekarang.\n\nNak pakai baju lama tapi rasa makin ketat di pinggang?\nSarung kembali kebaya kegemaran anda dengan rasa lebih yakin.\nNampak lebih kemas hari-hari.\nSet tiga pek RM99 jauh lebih jimat dari harga asal.\nKomen satu atau terus klik beg kuning di bawah kiri.\n\nMasih telan ubat pahit untuk jaga pemakanan harian anda?\nKunyah sahaja macam gula-gula manis tanpa perlu air kosong.\nRasa sedap dan praktikal.\nDapatkan set dua tambah dua cuma RM159 dalam live.\nTekan beg kuning bawah kiri sekarang sebelum harga naik.\n\nIni rahsia orang makan banyak tapi tetap rasa ringan.\nProbiotik ini bantu singkirkan angin tersumbat dengan sangat cepat.\nPerut rasa lebih kosong.\nSet enam pek RM180 adalah tawaran paling berbaloi hari ini.\nKlik beg kuning kiri bawah sebelum habis kena borong.\n\nTak boleh tinggalkan air manis dan pencuci mulut kegemaran?\nTablet ini bantu urus kalori berlebihan setiap kali anda makan.\nNikmati hidangan tanpa risau.\nGunakan diskaun Payday sehingga 23 peratus di beg kuning.\nCepat klik beg kuning sudut kiri bawah sekarang juga.\n\nNak nampak lebih berseri dan bertenaga sepanjang hari?\nGabungan satu pek putih dan satu pek pink sangat mantap.\nBadan rasa lebih cergas.\nSet satu tambah satu cuma lapan puluh lapan ringgit.\nTekan beg kuning bawah kiri sekarang untuk rebut peluang.\n\nSering rasa mengantuk dan berat badan lepas makan nasi?\nDulu mata berat sekarang badan kekal aktif bertenaga sepanjang petang.\nRasa sangat berbeza sekali.\nBayar sembilan puluh sembilan ringgit untuk tiga pek besar.\nKlik beg kuning kiri bawah segera sebelum live tamat.\n\nDah cuba macam-macam tapi perut tetap nampak buncit?\nSimpan satu peket dalam beg untuk kegunaan di mana sahaja.\nMemang sangat mesra pengguna.\nHarga istimewa RM50 sepek hanya sah semasa live berlangsung.\nTinggal lima set sahaja, tekan beg kuning bawah kiri.\n\nSuka makan mi segera malam-malam tapi takut esok sembelit?\nProbiotik ini bantu lancarkan penghadaman supaya anda rasa lebih lega.\nMemang sangat lancar pagi esok.\nSet kombo tiga pek RM99 adalah pilihan paling laku keras.\nTekan beg kuning bawah kiri sekarang sebelum tawaran tamat.\n\nKenapa pilih satu kalau boleh dapat tiga dengan murah?\nGunakan formula dari Jepun untuk jaga kualiti pemakanan harian anda.\nKesan yang sangat memuaskan hati.\nDapatkan potongan harga sehingga RM23 dengan baucar khas Payday.\nKlik beg kuning sudut kiri bawah dan bayar sekarang.",
+  "metrics": {
+    "ctr": 2.5,
+    "dwell_time": 18.0,
+    "gmv": 425.24,
+    "order_volume": 4.0,
+    "follow_rate": 0.42,
+    "views": 974.0,
+    "impressions": 12180.0,
+    "roi": 3.4
+  },
+  "room_id": "dbc28dd1",
+  "prompt": "",
+  "notes": "API: highbeauty_my room=7635037610326412052 seq=59",
+  "llm_analysis": "",
+  "locked_elements": [],
+  "static_scores": {
+    "hook": 5.5,
+    "product_demo": 5.1,
+    "golden_loop": 2.9,
+    "closing": 3.8,
+    "pacing": 8.9,
+    "pain_points": 5.7,
+    "price_anchor": 2.4,
+    "reentry": 3.0
+  },
+  "static_total": 23.4,
+  "effect_scores": {
+    "ctr": 5.1,
+    "dwell_time": 8.1
+  },
+  "effect_total": 39.6,
+  "total_score": 63.0,
+  "rubric_reasoning": {
+    "hook": "[片段1] 以具象化的国民美食（椰浆饭）和长胖焦虑作为提问，前3秒直击痛点，零废话，Hook极具吸引力。 | [片段2] 开篇直接给出利益承诺（肚子轻盈），没有废话，但平铺直叙，缺乏震撼数据或提问等强力抓手。 | [片段3] 片段开头是一句抽象的口号式结尾，没有任何强有力的Hook元素（如震撼数据、痛点直击或反常识提问）来吸引新观众。 | [片段4] 循环开头使用了直击痛点的反常识反问（还在吃苦药吗？）作为Hook，能迅速抓住受众注意力提供留下理由。 | [片段5] 开头直接点出消除胀气的利益点，无废话，但缺乏提问或震撼数据等更强力的Hook元素。 | [片段6] 开头似乎是残缺句（pa risau），直接给出折扣信息，缺乏强有力的痛点或悬念Hook来留住新观众。 | [片段7] 片段包含反问形式的痛点直击（饭后犯困发胖？），能在前3秒有效抓住相关人群的注意力。 | [片段8] 以反常识或直击痛点的极简提问（nampak buncit?）开局，能瞬间抓住有此困扰的随机新观众。 | [片段9] 片段开头为上一句的截断尾部，无任何强力Hook或能够吸引新观众的明确价值信号。 | [片段10] 开头半句直接切入价格与优惠券，虽有利益刺激，但缺乏完整且强有力的3秒Hook设计。",
+    "product_demo": "[片段1] 卖点高度聚焦在'阻断吸收'，且明确了'饭前嚼两粒'的具体使用场景和方法，清晰易懂。 | [片段2] 聚焦在‘肠胃舒适、醒来清爽’这一个核心体验卖点上，场景具体且没有堆砌其他无关卖点。 | [片段3] 仅提到抽象的'更好的生活质量'，完全没有聚焦任何具体的卖点、使用场景或细节支撑。 | [片段4] 片段仅聚焦一个明确的卖点（像吃糖果一样咀嚼），通过与苦药的对比，将产品的食用体验具体化且不堆砌。 | [片段5] 完全聚焦于'消除胀气'单一卖点，并辅以'肚子感觉更空'的具体体感描述，直白易懂。 | [片段6] 片段完全没有提及产品的任何功能卖点或使用场景，仅有促销信息。 | [片段7] 由于脚本片段极短且被截断，未能展示产品卖点及具体的价值说明。 | [片段8] 片段完全聚焦于“便携性”单一卖点，并通过具体场景（放在包里，随时随地可用）生动呈现其价值。 | [片段9] 简单提到了效果（明天早上非常顺畅），但缺乏具体数据或场景的深度支撑。 | [片段10] 片段中完全没有提及产品的任何卖点、功能或具体价值。",
+    "golden_loop": "[片段1] 片段极不完整，仅包含Hook和卖点，完全缺失价格呈现和CTA闭环。 | [片段2] 呈现了‘卖点+价格’的结构，但由于片段被截断且缺乏强Hook，未能形成完整的推销闭环。 | [片段3] 片段属于严重截断状态，缺乏Hook、Benefit和Price，仅保留了闭环的结尾CTA部分，未构成完整推销闭环。 | [片段4] 从上一段的残缺CTA（左下角）自然过渡到新一轮循环的痛点Hook和卖点，展现了清晰的独立循环结构闭环。 | [片段5] 包含了卖点与价格，但未能形成完整的推销闭环，结尾突然截断，缺失转化动作。 | [片段6] 结构不完整，缺失Hook和卖点（Benefit）环节，仅包含折扣优惠和CTA，未能形成独立推销闭环。 | [片段7] 仅展示了上一个循环的结尾（CTA）和下一个循环的开头（Hook），未体现出完整的闭环结构。 | [片段8] 片段仅包含痛点和卖点，完全缺失价格呈现和行动号召（CTA），未能构成完整的推销闭环。 | [片段9] 片段不完整，完全没有展现出从Hook到卖点、价格再到CTA的完整推销闭环结构。 | [片段10] 仅包含价格说明与CTA，严重缺失Hook和产品推介部分，未构成独立的推销闭环。",
+    "closing": "[片段1] 全段没有任何形式的行动号召（CTA），也没有引导用户点击购物车的动作。 | [片段2] 句子结尾被截断（'khas untuk '），没有留下任何明确的购买路径指引或行动号召。 | [片段3] CTA表现优异，明确指出了利益（领取Payday优惠券）以及具体的点击路径（左下角黄车）。 | [片段4] 片段开头仅残存上一段CTA的尾音（ing di bawah kiri），本片段本身未能完整展示明确的CTA行动号召和紧迫感。 | [片段5] 该片段末尾未包含任何行动号召（CTA），也无点击路径引导或紧迫感元素。 | [片段6] CTA指令极其清晰（指明左下角黄车），并结合了‘快点击’和‘发薪日’的时效紧迫感，执行到位。 | [片段7] 包含催促行动的指令（现在去抢机会），但缺乏具体的点击路径指引（如黄车）及明确的稀缺性元素。 | [片段8] 完全没有出现任何明确的行动号召指引（CTA）或紧迫感/稀缺性元素。 | [片段9] 完全没有任何行动号召（CTA）、购买路径指引或紧迫感/稀缺性元素。 | [片段10] 具有极其明确的点击路径指引（左下角黄车），并结合Payday优惠要求用户立即付款（bayar sekarang），行动号召非常强。",
+    "pacing": "[片段1] 语句非常简短干练，无任何冗长铺垫或废话填充，TTS朗读时信息密度极高。 | [片段2] 句子极短，平均5-7个词，没有任何冗余过渡或填充词，TTS播报节奏会非常紧凑干脆。 | [片段3] 句子短促且指令清晰，没有任何冗余废话和填充词，TTS播报时节奏紧凑。 | [片段4] 句子短小精悍，没有任何废话或无意义的填充词，信息推进极快，适合TTS高密度输出。 | [片段5] 句子极短，没有填充词和废话，信息密度高，节奏十分紧凑。 | [片段6] 句子极短且无任何冗余填充词，信息传达直接，TTS朗读节奏紧凑不拖沓。 | [片段7] 句子简短直接，没有冗余词汇，节奏非常紧凑。 | [片段8] 句子极为简短，信息直白毫无废话，推进速度快，非常适合TTS高密度朗读要求。 | [片段9] 句子简短直接，没有使用复杂句式或冗长的填充词，信息密度尚可。 | [片段10] 句子极短，没有任何废话或填充词，直接下达指令，TTS播放节奏紧凑。",
+    "pain_points": "[片段1] '爱吃椰浆饭又怕胖'是非常具体、具象且高度本地化可感知的痛点，且与后续解法完美衔接。 | [片段2] 只有使用后的正面效果描述（爽点），完全没有触及用户痛点（如腹胀、便秘等），无法引发痛点共鸣。 | [片段3] 内容中完全没有提及任何用户痛点，无法让新观众产生需求共鸣。 | [片段4] 前5秒内完美触达具体且可感知的痛点（吞咽苦药的折磨），并在一句话内直接给出了产品的解法方案。 | [片段5] 开篇前3秒立即精准击中'胀气(angin tersumbat)'这一具体痛点，直截了当。 | [片段6] 完全没有描述任何用户痛点，未与产品解决方案产生关联。 | [片段7] 痛点极为具体且具场景感（吃完饭后感到困倦和体重增加），瞬间击中受众。 | [片段8] 前5秒内直接戳中非常具体的“显肚子凸出”痛点，并迅速无缝衔接到了产品的使用场景解法中。 | [片段9] 没有明确描述或戳中具体可感知的痛点，仅直接陈述了使用后的正面效果。 | [片段10] 内容中没有任何用户痛点描述或场景代入。",
+    "price_anchor": "[片段1] 脚本片段中未包含任何价格、折扣或对比锚点信息。 | [片段2] 使用了‘Harga runtuh’（破盘价）和数量（3包）来制造超值感，但缺失了原价或竞品价的明确对比数字。 | [片段3] 除了提及优惠券外，缺失任何具体的价格数字说明或原价/直播价的价格对比锚点。 | [片段4] 该短短的片段中完全没有提及任何关于价格、折扣或竞品对比的信息。 | [片段5] 仅报出了六包套装180马币的价格，没有任何原价、竞品或日均成本的对比基准。 | [片段6] 提到了高达23%的发薪日折扣，建立了一定的优惠预期，但缺少具体的原价与直播价的绝对金额对比。 | [片段7] 片段中完全没有提及任何价格或比价信息。 | [片段8] 脚本片段中完全没有任何原价、竞品价或直播当前价格的信息及对比。 | [片段9] 仅报出了当前套餐价格（RM99），但没有任何原价或竞品对比，无法建立超值感知。 | [片段10] 报出了最终价格（RM23）和优惠券，但缺少明确的原价或竞品价格作为对比基准。",
+    "reentry": "[片段1] 虽然开篇话题清晰，但全文仅用代词（两粒）指代，未明确提及产品名称，新进观众可能不清楚具体卖的是什么商品。 | [片段2] 片段中完全没有提及产品名称，随机进入的观众虽然能听到效果，但不知道具体在卖什么产品。 | [片段3] 片段中没有任何产品名称提及或上下文重置，新进入的观众完全不知道主播在推销什么产品。 | [片段4] 通过全新的痛点场景重新开启话题，无需依赖前文也能听懂，但因为截断原因，当前片段未完整提及产品名。 | [片段5] 片段中完全没有提及产品名称，新观众虽然听懂了功效，但一头雾水不知道具体在卖什么。 | [片段6] 全段未提及产品名称或当前推销的话题，新观众进入只知道有折扣，但完全不知道在卖什么商品。 | [片段7] 通过痛点提问自然开启了新的话题，新进入的观众无需了解前文即可秒懂当前讨论情境。 | [片段8] 虽然通过痛点切入，但全程未重新提及具体产品名称（仅称‘一包’），新观众仍需猜测正在卖的具体是什么商品。 | [片段9] 没有提及具体产品名称或重新交代上下文，中途进入的观众无法理解所售卖的具体为何物。 | [片段10] 片段中未提及产品名称或上下文，新观众此时进入完全不知道正在售卖什么商品。"
+  },
+  "scorer_model": "google（官方）/gemini-3.1-pro-preview"
+}

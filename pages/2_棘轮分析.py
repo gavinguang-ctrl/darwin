@@ -319,9 +319,9 @@ if session.static_scores:
 
         dwell_window_mode = st.radio(
             "评分时间窗口",
-            ["全部观众（15-30s，默认）", "成交用户（实际停留×6）"],
+            ["全部观众（30-45s，默认）", "成交用户（实际停留×6）"],
             horizontal=True, key="auto_dwell_window",
-            help="「全部观众」按实际平均停留评分（适合优化 Hook 和循环结构）；「成交用户」模拟买家的更长停留，评分窗口 = 实际停留×6（适合优化深度说服力和转化链路）。",
+            help="「全部观众」按实际平均停留评分（适合优化 Hook 和卖点深度）；「成交用户」模拟买家的更长停留，评分窗口 = 实际停留×6（适合优化深度说服力和转化链路）。",
         )
 
         auto_ref_snippet = st.text_area(
