@@ -19,6 +19,7 @@ class Room:
     baseline_session_id: str = ""
     locked_prompt_description: str = ""
     use_global_locked_prompt: bool = True
+    tag: str = ""
 
     def to_dict(self):
         return asdict(self)
@@ -100,6 +101,29 @@ def load_candidate(room: Room, candidate_id: str):
     if f.exists():
         return Candidate.from_dict(json.loads(f.read_text(encoding="utf-8")))
     return None
+
+
+# --- Tag management ---
+DEFAULT_TAGS = ["大客户", "捡钱", "自营"]
+_TAGS_FILE = DATA_DIR / "tags.json"
+
+
+def load_tags() -> list[str]:
+    if _TAGS_FILE.exists():
+        return json.loads(_TAGS_FILE.read_text(encoding="utf-8"))
+    return list(DEFAULT_TAGS)
+
+
+def save_tags(tags: list[str]):
+    _TAGS_FILE.write_text(json.dumps(tags, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def add_tag(tag: str):
+    tags = load_tags()
+    if tag and tag not in tags:
+        tags.append(tag)
+        save_tags(tags)
+    return tags
 
 
 def set_baseline(room: Room, candidate) -> None:

@@ -4,7 +4,7 @@ from config import DEFAULT_METRICS
 from models import Session
 from data_io import (new_session_id, save_session, list_sessions,
                      parse_metrics_from_excel, parse_metrics_from_json, parse_metrics_from_csv)
-from room import create_room, list_rooms, load_room
+from room import create_room, list_rooms, load_room, load_tags, add_tag
 from zmeng_api import fetch_live_data, extract_script_from_excel, fetch_host_rooms, fetch_rooms_by_ids
 from task_manager import request_stop, list_tasks, cleanup_dead
 from ui_helpers import import_sessions_from_api, scorer_selector, launch_batch_score
@@ -392,13 +392,45 @@ with tabs[2]:
     if not rooms:
         st.info("暂无直播间。")
     else:
+        # Tag filter
+        all_tags = load_tags()
+        tag_filter = st.multiselect("按标签筛选", all_tags, default=[], key="mgmt_tag_filter")
+        if tag_filter:
+            rooms = [r for r in rooms if r.tag in tag_filter]
+            if not rooms:
+                st.info("该标签下暂无直播间。")
+
         for r in rooms:
             sessions = list_sessions(r.id)
             baseline_tag = f" | 基线: {r.baseline_session_id[:15]}" if r.baseline_session_id else ""
             prompt_tag = " | 有基线提示词" if r.base_prompt else ""
             latest_date = _latest_session_date(sessions)
             latest_tag = f" | 最近一场: {latest_date}" if latest_date else ""
-            with st.expander(f"**{r.name}** — {len(sessions)} 场{latest_tag}{baseline_tag}{prompt_tag}"):
+            room_tag_label = f" [{r.tag}]" if r.tag else ""
+            with st.expander(f"**{r.name}**{room_tag_label} — {len(sessions)} 场{latest_tag}{baseline_tag}{prompt_tag}"):
+                # Name and tag editing
+                nc1, nc2 = st.columns([3, 2])
+                with nc1:
+                    new_name = st.text_input("直播间名称", value=r.name, key=f"name_{r.id}")
+                with nc2:
+                    tag_options = [""] + all_tags
+                    current_idx = tag_options.index(r.tag) if r.tag in tag_options else 0
+                    new_tag = st.selectbox("标签", tag_options, index=current_idx, key=f"tag_{r.id}")
+                    new_custom_tag = st.text_input("新增标签", key=f"newtag_{r.id}", placeholder="输入新标签名...")
+                if new_custom_tag:
+                    if st.button("➕ 添加标签", key=f"addtag_{r.id}"):
+                        all_tags = add_tag(new_custom_tag.strip())
+                        r.tag = new_custom_tag.strip()
+                        r.save()
+                        st.rerun()
+                if new_name != r.name or new_tag != r.tag:
+                    if st.button("💾 保存名称/标签", key=f"save_name_{r.id}"):
+                        r.name = new_name.strip() if new_name.strip() else r.name
+                        r.tag = new_tag
+                        r.save()
+                        st.success("已保存")
+                        st.rerun()
+
                 st.caption(f"ID: {r.id}  |  创建: {r.created_at[:10]}")
                 with st.expander("📌 原始提示词模板"):
                     orig_prompt = st.text_area("原始提示词", value=r.original_prompt, height=200,

@@ -17,7 +17,7 @@ from hill_climb import (
     auto_iterate, extract_baseline_strengths,
 )
 from priority import classify_priority
-from room import list_rooms, load_room, save_candidate, list_candidates, set_baseline
+from room import list_rooms, load_room, save_candidate, list_candidates, set_baseline, load_tags
 from models import RatchetState, Candidate
 from zmeng_api import script_to_excel_bytes
 from task_manager import create_task, list_tasks, request_stop
@@ -113,7 +113,16 @@ if not rooms:
     st.warning("暂无直播间。请先前往「直播间管理」创建。")
     st.stop()
 
-room_options = {f"{r.name} ({r.id})": r for r in rooms}
+# Tag filter
+all_tags = load_tags()
+tag_filter = st.multiselect("按标签筛选", all_tags, default=[], key="ratchet_tag_filter")
+if tag_filter:
+    rooms = [r for r in rooms if r.tag in tag_filter]
+    if not rooms:
+        st.info("该标签下暂无直播间。")
+        st.stop()
+
+room_options = {f"{r.name} [{r.tag}] ({r.id})" if r.tag else f"{r.name} ({r.id})": r for r in rooms}
 _room_keys = list(room_options.keys())
 if st.session_state.get("goto_room_id"):
     _goto_id = st.session_state.pop("goto_room_id")
