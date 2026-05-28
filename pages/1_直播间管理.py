@@ -400,6 +400,32 @@ with tabs[2]:
             if not rooms:
                 st.info("该标签下暂无直播间。")
 
+        # Batch tag assignment
+        with st.expander("🏷️ 批量打标签"):
+            batch_selected = []
+            for r in rooms:
+                if st.checkbox(f"{r.name} [{r.tag}]" if r.tag else r.name, key=f"batch_cb_{r.id}"):
+                    batch_selected.append(r.id)
+            if batch_selected:
+                bc1, bc2 = st.columns([2, 1])
+                with bc1:
+                    batch_tag_options = [""] + all_tags
+                    batch_tag = st.selectbox("选择标签", batch_tag_options, key="batch_tag_select")
+                    batch_new_tag = st.text_input("或输入新标签", key="batch_new_tag")
+                with bc2:
+                    st.write("")
+                    st.write("")
+                    if st.button(f"✅ 为 {len(batch_selected)} 个直播间打标签", type="primary", key="batch_tag_go"):
+                        target_tag = batch_new_tag.strip() if batch_new_tag.strip() else batch_tag
+                        if target_tag and target_tag not in all_tags:
+                            add_tag(target_tag)
+                        for rid in batch_selected:
+                            rm = load_room(rid)
+                            rm.tag = target_tag
+                            rm.save()
+                        st.success(f"已为 {len(batch_selected)} 个直播间设置标签「{target_tag}」")
+                        st.rerun()
+
         for r in rooms:
             sessions = list_sessions(r.id)
             baseline_tag = f" | 基线: {r.baseline_session_id[:15]}" if r.baseline_session_id else ""
