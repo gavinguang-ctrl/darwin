@@ -429,6 +429,58 @@ def score_script(script: str, scorer: LLMProvider, locked_constraints: list[dict
     return result
 
 
+def consensus_score_script(script: str, scorer: LLMProvider, locked_constraints: list[dict] | None = None,
+                           weight_config: dict | None = None, dwell_seconds: float = 0,
+                           num_judges: int = 0) -> dict:
+    """升级1: 多评委共识评分。调用 score_script N 次，每维度取中位数。
+
+    num_judges=0 时读取 config.CONSENSUS_JUDGES（默认3）。
+    若只有1个judge，退化为普通 score_script。
+    """
+    from config import CONSENSUS_JUDGES
+    n = num_judges or CONSENSUS_JUDGES
+    if n <= 1:
+        return score_script(script, scorer, locked_constraints, weight_config, dwell_seconds)
+
+    all_results = []
+    for _ in range(n):
+        try:
+            r = score_script(script, scorer, locked_constraints, weight_config, dwell_seconds)
+            all_results.append(r)
+        except Exception:
+            continue  # 某次评分失败不影响整体
+
+    if not all_results:
+        # 全部失败，回退到单次
+        return score_script(script, scorer, locked_constraints, weight_config, dwell_seconds)
+    if len(all_results) == 1:
+        return all_results[0]
+
+    # 各维度取中位数
+    from statistics import median
+    dim_ids = list(all_results[0]["scores"].keys())
+    merged_scores = {}
+    for dim_id in dim_ids:
+        values = [r["scores"].get(dim_id, 5) for r in all_results]
+        merged_scores[dim_id] = round(median(values), 1)
+
+    # reasoning 取第一个（中位数无法合并推理）
+    merged_reasoning = all_results[0].get("reasoning", {})
+
+    # 重新计算 static_score（基于中位数维度分）
+    static = compute_static_score(merged_scores, weight_config)
+    # repetition penalty 取所有结果的中位数
+    rep_penalties = [r.get("repetition", {}).get("penalty", 0) for r in all_results]
+    rep_penalty = median(rep_penalties) if rep_penalties else 0
+
+    return {
+        "scores": merged_scores,
+        "reasoning": merged_reasoning,
+        "static_score": round(max(0, static - rep_penalty), 1),
+        "repetition": {"penalty": rep_penalty, "judges": len(all_results)},
+    }
+
+
 EFFECT_ESTIMATOR_PROMPT = """你是一位 TikTok 直播数据分析专家。
 根据直播脚本的质量评分，预估该脚本在实际直播中的实效表现。
 你需要基于脚本质量和历史基线数据，给出每个实效指标的预估分数（1-10分）。

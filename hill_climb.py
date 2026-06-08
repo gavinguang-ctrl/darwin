@@ -1,4 +1,8 @@
-from config import STAGNATION_THRESHOLD, SCRIPT_MAX_LENGTH_RATIO
+from config import (
+    STAGNATION_THRESHOLD, SCRIPT_MAX_LENGTH_RATIO,
+    MARGINAL_GAIN_THRESHOLD, MARGINAL_GAIN_CONSECUTIVE, AUTO_REWRITE_THRESHOLD,
+    DIMENSION_CLUSTERS,
+)
 from rubric import (
     STATIC_DIMENSIONS, EFFECT_METRICS,
     find_weakest_dimension, score_script, compute_effect_score, compute_total_score,
@@ -6,6 +10,77 @@ from rubric import (
 )
 from llm import LLMProvider
 from prompts import OPTIMIZER_SYSTEM_PROMPT, PROMPT_OPTIMIZER_SYSTEM_PROMPT
+
+
+# ===== 升级2: 维度相关性集群 =====
+
+def _find_cluster_root(target: dict, all_scores: dict[str, int]) -> dict | None:
+    """检查目标维度所在的相关性簇，找真正的根因（簇内得分最低的维度）。
+
+    如果根因就是 target 本身，返回 None（不需要换）。
+    """
+    target_id = target["id"]
+    for cluster_name, dim_ids in DIMENSION_CLUSTERS.items():
+        if target_id in dim_ids:
+            # 找簇内得分最低的维度
+            cluster_scores = [(d_id, all_scores.get(d_id, 5)) for d_id in dim_ids if d_id in all_scores]
+            if not cluster_scores:
+                return None
+            root_id, root_score = min(cluster_scores, key=lambda x: x[1])
+            if root_id != target_id and root_score < all_scores.get(target_id, 5):
+                # 根因在另一个维度
+                from rubric import STATIC_DIMENSIONS
+                for d in STATIC_DIMENSIONS:
+                    if d["id"] == root_id:
+                        return {"id": root_id, "name": d["name"], "type": "static",
+                                "score": root_score, "gain": (10 - root_score) * d["weight"],
+                                "cluster_hint": f"与{target['name']}同属「{cluster_name}」簇，可能是根因"}
+            return None
+    return None
+
+
+# ===== 升级4: 反模式检查 =====
+
+def _check_anti_patterns(target: dict, script: str, scores: dict[str, int]) -> list[str]:
+    """检查当前脚本和目标维度的反模式，返回额外约束列表。"""
+    warnings = []
+    dim_id = target["id"]
+    script_len = len(script)
+
+    # 粗略统计
+    cta_keywords = ["下单", "买", "点击", "抢", "购", "赶紧", "马上", "hurry", "buy", "grab", "click", "order"]
+    cta_count = sum(1 for kw in cta_keywords if kw in script.lower())
+    loop_markers = script.count("Hook") + script.count("开场") + script.count("循环")
+
+    if dim_id == "closing" and cta_count >= 6:
+        warnings.append(
+            "⚠️ 脚本已有大量CTA（6+处），closing分低的根因可能是CTA被稀释/无效，"
+            "禁止继续增加CTA数量，应优化现有CTA的精准度和位置"
+        )
+    if dim_id == "pacing" and script_len > 3000:
+        warnings.append(
+            "⚠️ 脚本已超3000字，pacing分低很可能是冗长导致，"
+            "禁止增加更多内容，应精简和压缩，提高信息密度"
+        )
+    if dim_id == "hook" and script[:200].count("?") + script[:200].count("？") >= 2:
+        warnings.append(
+            "⚠️ 开头已有多个问句，hook分低不是缺Hook而是Hook无力，"
+            "应更换Hook策略（如数据震撼、痛点直击、悬念），不要再加问句"
+        )
+    if dim_id == "reentry" and loop_markers >= 3:
+        warnings.append(
+            "⚠️ 脚本已有3+循环标记，reentry分低不是缺循环而是循环间缺乏上下文重置，"
+            "应在每个循环开头加独立的吸引语，使新进观众无需上文也能理解"
+        )
+    if dim_id == "product_demo" and scores.get("product_demo", 0) <= 4:
+        # 检测是否已有数据/对比但得分仍低
+        has_data = any(c.isdigit() for c in script[:1000])
+        if has_data:
+            warnings.append(
+                "⚠️ 脚本已包含数据/数字但product_demo仍低分，问题不是缺信息而是信息组织差，"
+                "应重组卖点结构：先痛点→再原理→用数据佐证→场景化演示，而不是堆砌数据"
+            )
+    return warnings
 
 
 def _locked_block(locked_description: str, mode: str = "script") -> str:
@@ -72,6 +147,7 @@ def build_improvement_prompt(
     locked_constraints: list[dict],
     locked_description: str = "",
     reference_snippet: str = "",
+    anti_pattern_warnings: list[str] | None = None,
 ) -> str:
     dim = _get_dim_detail(target["id"])
 
@@ -79,6 +155,12 @@ def build_improvement_prompt(
     lb = _locked_block(locked_description)
     if lb:
         parts.append(lb)
+    # 升级4: 反模式警告注入
+    if anti_pattern_warnings:
+        parts.append("## 🚫 本次优化禁止事项（基于当前脚本分析）\n")
+        for w in anti_pattern_warnings:
+            parts.append(f"- {w}\n")
+        parts.append("\n")
     parts.append(f"## 任务\n针对「{target['name']}」维度（当前 {target['score']}/10 分）优化以下直播脚本。\n")
 
     if dim:
@@ -136,8 +218,11 @@ def build_rewrite_prompt(script: str, static_scores: dict[str, int], locked_cons
 def generate_improvement(script: str, target: dict, static_scores: dict[str, int],
                          locked_constraints: list[dict], optimizer: LLMProvider,
                          locked_description: str = "", reference_snippet: str = "") -> str:
+    # 升级4: 优化前反模式检查
+    warnings = _check_anti_patterns(target, script, static_scores)
     prompt = build_improvement_prompt(script, target, static_scores, locked_constraints,
-                                      locked_description, reference_snippet)
+                                      locked_description, reference_snippet,
+                                      anti_pattern_warnings=warnings)
     return optimizer.generate(prompt, system=OPTIMIZER_SYSTEM_PROMPT)
 
 
@@ -392,6 +477,8 @@ def auto_iterate(
     best_effect = dict(current_effect_scores)
     stag = 0
     log = []
+    recent_gains: list[float] = []  # 升级3: 跟踪最近每轮增益
+    rewrite_attempted = False  # 升级5: 标记是否已触发过自动重写
 
     # 从历史数据学习静态→实效关联，注入预估 prompt
     correlation_hint = _build_correlation_hint(history_sessions) if history_sessions else ""
@@ -415,6 +502,15 @@ def auto_iterate(
                     callback(r, log[-1])
                 break
             target = max(static_candidates, key=lambda x: x["gain"])
+
+            # 升级2: 维度相关性集群——检查根因是否在关联维度
+            cluster_root = _find_cluster_root(target, best_static)
+            if cluster_root:
+                log.append({"round": r, "status": "cluster_redirect",
+                            "note": f"重定向到根因维度 {cluster_root['name']}（{cluster_root.get('cluster_hint','')}）"})
+                if callback:
+                    callback(r, log[-1])
+                target = cluster_root
 
             # 优化静态维度
             if mode == "prompt" and best_content:
@@ -440,8 +536,10 @@ def auto_iterate(
             new_total = compute_total_score(new_static_total, new_eff_total)
 
             decision = decide(best_total, new_total)
+            gain = new_total - best_total
             entry = {"round": r, "dim": target["name"], "old": best_total, "new": new_total,
-                     "static": new_static_total, "effect_est": new_eff_total, "status": decision}
+                     "static": new_static_total, "effect_est": new_eff_total, "status": decision,
+                     "gain": gain}
 
             if decision == "keep":
                 best_content = new_content
@@ -450,8 +548,10 @@ def auto_iterate(
                 best_static = nr["scores"]
                 best_effect = new_eff
                 stag = 0
+                recent_gains.append(gain)
             else:
                 stag += 1
+                recent_gains.append(0.0)
 
             log.append(entry)
             if callback:
@@ -464,6 +564,53 @@ def auto_iterate(
             if stag >= STAGNATION_THRESHOLD:
                 log.append({"round": r, "status": "stagnation", "note": "连续停滞，停止"})
                 break
+
+            # 升级3: 连续边际增益早停
+            if (len(recent_gains) >= MARGINAL_GAIN_CONSECUTIVE and
+                    all(g < MARGINAL_GAIN_THRESHOLD for g in recent_gains[-MARGINAL_GAIN_CONSECUTIVE:])):
+                log.append({"round": r, "status": "marginal_gains",
+                            "note": f"连续{MARGINAL_GAIN_CONSECUTIVE}轮增益<{MARGINAL_GAIN_THRESHOLD}，停止过度优化"})
+                if callback:
+                    callback(r, log[-1])
+                break
+
+            # 升级5: 自动探索性重写触发（仅第1轮，增益不足时）
+            if r == 1 and not rewrite_attempted and gain < AUTO_REWRITE_THRESHOLD:
+                rewrite_attempted = True
+                log.append({"round": r, "status": "auto_rewrite_triggered",
+                            "note": f"第1轮增益仅{gain:.1f}<{AUTO_REWRITE_THRESHOLD}，触发探索性重写"})
+                if callback:
+                    callback(r, log[-1])
+                try:
+                    if mode == "prompt" and best_content:
+                        rw_content = generate_prompt_rewrite(
+                            best_content, best_static, locked_constraints, optimizer,
+                            product_info=product_info, locked_description=locked_description)
+                        rw_script = generate_script_from_prompt(rw_content, optimizer, baseline_script=best_script,
+                                                                locked_description=locked_description)
+                    else:
+                        rw_content = generate_rewrite(best_script, best_static, locked_constraints, optimizer,
+                                                      locked_description=locked_description)
+                        rw_script = rw_content
+                    rw_nr = score_script(rw_script, scorer, locked_constraints, weight_config, dwell_seconds=dwell_seconds)
+                    rw_eff, rw_eff_scores = estimate_effect_scores(
+                        rw_script, rw_nr["scores"], effect_baselines, scorer, weight_config, correlation_hint)
+                    rw_total = compute_total_score(rw_nr["static_score"], rw_eff)
+                    if rw_total > best_total:
+                        best_content = rw_content
+                        best_script = rw_script
+                        best_total = rw_total
+                        best_static = rw_nr["scores"]
+                        best_effect = rw_eff_scores
+                        stag = 0
+                        recent_gains.append(rw_total - current_total)
+                        log.append({"round": r, "status": "rewrite_accepted",
+                                    "note": f"重写成功 {current_total:.1f}→{rw_total:.1f}"})
+                    else:
+                        log.append({"round": r, "status": "rewrite_rejected",
+                                    "note": f"重写未提升（{rw_total:.1f} <= {best_total:.1f}），继续正常迭代"})
+                except Exception as rw_e:
+                    log.append({"round": r, "status": "rewrite_error", "note": f"重写出错: {rw_e}"})
 
         except Exception as e:
             log.append({"round": r, "status": "error", "note": f"第{r}轮出错: {e}"})

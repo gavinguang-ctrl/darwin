@@ -102,7 +102,7 @@ def run_auto_iterate(task_id, params):
     from room import load_room
     from data_io import list_sessions, load_session
     from llm import get_provider
-    from rubric import (score_script, compute_effect_score, compute_total_score,
+    from rubric import (score_script, consensus_score_script, compute_effect_score, compute_total_score,
                         get_effective_weights, load_weight_config, calibrate_dwell_time)
     from hill_climb import (generate_improvement, generate_prompt_improvement,
                             generate_script_from_prompt, decide)
@@ -143,6 +143,10 @@ def run_auto_iterate(task_id, params):
             return
     else:
         current_prompt = session.prompt or room.base_prompt
+        # 复刻蒸馏：若 UI 已融合风格基线，优先用融合后的提示词
+        fused_start = params.get("fused_start_prompt", "")
+        if mode == "prompt" and fused_start:
+            current_prompt = fused_start
         best_content = current_prompt if mode == "prompt" else session.script
         best_script = session.script
         best_total = session.total_score
@@ -154,6 +158,9 @@ def run_auto_iterate(task_id, params):
     dwell = dwell * dwell_multiplier
     dim_fail_counts: dict[str, int] = {}
     skip_dims: set[str] = set()
+    recent_gains: list[float] = []  # 升级3: 跟踪最近每轮增益
+    rewrite_attempted = False  # 升级5: 标记是否已触发过自动重写
+    initial_total = best_total  # 记录初始分数用于重写判断
     calibrated_metrics = []
     for s in sessions:
         m = dict(s.metrics)
@@ -184,6 +191,14 @@ def run_auto_iterate(task_id, params):
                 break
             dim_target = max(cands, key=lambda x: x["gain"])
 
+            # 升级2: 维度相关性集群 — 检查根因
+            from hill_climb import _find_cluster_root
+            cluster_root = _find_cluster_root(dim_target, best_static)
+            if cluster_root and cluster_root["id"] not in skip_dims:
+                _update(task_id, f"轮{r}: 集群重定向 {dim_target['name']}→{cluster_root['name']}", best_total,
+                        f"轮{r}: 🔀 根因={cluster_root['name']}（{cluster_root.get('cluster_hint','')}）")
+                dim_target = cluster_root
+
             _update(task_id, f"轮{r}/{max_rounds}: 优化 {dim_target['name']}（{dim_target['score']}/10）", best_total,
                     f"轮{r}: 优化 {dim_target['name']}")
 
@@ -202,12 +217,14 @@ def run_auto_iterate(task_id, params):
                                                    reference_snippet=reference_snippet)
                 new_script = new_content
 
-            nr = score_script(new_script, scorer, state.locked_constraints, wc, dwell_seconds=dwell)
+            # 升级1: 自动迭代后台使用多评委共识评分
+            nr = consensus_score_script(new_script, scorer, state.locked_constraints, wc, dwell_seconds=dwell)
             new_static_total = nr["static_score"]
             new_eff, new_eff_scores = compute_effect_score(session.metrics, state.effect_baselines, wc, all_sessions_metrics=calibrated_metrics)
             new_total = compute_total_score(new_static_total, new_eff)
 
             if new_total > best_total:
+                gain = new_total - best_total
                 old = best_total
                 best_content = new_content
                 best_script = new_script
@@ -216,10 +233,12 @@ def run_auto_iterate(task_id, params):
                 best_effect = new_eff_scores
                 completed_rounds += 1
                 dim_fail_counts[dim_target["id"]] = 0
+                recent_gains.append(gain)
                 _update(task_id, f"轮{r}: {old:.1f}→{new_total:.1f} ✅", best_total,
                         f"轮{r}: {dim_target['name']} {old:.1f}→{new_total:.1f} ✅")
             else:
                 dim_fail_counts[dim_target["id"]] = dim_fail_counts.get(dim_target["id"], 0) + 1
+                recent_gains.append(0.0)
                 msg = f"轮{r}: {dim_target['name']} {new_total:.1f} ❌ ({dim_fail_counts[dim_target['id']]}/2)"
                 _update(task_id, f"轮{r}: 回滚 {new_total:.1f}<{best_total:.1f}", best_total, msg)
                 if dim_fail_counts[dim_target["id"]] >= 2:
@@ -230,6 +249,50 @@ def run_auto_iterate(task_id, params):
             target_score = session.total_score * (1 + threshold / 100)
             if best_total >= target_score:
                 _update(task_id, f"达到目标 {target_score:.1f}，停止", best_total, "达到目标")
+                break
+
+            # 升级3: 连续边际增益早停
+            from config import MARGINAL_GAIN_THRESHOLD, MARGINAL_GAIN_CONSECUTIVE
+            if (len(recent_gains) >= MARGINAL_GAIN_CONSECUTIVE and
+                    all(g < MARGINAL_GAIN_THRESHOLD for g in recent_gains[-MARGINAL_GAIN_CONSECUTIVE:])):
+                _update(task_id, f"轮{r}: 连续{MARGINAL_GAIN_CONSECUTIVE}轮增益<{MARGINAL_GAIN_THRESHOLD}，停止过度优化",
+                        best_total, f"⏹ 边际增益早停")
+                break
+
+            # 升级5: 自动探索性重写触发（第1轮增益不足）
+            from config import AUTO_REWRITE_THRESHOLD
+            if r == 1 and not rewrite_attempted and (best_total - initial_total) < AUTO_REWRITE_THRESHOLD:
+                rewrite_attempted = True
+                _update(task_id, f"轮{r}: 首轮增益不足，触发探索性重写", best_total, "🔄 触发自动重写")
+                try:
+                    from hill_climb import generate_rewrite, generate_prompt_rewrite, generate_script_from_prompt
+                    if mode == "prompt" and best_content:
+                        rw_content = generate_prompt_rewrite(
+                            best_content, best_static, state.locked_constraints, opt,
+                            product_info=room.product_info, locked_description=locked_desc)
+                        rw_script = generate_script_from_prompt(rw_content, gen, baseline_script=best_script,
+                                                                locked_description=locked_desc)
+                    else:
+                        rw_content = generate_rewrite(best_script, best_static, state.locked_constraints, opt,
+                                                      locked_description=locked_desc)
+                        rw_script = rw_content
+                    rw_nr = consensus_score_script(rw_script, scorer, state.locked_constraints, wc, dwell_seconds=dwell)
+                    rw_eff, rw_eff_scores = compute_effect_score(session.metrics, state.effect_baselines, wc,
+                                                                 all_sessions_metrics=calibrated_metrics)
+                    rw_total = compute_total_score(rw_nr["static_score"], rw_eff)
+                    if rw_total > best_total:
+                        best_content = rw_content
+                        best_script = rw_script
+                        best_total = rw_total
+                        best_static = rw_nr["scores"]
+                        best_effect = rw_eff_scores
+                        recent_gains.append(rw_total - initial_total)
+                        _update(task_id, f"重写成功 {initial_total:.1f}→{rw_total:.1f}", best_total, "✅ 重写采纳")
+                    else:
+                        _update(task_id, f"重写未提升（{rw_total:.1f}），继续正常迭代", best_total, "❌ 重写回滚")
+                except Exception as rw_e:
+                    _update(task_id, f"重写出错: {str(rw_e)[:50]}", best_total, f"⚠️ 重写失败: {rw_e}")
+
                 break
 
         except Exception as e:

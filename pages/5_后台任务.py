@@ -69,7 +69,7 @@ def _render_history():
                 if t.room_id:
                     if st.button("🔧 棘轮分析", key=f"goto_{t.id}"):
                         st.session_state["goto_room_id"] = t.room_id
-                        st.switch_page("pages/2_棘轮分析.py")
+                        st.switch_page("pages/3_棘轮分析.py")
             if t.log:
                 with st.expander("日志", expanded=False):
                     for entry in t.log[-15:]:

@@ -140,7 +140,7 @@ class GoogleProvider(LLMProvider):
         os.environ.setdefault("HTTP_PROXY", "http://127.0.0.1:7890")
         os.environ.setdefault("HTTPS_PROXY", "http://127.0.0.1:7890")
         from google import genai
-        from google.genai.types import GenerateContentConfig, SafetySetting, HarmCategory
+        from google.genai.types import GenerateContentConfig, SafetySetting, HarmCategory, HttpOptions
         safety = [
             SafetySetting(category=c, threshold="OFF")
             for c in [
@@ -151,11 +151,11 @@ class GoogleProvider(LLMProvider):
                 HarmCategory.HARM_CATEGORY_CIVIC_INTEGRITY,
             ]
         ]
-        client = genai.Client(api_key=self._api_key)
+        client = genai.Client(api_key=self._api_key, http_options=HttpOptions(timeout=180_000))
         for attempt in range(5):
             try:
                 if attempt > 0:
-                    client = genai.Client(api_key=self._api_key)
+                    client = genai.Client(api_key=self._api_key, http_options=HttpOptions(timeout=180_000))
                 resp = client.models.generate_content(
                     model=self.model, contents=prompt,
                     config=GenerateContentConfig(safety_settings=safety),

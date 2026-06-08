@@ -46,7 +46,7 @@ if selected_metrics:
         if m in df.columns:
             fig.add_trace(go.Scatter(x=df["场次"], y=df[m], mode="lines+markers", name=m))
     fig.update_layout(title="指标趋势", height=400)
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width='stretch')
 
 # --- 评分趋势 ---
 scored = [s for s in sessions if s.total_score > 0]
@@ -57,7 +57,7 @@ if scored:
     for col in ["综合", "静态", "实效"]:
         fig2.add_trace(go.Scatter(x=sdf["场次"], y=sdf[col], mode="lines+markers", name=col))
     fig2.update_layout(title="双层评分趋势", height=400)
-    st.plotly_chart(fig2, use_container_width=True)
+    st.plotly_chart(fig2, width='stretch')
 
     if len(scored) >= 2:
         st.subheader("雷达图对比")
@@ -69,7 +69,7 @@ if scored:
         fig3.add_trace(go.Scatterpolar(r=v1+[v1[0]], theta=dims+[dims[0]], fill="toself", name=s1.id[:15], opacity=0.5))
         fig3.add_trace(go.Scatterpolar(r=v2+[v2[0]], theta=dims+[dims[0]], fill="toself", name=s2.id[:15]))
         fig3.update_layout(polar=dict(radialaxis=dict(range=[0, 10])), height=400)
-        st.plotly_chart(fig3, use_container_width=True)
+        st.plotly_chart(fig3, width='stretch')
 
 # --- 锁定约束 ---
 if state.locked_constraints:

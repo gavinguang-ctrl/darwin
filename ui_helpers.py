@@ -89,3 +89,19 @@ def launch_batch_score(room_id, room_name, provider, key, model,
     task = create_task(room_id, "batch_score", params, desc=desc)
     st.success(f"后台评分已启动（任务 {task.id}）")
     return task
+
+
+def style_prompt_selector(key_prefix, label="融合风格提示词"):
+    """选择一套已保存的风格提示词。返回选中风格的 distill_prompt 文本；选「不融合」返回 ""。"""
+    from distill_engine import list_style_prompts
+    styles = list_style_prompts()
+    if not styles:
+        st.caption("（风格库为空，可到「复刻蒸馏」页面生成风格提示词）")
+        return ""
+    options = ["（不融合）"] + [s["name"] for s in styles]
+    choice = st.selectbox(label, options, key=f"{key_prefix}_style_sel")
+    if choice == "（不融合）":
+        return ""
+    idx = options.index(choice) - 1
+    return styles[idx].get("distill_prompt", "")
+

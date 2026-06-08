@@ -144,6 +144,11 @@ def _cold_start_ui(room, prefix):
         value=room.original_prompt, height=280, key=f"{prefix}_prompt",
         placeholder="粘贴你准备让数字人跑的完整原始提示词...",
     )
+
+    # 复刻蒸馏：可选融合一套风格提示词到原始提示词
+    from ui_helpers import style_prompt_selector
+    _cs_style = style_prompt_selector(f"{prefix}_cs", label="融合风格提示词（来自复刻蒸馏，可选）")
+
     c1, c2 = st.columns(2)
     with c1:
         default_ctr = st.number_input("默认 CTR (%)", min_value=0.1, max_value=20.0,
@@ -173,23 +178,42 @@ def _cold_start_ui(room, prefix):
     if not gen_key:
         gen_key = st.text_input("生成模型 API Key", type="password", key=f"{prefix}_gkey")
 
-    if st.button("🚀 生成脚本并自动评分", type="primary", use_container_width=True, key=f"{prefix}_go"):
+    if st.button("🚀 生成脚本并自动评分", type="primary", width='stretch', key=f"{prefix}_go"):
         if not cold_prompt.strip():
             st.error("请粘贴原始提示词"); return
         if not gen_key or not skey:
             st.error("请配置生成模型和评分模型的 API Key"); return
 
-        room.original_prompt = cold_prompt.strip()
+        effective_prompt = cold_prompt.strip()
+        # 若选择了风格提示词，先 LLM 融合，用融合后的提示词进入后续全流程
+        if _cs_style:
+            from distill_engine import fuse_style_into_prompt
+            from config import api_key_for as _akf
+            from config import get_default_models as _gdm
+            _dd = _gdm()["distill"]
+            _fkey = _akf(_dd["provider"])
+            if _fkey:
+                with st.spinner("融合风格提示词中..."):
+                    try:
+                        _fuse_llm = get_provider(_dd["provider"], _fkey, _dd["model"])
+                        effective_prompt = fuse_style_into_prompt(effective_prompt, _cs_style, _fuse_llm)
+                        st.success("✅ 已融合风格提示词")
+                    except Exception as e:
+                        st.warning(f"风格融合失败，使用原始提示词：{e}")
+            else:
+                st.warning("融合模型未配置 API Key，使用原始提示词")
+
+        room.original_prompt = effective_prompt
         if not room.base_prompt:
-            room.base_prompt = cold_prompt.strip()
+            room.base_prompt = effective_prompt
         room.save()
 
-        with st.spinner("用提示词生成脚本中..."):
+        with st.spinner(f"用提示词生成脚本中（{gen_prov}/{gen_model}，通常 15-60 秒）..."):
             locked_desc = get_effective_locked_prompt(room)
             gen = get_provider(gen_prov, gen_key, gen_model)
             try:
                 script = generate_script_from_prompt(
-                    cold_prompt.strip(), gen,
+                    effective_prompt, gen,
                     baseline_script="",
                     locked_description=locked_desc,
                 )
@@ -206,9 +230,9 @@ def _cold_start_ui(room, prefix):
             metrics={"ctr": float(default_ctr) / 100.0,
                      "dwell_time": float(default_dwell)},
             room_id=room.id,
-            prompt=cold_prompt.strip(),
+            prompt=effective_prompt,
             notes=(f"冷启动合成：ctr={default_ctr}%, dwell={default_dwell}s, "
-                   f"gen={gen_prov}/{gen_model}"),
+                   f"gen={gen_prov}/{gen_model}" + ("，已融合风格" if _cs_style else "")),
         )
         save_session(session)
 
@@ -244,13 +268,13 @@ def _batch_score_ui(room_id, room_name, prefix):
         prov, model, key = scorer_selector(prefix)
         b1, b2 = st.columns(2)
         with b1:
-            if st.button("🚀 全部重新评分", type="primary", use_container_width=True, key=f"{prefix}_all"):
+            if st.button("🚀 全部重新评分", type="primary", width='stretch', key=f"{prefix}_all"):
                 if launch_batch_score(room_id, room_name, prov, key, model, desc=f"「{room_name}」全部重新评分"):
                     _time.sleep(1)
                     st.rerun()
         with b2:
             unscored = [s for s in list_sessions(room_id) if s.total_score <= 0]
-            if st.button(f"📝 只评未评分（{len(unscored)}场）", use_container_width=True,
+            if st.button(f"📝 只评未评分（{len(unscored)}场）", width='stretch',
                          key=f"{prefix}_unscored", disabled=len(unscored) == 0):
                 if launch_batch_score(room_id, room_name, prov, key, model,
                                       desc=f"「{room_name}」未评分{len(unscored)}场", unscored_only=True):
@@ -293,7 +317,7 @@ with tabs[0]:
             existing = list_sessions(room_id)
             if existing:
                 st.write(f"已导入 {len(existing)} 场")
-                if st.button("🎯 完成导入，自动评分选基线", type="primary", use_container_width=True):
+                if st.button("🎯 完成导入，自动评分选基线", type="primary", width='stretch'):
                     st.session_state["ready_to_score"] = room_id
             if st.session_state.get("ready_to_score") == room_id:
                 st.divider()
@@ -370,7 +394,7 @@ with tabs[1]:
                     except Exception as e:
                         st.error(f"解析失败：{e}")
             notes = st.text_input("备注（可选）", key="add_notes")
-            if st.button("✅ 提交场次", type="primary", use_container_width=True, key="add_submit"):
+            if st.button("✅ 提交场次", type="primary", width='stretch', key="add_submit"):
                 if not script_text.strip():
                     st.error("请输入脚本")
                 elif not metrics:

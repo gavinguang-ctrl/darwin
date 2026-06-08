@@ -233,7 +233,7 @@ with st.expander("✏️ 修改指标数据（纠正异常值）"):
 st.divider()
 st.subheader("🎯 脚本质量评分（独立评审）")
 
-if st.button("运行独立评分", type="primary", use_container_width=True):
+if st.button("运行独立评分", type="primary", width='stretch'):
     key = _get_key(scorer_provider_name)
     if not key:
         st.error("请配置评分模型的 API Key")
@@ -274,7 +274,7 @@ if session.static_scores:
         vals = [scores.get(d["id"], 0) for d in STATIC_DIMENSIONS]
         fig = go.Figure(go.Scatterpolar(r=vals + [vals[0]], theta=dims + [dims[0]], fill="toself"))
         fig.update_layout(polar=dict(radialaxis=dict(range=[0, 10])), height=300, margin=dict(t=20, b=20))
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
 
     priority = classify_priority(comparison, scores, state.history)
     badge = {"P0": "🔴", "P1": "🟠", "P2": "🟡", "P3": "🟢"}
@@ -340,7 +340,7 @@ if session.static_scores:
             help="提供一个好的脚本示例作为优化方向参考。留空则不影响迭代。",
         )
 
-        if st.button("🚀 开始自动迭代", type="primary", use_container_width=True):
+        if st.button("🚀 开始自动迭代", type="primary", width='stretch'):
             opt_key, scorer_key, gen_key = _get_key(opt_provider_name), _get_key(scorer_provider_name), _get_key(gen_provider_name)
             if not opt_key or not scorer_key or not gen_key:
                 st.error("请配置 API Key"); st.stop()
@@ -387,7 +387,7 @@ if session.static_scores:
                 "📝 参考脚本段落（可选）", height=120, key="single_ref_snippet_prompt",
                 placeholder="粘贴一段优秀脚本片段作为优化参考...",
             )
-            if st.button("🧗 优化提示词", use_container_width=True):
+            if st.button("🧗 优化提示词", width='stretch'):
                 opt_key, scorer_key, gen_key = _get_key(opt_provider_name), _get_key(scorer_provider_name), _get_key(gen_provider_name)
                 if not opt_key or not scorer_key or not gen_key:
                     st.error("请配置 API Key"); st.stop()
@@ -451,7 +451,7 @@ if session.static_scores:
                 "📝 参考脚本段落（可选）", height=120, key="single_ref_snippet_script",
                 placeholder="粘贴一段优秀脚本片段作为优化参考...",
             )
-            if st.button("🧗 针对该维度优化脚本", use_container_width=True):
+            if st.button("🧗 针对该维度优化脚本", width='stretch'):
                 opt_key, scorer_key = _get_key(opt_provider_name), _get_key(scorer_provider_name)
                 if not opt_key or not scorer_key:
                     st.error("请配置 API Key"); st.stop()
@@ -561,11 +561,11 @@ if candidates:
                     with tcol2:
                         st.write("")
                         if running_tr:
-                            if st.button("⏹ 停止", key=f"tr_stop_{c.id}", use_container_width=True):
+                            if st.button("⏹ 停止", key=f"tr_stop_{c.id}", width='stretch'):
                                 request_stop(running_tr.id)
                                 st.rerun()
                         else:
-                            tr_clicked = st.button("🌐 翻译", key=f"tr_run_{c.id}", use_container_width=True,
+                            tr_clicked = st.button("🌐 翻译", key=f"tr_run_{c.id}", width='stretch',
                                                    disabled=(tr_lang is None))
                             if tr_clicked:
                                 opt_key = _get_key(opt_provider_name)
@@ -647,7 +647,7 @@ if candidates:
                 cont_mode = st.radio("模式", ["手动单次", "自动多轮"], horizontal=True, key=f"cont_mode_{c.id}")
 
                 if cont_mode == "手动单次":
-                    if st.button("🧗 继续优化一轮", key=f"cont_manual_{c.id}", type="primary", use_container_width=True):
+                    if st.button("🧗 继续优化一轮", key=f"cont_manual_{c.id}", type="primary", width='stretch'):
                         opt_key, scorer_key = _get_key(opt_provider_name), _get_key(scorer_provider_name)
                         if not opt_key or not scorer_key:
                             st.error("请配置 API Key"); st.stop()
@@ -711,7 +711,7 @@ if candidates:
                         cont_threshold = st.number_input("提升阈值(%)", 1.0, 100.0, 10.0, 1.0, key=f"cont_th_{c.id}")
                     with cont_col2:
                         cont_rounds = st.number_input("最大轮数", 1, 50, 10, 1, key=f"cont_rd_{c.id}")
-                    if st.button("🚀 继续自动迭代", key=f"cont_auto_{c.id}", type="primary", use_container_width=True):
+                    if st.button("🚀 继续自动迭代", key=f"cont_auto_{c.id}", type="primary", width='stretch'):
                         opt_key, scorer_key, gen_key = _get_key(opt_provider_name), _get_key(scorer_provider_name), _get_key(gen_provider_name)
                         if not opt_key or not scorer_key or not gen_key:
                             st.error("请配置 API Key"); st.stop()
@@ -744,7 +744,7 @@ manual_reason = st.text_input("原因")
 confirmed_locks = []
 if manual_element and manual_reason:
     confirmed_locks.append({"element": manual_element, "reason": manual_reason})
-if st.button("🔒 确认锁定并生成下一轮提示词", type="primary", use_container_width=True):
+if st.button("🔒 确认锁定并生成下一轮提示词", type="primary", width='stretch'):
     opt_key = _get_key(opt_provider_name)
     if not opt_key:
         st.error("请配置 API Key"); st.stop()

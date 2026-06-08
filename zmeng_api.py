@@ -1,7 +1,15 @@
 import re
+import os
 import requests
 import pandas as pd
-from config import ZMENG_AUTH_TOKEN, ZMENG_COOKIE
+
+
+def _get_token() -> str:
+    return os.environ.get("ZMENG_AUTH_TOKEN", "")
+
+
+def _get_cookie() -> str:
+    return os.environ.get("ZMENG_COOKIE", "")
 
 API_URL = "https://tt.zmeng123.com/alived/live/list"
 
@@ -55,15 +63,15 @@ def parse_metric_value(val, is_duration: bool = False) -> float:
 def fetch_live_data(room_id: str) -> dict | None:
     headers = {
         "Accept": "application/json, text/plain, */*",
-        "Authorization": ZMENG_AUTH_TOKEN,
+        "Authorization": _get_token(),
         "Content-Type": "application/json;charset=UTF-8",
         "Origin": "https://tt.zmeng123.com",
         "Referer": "https://tt.zmeng123.com/",
         "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X)",
     }
     cookies = {}
-    if ZMENG_COOKIE:
-        for pair in ZMENG_COOKIE.split("; "):
+    if _get_cookie():
+        for pair in _get_cookie().split("; "):
             if "=" in pair:
                 k, v = pair.split("=", 1)
                 cookies[k.strip()] = v.strip()
@@ -123,15 +131,15 @@ TASK_CONTENT_URL = "https://tt.zmeng123.com/alived/live/gemini/task/content"
 def _get_headers_cookies() -> tuple[dict, dict]:
     headers = {
         "Accept": "application/json, text/plain, */*",
-        "Authorization": ZMENG_AUTH_TOKEN,
+        "Authorization": _get_token(),
         "Content-Type": "application/json;charset=UTF-8",
         "Origin": "https://tt.zmeng123.com",
         "Referer": "https://tt.zmeng123.com/",
         "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X)",
     }
     cookies = {}
-    if ZMENG_COOKIE:
-        for pair in ZMENG_COOKIE.split("; "):
+    if _get_cookie():
+        for pair in _get_cookie().split("; "):
             if "=" in pair:
                 k, v = pair.split("=", 1)
                 cookies[k.strip()] = v.strip()
