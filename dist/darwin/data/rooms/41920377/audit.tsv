@@ -1,0 +1,13 @@
+timestamp	session_id	old_score	new_score	status	dimension	priority	scorer_model	note
+2026-04-21T23:21:49	20260421_202826_e8e3a4	84.9	94.7	keep	-	-	google/gemini-2.5-flash	auto_prompt_2轮
+2026-04-22T11:56:25	20260421_202826_e8e3a4	0	46.2	baseline	-	-	google/gemini-2.5-flash	评分
+2026-04-22T12:04:30	20260421_202826_e8e3a4	0	49.5	baseline	-	-	google/gemini-2.5-flash	评分
+2026-04-22T15:24:34	20260421_202803_5b2774	77.1	79.5	keep	interaction	P2	google/gemini-2.5-flash	prompt模式
+2026-04-22T15:29:13	20260421_202803_5b2774	77.1	79.4	keep	interaction	P2	google/gemini-2.5-flash	prompt模式
+2026-04-22T15:59:07	20260421_202803_5b2774	77.1	81.3	keep	-	-	google/gemini-2.5-flash	auto_prompt_2轮
+2026-04-22T16:53:18	20260421_202803_5b2774	77.1	77.8	keep	-	-	google/gemini-2.5-flash	auto_prompt_4轮
+2026-04-22T17:15:27	20260421_202803_5b2774	77.1	77.1	keep	-	-	google/gemini-2.5-flash	auto_prompt_1轮
+2026-04-22T17:21:25	20260421_202803_5b2774	77.1	80.9	keep	closing	P2	google/gemini-2.5-flash	prompt模式
+2026-04-22T17:37:00	20260421_202803_5b2774	77.1	76.4	revert	closing	P2	google/gemini-2.5-flash	prompt模式
+2026-04-22T17:58:16	20260421_202803_5b2774	77.1	78.0	keep	-	-	google/gemini-2.5-flash	auto_prompt_3轮
+2026-04-22T18:15:30	20260421_202803_5b2774	77.1	82.4	keep	closing	P2	google/gemini-2.5-flash	prompt模式

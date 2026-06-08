@@ -1,0 +1,48 @@
+{
+  "id": "20260508_072002_109005",
+  "timestamp": "2026-05-02 19:30:00",
+  "script": "Suka makan nasi lemak tapi takut perut rasa tidak selesa?\nKunyah dua biji sebelum makan untuk urus serapan karbohidrat anda.\nPerut rasa ringan.\nDapatkan tiga pek cuma RM99 sahaja khas untuk hari ini.\nTinggal 5 set sahaja, klik beg kuning sudut kiri bawah.\n\nIni rahsia kawan saya makan banyak tapi tetap nampak ceria.\nDulu lepas makan nasi mata berat, sekarang badan kekal bertenaga.\nBadan rasa segar.\nJimat RM78 dengan set kombo 3 pek dalam live sekarang.\nTawaran tamat lepas live, tekan beg kuning kiri bawah cepat.\n\nRasa rimas bila sarung baju kegemaran nampak kesan buncit?\nPakai semula kebaya lama anda tanpa rasa ketat di pinggang.\nNampak lebih kemas.\nHarga runtuh 3 pek cuma RM99 sempena promosi Payday ini.\nTaip 1 di komen dan klik beg kuning kiri bawah terus.\n\nSiapa sini hantu mee goreng tapi risau perut rasa senak?\nLepas belasah mee goreng, perut tak rasa ketat dan kembung langsung.\nSangat lega rasanya.\nSet 1 tambah 1 cuma RM88 sahaja eksklusif di skrin.\nKlik beg kuning bawah kiri sekarang sebelum stok licin.\n\nRibuan orang dah cuba dan berpuas hati dengan tablet ini!\nSimpan satu peket dalam beg, mudah untuk anda kunyah bila-bila masa.\nMemang sangat praktikal.\nBeli 2 tambah 2 cuma RM159, lebih jimat dan berbaloi.\nHanya baki 5 set, cepat tekan beg kuning kiri bawah.\n\nTak sah hari anda kalau tak dapat minum teh boba?\nTablet ini tolong urus kalori dari dalam supaya anda tenang.\nNikmati tanpa risau.\nGunakan baucar Payday untuk diskaun tambahan sehingga 23 peratus sekarang.\nTawaran tamat lepas live, tekan beg kuning kiri bawah cepat.\n\nBangun pagi rasa lebih ringan tanpa sisa yang membebankan badan!\nBangun pagi esok membuang sangat lawas, perut rasa kosong dan selesa.\nRasa sangat selesa.\nHarga asal RM59 sepek, tapi beli tiga cuma RM33 sahaja.\nKomen 1 atau terus klik beg kuning sudut kiri bawah.\n\nNak makan roti canai setiap pagi tanpa rasa bersalah yang besar?\nKunyah macam gula-gula sebelum anda mula menyuap makanan kegemaran anda.\nSangat sedap diulangi.\nSet 6 pek cuma RM180, harga paling rendah pernah kami tawarkan.\nKlik beg kuning bawah kiri sekarang sebelum stok licin.\n\nKenapa berlapar kalau anda boleh urus makanan dengan cara bijak?\nIa bantu singkirkan angin tersumbat dalam perut secepat dua jam sahaja.\nPerut tak kembung.\nTebus baucar RM5 hari ini untuk pembelian set 3 pek RM99.\nTinggal 8 set sahaja, klik beg kuning kiri bawah segera.\n\nAnda risau nak makan malam sebab takut badan rasa berat?\nIa urus serapan karbohidrat berlebihan supaya anda boleh tidur dengan tenang.\nBangun rasa ringan.\nPromosi 1 tambah 1 cuma RM88, sangat jimat untuk anda semua.\nTawaran tamat lepas live, tekan beg kuning kiri bawah cepat.\n\nTablet kunyah ini bukan ubat tapi kawan baik untuk pencernaan.\nDibuat di kilang Kuala Lumpur dengan formula hebat dari negara Jepun.\nKualiti sangat terjamin.\nGunakan diskaun Payday sehingga 23 peratus sebelum pukul dua belas malam.\nTaip 1 di komen dan klik beg kuning kiri bawah terus.\n\nStok makin surut sebab ramai yang dah borong set kombo!\nAmalkan setiap hari untuk pastikan ukuran lilit pinggang anda kekal cantik.\nBaju tak ketat.\nSet 2 tambah 2 cuma RM159, harga paling murah dalam live.\nKlik beg kuning bawah kiri sekarang sebelum stok licin.",
+  "metrics": {
+    "ctr": 2.17,
+    "dwell_time": 10.0,
+    "gmv": 45.0,
+    "order_volume": 1.0,
+    "follow_rate": 0.37,
+    "views": 589.0,
+    "impressions": 4019.9999999999995,
+    "roi": 2.68
+  },
+  "room_id": "dbc28dd1",
+  "prompt": "",
+  "notes": "API: highbeauty_my room=7635255398585289493 seq=37",
+  "llm_analysis": "",
+  "locked_elements": [],
+  "static_scores": {
+    "hook": 5.2,
+    "product_demo": 4.1,
+    "golden_loop": 2.0,
+    "closing": 4.3,
+    "pacing": 8.8,
+    "pain_points": 3.8,
+    "price_anchor": 3.7,
+    "reentry": 3.0
+  },
+  "static_total": 20.8,
+  "effect_scores": {
+    "ctr": 3.8,
+    "dwell_time": 4.6
+  },
+  "effect_total": 25.2,
+  "total_score": 46.0,
+  "rubric_reasoning": {
+    "hook": "[片段1] 开场以提问形式抛出本地化高频场景（吃椰浆饭怕胃不适），0废话，直接构成强力Hook。 | [片段2] 开头似乎是承接上文的残句（'berat'），没有设计吸引注意力的强力Hook，无法在最初3秒给出让新观众留下的强烈理由。 | [片段3] 片段开头直接抛出促销背景和CTA，缺乏给新观众留下来的强力价值信号，后续Hook被打断未完整表达。 | [片段4] 开头使用社会认同（其他人很满意）作为引入，但缺乏具体的震撼数据、强利益承诺或痛点直击，留人理由不够强力。 | [片段5] 开头仅有抽象的情感描述（让你安心），毫无强力钩子或实质性信息，无法阻止观众滑走。 | [片段6] 开篇直接使用巨大的价格落差作为利益承诺Hook，能够迅速抓人眼球，零废话。 | [片段7] 片段以半截CTA开头，随后用反问句'Kenapa berlapar...'切入痛点作为新Hook，具有一定的吸引力但片段不完整。 | [片段8] 以提问方式直击身体沉重的痛点，前3秒能引起目标人群共鸣并提供留下理由。 | [片段9] 开头仅为平淡的属性描述（日本配方），无震撼数据、反常识提问或痛点直击，缺乏留人理由。 | [片段10] 开篇直接抛出极限低价（只要RM159，直播间最低价），利益承诺直接，但缺乏对产品本身的引入。",
+    "product_demo": "[片段1] 聚焦解决吃油腻食物后的胃部问题并给出明确指引（饭前嚼两粒），但句子意外截断导致卖点未完全说透。 | [片段2] 聚焦于提供精力、让身体感觉清新的单一卖点，没有堆砌多余信息，用户能快速理解价值。 | [片段3] 片段中完全没有提及任何产品卖点、场景或具体说明。 | [片段4] 片段清晰聚焦于'便携易服用'这一个卖点，并给出了具体的使用场景（放在包里），听众能迅速感知价值。 | [片段5] 片段内没有任何具体的产品卖点描述或场景支撑，内容极度空洞。 | [片段6] 全段仅聚焦促销价格，未提及产品的任何功能特性或实际价值，缺乏卖点支撑。 | [片段7] 仅有抽象的'urus makanan dengan cara bijak'，未明确具体产品卖点，缺乏数字或场景的支撑论据。 | [片段8] 严格聚焦于管理碳水吸收和改善睡眠这单一核心卖点，且有具体的场景化收益。 | [片段9] 全靠抽象形容词（‘质量极有保证’），没有任何具体场景、数据对比或功效支撑来证明卖点价值。 | [片段10] 全段完全没有任何产品卖点、功能或场景的描述，纯粹在逼单。",
+    "golden_loop": "[片段1] 片段极短且被截断，完全缺失价格呈现和转化环节，未能形成完整的闭环结构。 | [片段2] 包含了利益点（精力充沛）和价格/优惠（省RM78），但缺乏起手的Hook和完整的收尾CTA，闭环不完整。 | [片段3] 未能形成完整的推销闭环，缺失卖点、价格等核心环节，仅包含上一个循环的CTA和新循环的起头。 | [片段4] 片段仅展示了引言和单点卖点，完全缺乏价格信息和行动号召，未能形成完整的推销闭环。 | [片段5] 片段残缺且缺乏闭环结构，没有完整的‘Hook→Benefit→Price→CTA’逻辑。 | [片段6] 结构不完整，虽然有价格和CTA，但完全缺失核心的卖点(Benefit)展示环节。 | [片段7] 仅展示了上一个循环的结尾（CTA）和下一个循环的开头（Hook），未能在一个片段内体现完整的推销闭环。 | [片段8] 片段仅包含痛点和卖点，完全缺失价格呈现和行动号召（CTA），未形成完整的推销闭环。 | [片段9] 片段极短且结构残缺，缺乏清晰的Hook、Benefit推演和标准CTA，未形成完整的销售闭环。 | [片段10] 结构极度残缺，仅包含价格和CTA，没有Hook和产品价值的铺垫，无法形成完整的推销闭环。",
+    "closing": "[片段1] 脚本片段中完全没有任何形式的行动号召（CTA）或紧迫感营造。 | [片段2] CTA被截断（'dalam liv'），没有具体的点击路径指引（如点击小黄车），也缺乏强烈的紧迫感元素。 | [片段3] CTA非常明确具体，指明了互动方式（评论打1）和确切的点击路径（左下角黄车），并带有一点直接行动的紧迫感（terus）。 | [片段4] 该片段中完全没有出现任何行动号召（CTA）及紧迫感元素。 | [片段5] 提到了使用优惠券，但缺乏明确的动作指引（如点击哪里获取）且句子被截断。 | [片段6] 给出了非常具体且明确的路径指引（左下角黄车/评论1），但缺乏时间或数量上的紧迫感。 | [片段7] 包含残缺的具体路径指引（'h kiri'应为左下角）和明确的FOMO元素（'sebelum stok licin'库存耗尽前）。 | [片段8] 全篇没有任何行动号召（CTA），无紧迫感，也没有引导用户点击购物车的路径。 | [片段9] 虽然提到了发薪日折扣，但完全缺失具体的动作指引（如‘点击左下角小黄车’），行动号召模糊。 | [片段10] CTA完美，包含具体的点击路径（左下角黄车）以及极强的稀缺感/紧迫感（库存抢空前）。",
+    "pacing": "[片段1] 句子极为短小精悍，无冗余过渡和填充词，TTS朗读时信息密度极高。 | [片段2] 句子极短且精炼（'Badan rasa segar'），无废话，信息密度高，TTS朗读时节奏会很紧凑。 | [片段3] 句子短小直接，指令清晰，没有冗长的废话或空洞的填充词，节奏快。 | [片段4] 句子简短且直接，没有冗长复杂的废话或过渡词，信息推进节奏紧凑。 | [片段5] 句子虽然简短，但信息密度极低，缺乏实质性内容推进。 | [片段6] 句子极为短促精炼，完全没有废话或填充词，播放节奏紧凑高频。 | [片段7] 句子简短直接，无废话和填充词，适合TTS快节奏朗读。 | [片段8] 句子极为简短精炼，无任何废话或填充词，TTS播放时节奏紧凑、信息密度极高。 | [片段9] 所有句子极短且直接，没有冗长复杂句或无意义的填充词，TTS朗读时节奏非常紧凑。 | [片段10] 句子极短，毫无废话，信息密度高，直接指向转化，TTS朗读节奏极佳。",
+    "pain_points": "[片段1] 第一秒就抛出具体、可感知的痛点（美食诱惑与肠胃不适的矛盾），并在一句话内迅速引出解法。 | [片段2] 痛点仅以残缺的词汇（'berat'，沉重）带过，缺乏具体的场景描述，观众难以产生强烈共鸣。 | [片段3] 片段中完全没有触及或描述任何用户痛点。 | [片段4] 全段未触及任何用户痛点，直接讲述产品的正面评价和使用场景。 | [片段5] 完全没有提及任何具体、可感知的痛点，‘担忧’的表述过于抽象。 | [片段6] 全篇未提及用户的任何痛点，仅在强调价格机制。 | [片段7] 'Kenapa berlapar'直击挨饿痛点，且在一句话内引出管理食物的解决方案方向。 | [片段8] 开篇直接戳中怕胖和身体负担的痛点，并在一句话内流畅过渡到产品解决方案。 | [片段9] 全段完全没有提及任何用户痛点，直接单向输出产品属性，无法引发观众共鸣。 | [片段10] 完全没有提及任何用户痛点。",
+    "price_anchor": "[片段1] 全篇没有任何价格对比或优惠信息。 | [片段2] 直接给出了具体的节省金额（'Jimat RM78'）和购买组合（'set kombo 3 pek'），有效建立了超值的价格锚点。 | [片段3] 没有任何价格信息、原价说明或价格对比基准。 | [片段4] 片段中完全没有出现关于产品的价格信息或对比基准。 | [片段5] 提及了高达23%的额外折扣，但没有建立清晰的原价或竞品价对比锚点。 | [片段6] 建立了完美且极具冲击力的价格锚点（原价1包RM59对比直播价3包RM33），超值感极强。 | [片段7] 全段完全没有提供任何价格信息或价值对比锚点。 | [片段8] 脚本片段中完全没有任何关于价格、优惠或对比基准的信息。 | [片段9] 仅提到高达23%的折扣比例，但没有具体的原价与直播价金额对比，观众难以直观感知‘超值’。 | [片段10] 报出了当前价格（RM159）并用‘直播间最低价’建立了价值感知，但缺失具体的原价/竞品价格作为数字对比锚点。",
+    "reentry": "[片段1] 通过生活化场景直接开场，瞬间建立清晰语境，新进入的观众立刻能跟上当前话题。 | [片段2] 全段完全没有提及产品名称或品类，新进入的观众只知道能提神和省钱，但完全不知道在卖什么，无法建立上下文。 | [片段3] 没有提及产品名称或核心话题，新进观众即便听到促销和CTA，也完全不知道当前直播间在售卖什么。 | [片段4] 通过'tablet ini'明确指出了产品形态，且内容独立易懂，新进观众无需听前文也能理解正在推销某种便携片剂。 | [片段5] 片段中完全没有提及产品名称或当前话题，新观众进入一头雾水，无法理解上下文。 | [片段6] 上下文重置失败，由于没有提及具体的产品名称（仅说'sepek'一包），新进观众不知道在卖什么。 | [片段7] 新起话题但并未重新提及具体产品名称，新进观众知道要解决挨饿，但不知道在卖什么。 | [片段8] 使用了代词'Ia'（它）指代产品，缺失明确的产品名称，新进直播间的观众一头雾水，不知道在卖什么。 | [片段9] 全段完全未提及产品名称或具体品类，新观众切入这段内容时会完全不知道在卖什么。 | [片段10] 完全没有提及产品名称，新进入的观众听到这段只会知道有便宜货，但根本不知道主播在卖什么产品。"
+  },
+  "scorer_model": "google（官方）/gemini-3.1-pro-preview"
+}

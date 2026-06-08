@@ -1,0 +1,48 @@
+{
+  "id": "20260508_072000_f34191",
+  "timestamp": "2026-05-03 00:00:00",
+  "script": "Sering rasa perut kembung dan buncit lepas makan nasi lemak banyak?\nKunyah dua biji sebelum makan untuk rasa perut lebih ringan sentiasa.\nPerut tak sebu.\nJimat RM78 bila beli set 3 pek cuma RM99 sahaja.\nTinggal 5 set saja, klik beg kuning sudut kiri bawah.\n\nKenapa perlu ikat perut kalau boleh nikmati mee goreng kegemaran?\nSarung semula baju lama anda tanpa rasa ketat di bahagian pinggang.\nBaju rasa longgar.\nHarga runtuh Payday, 3 pek cuma RM99 untuk hari ini.\nTawaran tamat lepas live, tekan beg kuning kiri bawah cepat.\n\nSering rasa mengantuk dan badan berat lepas makan karbohidrat tinggi?\nTablet ini bantu urus serapan karbohidrat dengan cara yang sangat mudah.\nBadan kekal bertenaga.\nSet kombo 1 tambah 1 cuma RM88 dalam live sekarang.\nTaip 1 di komen dan klik beg kuning kiri bawah terus.\n\nNikmati teh boba kegemaran anda tanpa rasa bersalah yang lama.\nDulu perut selalu sebu, sekarang rasa kosong tanpa sisa makanan.\nRasa sangat selesa.\nDapatkan set 2 tambah 2 RM159 untuk penjimatan paling maksimum.\nKlik beg kuning bawah kiri sekarang sebelum stok licin.\n\nRahsia rakan anda kekal ringan walaupun makan roti canai setiap pagi.\nProbiotik ini bantu singkirkan angin tersumbat dengan pantas dan lembut.\nBangun pagi segar.\nGunakan baucar Payday untuk diskaun tambahan sehingga 23 peratus.\nHanya baki 7 set, tekan beg kuning kiri bawah segera.\n\nNak nampak lebih yakin dengan baju kebaya kegemaran hujung minggu?\nSimpan satu pek dalam beg untuk kunyah sebelum makan besar.\nMemang sangat praktikal.\nAmbil set 6 pek RM180 untuk stok dua bulan terus.\nTawaran tamat lepas live, tekan beg kuning kiri bawah cepat.\n\nMasih telan ubat pahit semata-mata untuk urus diet harian anda?\nKunyah macam gula-gula manis tanpa perlu telan tablet yang pahit.\nSangat sedap di mulut.\nCuma RM1.10 sehari untuk penjagaan usus yang sangat mantap.\nKomen 1 atau terus klik beg kuning sudut kiri bawah.\n\nKenapa berhenti separuh jalan kalau belum nampak hasil yang tetap?\nAmalkan setiap hari untuk pastikan ukuran lilit pinggang kekal cantik.\nNampak lebih ramping.\nSet 3 pek RM99 ini lebih berbaloi daripada beli satu.\nKlik beg kuning bawah kiri sekarang sebelum stok licin.\n\nIni rahsia orang makan berat tapi tetap nampak makin ringan.\nBangun pagi esok membuang sangat lawas tanpa sebarang rasa sakit.\nPerut rasa kosong.\nDapatkan set 1 tambah 1 cuma RM88 di live sekarang.\nTinggal 4 set saja, klik beg kuning sudut kiri bawah.\n\nSuka makan dessert manis tapi takut badan makin lebar ke samping?\nKunyah dua biji sebelum makan untuk sekat serapan karbohidrat serta-merta.\nSangat beza rasanya.\nGunakan baucar RM5 untuk pembelian kombo 3 pek hari ini.\nTaip 1 di komen dan klik beg kuning kiri bawah terus.",
+  "metrics": {
+    "ctr": 2.09,
+    "dwell_time": 19.0,
+    "gmv": 0.0,
+    "order_volume": 0.0,
+    "follow_rate": 0.13,
+    "views": 815.0,
+    "impressions": 6550.0,
+    "roi": 0.0
+  },
+  "room_id": "dbc28dd1",
+  "prompt": "",
+  "notes": "API: highbeauty_my room=7635324974668696340 seq=25",
+  "llm_analysis": "",
+  "locked_elements": [],
+  "static_scores": {
+    "hook": 5.9,
+    "product_demo": 5.8,
+    "golden_loop": 3.2,
+    "closing": 3.2,
+    "pacing": 9.3,
+    "pain_points": 6.5,
+    "price_anchor": 2.9,
+    "reentry": 2.9
+  },
+  "static_total": 25.0,
+  "effect_scores": {
+    "ctr": 3.2,
+    "dwell_time": 8.3
+  },
+  "effect_total": 34.5,
+  "total_score": 59.5,
+  "rubric_reasoning": {
+    "hook": "[片段1] 开场直接用‘吃椰浆饭后腹胀肚子大’的具体场景和痛点反问，强力吸引目标受众，零废话。 | [片段2] 开篇用吃炒面和穿旧衣服的场景进行反问，瞬间抓住减肥受众注意力，Hook极具吸引力和画面感。 | [片段3] 开头以'高碳水'直接提问，切入痛点吸引相关人群，但缺乏震撼数据或更强烈的利益承诺。 | [片段4] 开篇直接切入痛点描述（过去肚子总是胀气），能吸引有此类困扰的观众，但缺乏更强力的震撼数据或利益前置。 | [片段5] 开局直接切入痛点解决（快速温和排除胀气），提供了留下的理由，但缺乏震撼或反常识的强力抓手。 | [片段6] 开篇直接切入使用场景（放在包里），但缺乏震撼数据、反常识提问等强力Hook元素，难以在3秒内强力挽留新观众。 | [片段7] 开篇提到吞咽苦药片的痛点，能吸引有此困扰的观众，但句子截断不够完整，缺乏强力的震撼或悬念数据。 | [片段8] 开头直接抛出利益承诺（显瘦变美），能留住有相关需求的观众，但缺乏震撼感，且句子存在截断。 | [片段9] 开头为残缺片段，随后直接报价，缺乏吸引新观众停留的有效钩子。 | [片段10] 片段直接以RM5优惠券作为利益点开场，虽然没有寒暄，但由于片段严重残缺，缺乏强有力的留人动机。",
+    "product_demo": "[片段1] 聚焦缓解腹胀的单一卖点，但片段因截断未能完整说明产品的具体价值和起效机制。 | [片段2] 聚焦于‘享受美食的同时改善体型’这一核心卖点，通过‘腰部不再紧绷’的具体场景清晰传达价值。 | [片段3] 聚焦'管理碳水吸收'的单一卖点，但仅使用了'非常简单的方式'这种抽象描述，缺乏场景、数字或对比的支撑。 | [片段4] 聚焦于解决肠胃不适单一卖点，通过‘过去胀气vs现在清空’的具体对比，生动展示了产品价值。 | [片段5] 卖点极其聚焦（仅围绕排除体内积风和早起精神），没有堆砌多余功能，受众能快速理解。 | [片段6] 聚焦了'便携/大餐前食用'这一个单一卖点，通过具体的场景（放包里、大餐前）进行支撑，无多余堆砌。 | [片段7] 高度聚焦于‘不苦、好吃’这单一卖点上，表达具体且易感知，无需更多解释观众即可秒懂价值。 | [片段8] 聚焦在单一卖点（显瘦和保持美丽），但主要依赖形容词，缺乏具体场景或数字支撑效果。 | [片段9] 片段中没有任何产品卖点或价值描述，仅有促销信息。 | [片段10] 全段没有提及任何产品卖点，完全聚焦于促销和行动号召。",
+    "golden_loop": "[片段1] 片段极度残缺，仅有Hook和一半的解法，完全缺失价格和行动号召，未能形成完整推销闭环。 | [片段2] 片段仅包含痛点和卖点描述，完全缺失价格呈现和行动号召，未形成完整的15-30秒推销闭环。 | [片段3] 片段极短且结构残缺，完全缺少价格说明与行动号召，未能形成完整的15-30秒推销闭环。 | [片段4] 呈现了‘痛点解决→呼吁行动’的部分逻辑，但由于缺乏价格展示和完整CTA，循环推销闭环不完整。 | [片段5] 片段包含痛点、利益和CTA，但严重缺失价格环节，闭环结构不完整，时长过短不足以支撑完整推销。 | [片段6] 展示了从卖点阐述到价格引导的过渡，体现了部分推销闭环，但由于片段过短被截断，未能呈现完整的循环结构。 | [片段7] 包含了卖点展示和价格说明，但缺失了关键的行动号召(CTA)，未形成完整的推销闭环。 | [片段8] 极短片段内清晰展现了完整的闭环结构：利益点（显瘦）→ 价格/促销（3件RM99）→ 呼吁（点击）。 | [片段9] 仅展示了价格和行动号召，缺失钩子与卖点推介，未构成完整的推销闭环。 | [片段10] 片段仅展示了循环的末尾（促销与CTA），没有任何闭环结构或推销过程。",
+    "closing": "[片段1] 片段中完全没有出现CTA，没有任何点击指引或紧迫感营造。 | [片段2] 完全没有任何CTA引导、点击路径说明或紧迫感元素。 | [片段3] 没有任何行动号召(CTA)，也没有任何紧迫感或稀缺性元素。 | [片段4] CTA被严重截断（只有‘Dapatkan se’），没有提供任何具体的点击路径指引或紧迫感元素。 | [片段5] CTA仅有一句'Gunakan baucar'（使用优惠券），没有任何具体的点击路径指引（如黄车位置），也缺乏紧迫感。 | [片段6] 有引导购买的起手式（'Ambil set...'），但片段中缺失了具体的小黄车点击路径和任何紧迫感（FOMO）元素。 | [片段7] 该片段中完全没有出现任何行动号召、点击指引或紧迫感元素。 | [片段8] 有明确的路径指引（Klik b[eg kuning]），但受截断影响不完整，且完全没有营造任何紧迫感或稀缺性。 | [片段9] 具备明确的点击路径指引（小黄车）和极强的稀缺感（仅剩4套），CTA非常标准有力。 | [片段10] CTA非常明确，包含了具体的互动路径（评论区打1并点击左下角黄车），且带有时间紧迫感（今天）。",
+    "pacing": "[片段1] 没有任何寒暄或废话填充，简短直接切入正题，信息密度较高。 | [片段2] 句子极短，信息密集且高度场景化，毫无废话和填充词，非常适合TTS快节奏朗读。 | [片段3] 句子短小精悍直奔主题，无废话和填充词，但结尾存在残缺词(Bad)略微影响连贯性。 | [片段4] 句子简短直接，没有任何冗余废话和填充词，TTS朗读时信息密度高且节奏紧凑。 | [片段5] 句子极简短（5词以内），无任何废话与冗余过渡，TTS播放信息密度极高，节奏非常紧凑。 | [片段6] 句子短小精悍（如'Memang sangat praktikal'），毫无废话和冗长过渡，信息密度极高，完美契合TTS朗读。 | [片段7] 句子极短且高度浓缩，无任何废话或冗余词汇，TTS朗读时信息传达效率极高。 | [片段8] 句子极度简短精炼，无任何废话或过渡词，信息密度极高，非常适合TTS高节奏播放。 | [片段9] 句子短促，信息密度极高，全是指示性内容，无任何冗余废话。 | [片段10] 语言极其精炼，完全没有废话或过渡词，全句均为有效指令。",
+    "pain_points": "[片段1] 前3秒内完美戳中‘腹胀’和‘肚子大’这样非常具体、可感知且极具生活共鸣的痛点。 | [片段2] 前5秒立刻戳中‘腰围变粗、穿不下旧衣服’的具体痛点，感知力极强且直指解决方案。 | [片段3] 开局1-2秒内立刻戳中高碳水饮食痛点，且在一句话内迅速给出了产品的解决方案，过渡极快。 | [片段4] 第一时间抛出‘perut selalu sebu’（肚子胀气）的痛点，非常具体可感知，且迅速给出了解决后的舒适状态。 | [片段5] 前3秒立即点出'angin tersumbat'（体内积风/胀气）的具体痛点，并在一句话内给出了解决方案。 | [片段6] 通过'大餐前咀嚼'隐形切入了怕胖或消化的痛点场景，但没有明确点破痛点本身，刺激感略显不足。 | [片段7] 前几秒直接指出‘吞咽苦涩药片’这一具体且可感知的痛点，并用‘口感好’迅速给出解法。 | [片段8] 全段只描述了正面的利益效果，没有任何针对具体痛点（如身材焦虑、赘肉困扰）的速击。 | [片段9] 完全没有提及或触达任何用户痛点。 | [片段10] 没有任何痛点描述或相关场景切入。",
+    "price_anchor": "[片段1] 全篇未提及任何关于产品原价、直播价或竞品价格的信息。 | [片段2] 全段没有任何价格信息或对比锚点。 | [片段3] 片段中完全没有任何价格信息或对比基准。 | [片段4] 脚本片段中完全没有出现任何价格信息或价格对比。 | [片段5] 全篇没有任何价格信息，也无任何原价或竞品价格的对比锚点。 | [片段6] 只报了当前价格（6包RM180），完全没有任何原价、竞品价或折算均价的对比，无法让观众感知到'超值'。 | [片段7] 完美运用了‘日均成本平摊’策略（每天只需RM1.10），立刻让观众感知到极低的门槛和超高性价比。 | [片段8] 明确指出‘3件套RM99比单买更划算’，成功利用单件价格作为对比锚点凸显了超值感。 | [片段9] 给出了买一送一及RM88的优惠，但缺少明确的原价或竞品价格作为对比基准。 | [片段10] 仅提到了5马币的优惠券和3件套组合，没有建立原价与现价的对比基准。",
+    "reentry": "[片段1] 进入立刻能听懂当前的痛点话题，无需前文铺垫，但因截断未能清晰点出具体产品名。 | [片段2] 虽然通过场景吸引了受众，但完全没有提及产品名称，中途进入的观众无法马上知道在推销什么。 | [片段3] 仅使用了代词'Tablet ini'（这款片剂），未提及具体产品名称，新观众能理解功效但无法得知具体品牌。 | [片段4] 片段中没有提及产品名称，随机进入的观众虽然能听到功效，但完全不知道在推销什么产品。 | [片段5] 用词'tik ini'（可能指代产品）过于模糊，没有完整提及具体产品名，新进入观众可能短暂困惑这是什么形态的产品。 | [片段6] 直接在讲动作和规格，未重新提及具体的产品名称或品类，导致刚进来的观众无法立刻明白正在卖什么东西。 | [片段7] 提到了‘肠道护理(penjagaan usus)’让观众知道大概品类，但未提及具体产品名称，新观众仍存在认知空白。 | [片段8] 全段完全没有提及产品名称或类别，新进观众虽知道能变瘦，但一头雾水不知道具体在卖什么产品。 | [片段9] 未提及产品名称，新进观众只能听到价格和催促下单，完全不知道正在售卖什么商品。 | [片段10] 没有提及产品名称，中途进来的观众完全不知道在推销什么东西。"
+  },
+  "scorer_model": "google（官方）/gemini-3.1-pro-preview"
+}

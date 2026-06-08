@@ -1,0 +1,3 @@
+timestamp	session_id	old_score	new_score	status	dimension	priority	scorer_model	note
+2026-04-24T10:52:09	20260423_210054_45edd6	70.6	76.2	keep	-	-	google/gemini-3-flash-preview	auto_prompt_3轮
+2026-04-24T18:29:32	20260423_210054_45edd6	70.6	73.6	keep	-	-	google/gemini-3-flash-preview	auto_prompt_2轮

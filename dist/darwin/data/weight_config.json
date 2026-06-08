@@ -1,0 +1,16 @@
+{
+  "static": {
+    "hook": 9,
+    "product_demo": 5,
+    "golden_loop": 7,
+    "closing": 10,
+    "pacing": 1,
+    "pain_points": 12,
+    "price_anchor": 5,
+    "reentry": 4
+  },
+  "effect": {
+    "ctr": 30,
+    "dwell_time": 30
+  }
+}
