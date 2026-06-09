@@ -45,24 +45,31 @@ with tab_collect:
         lang_v = st.selectbox("视频语言", list(SUPPORTED_LANGUAGES.keys()),
                               format_func=lambda x: SUPPORTED_LANGUAGES[x], key="rk_vid_lang")
         if up_v and st.button("提取并加入素材", key="rk_vid_btn"):
-            with st.spinner("提取音频并转文字..."):
-                with tempfile.NamedTemporaryFile(suffix=Path(up_v.name).suffix, delete=False) as tmp:
-                    tmp.write(up_v.read()); tmp_path = Path(tmp.name)
-                audio_path = tmp_path.with_suffix(".mp3")
-                subprocess.run(["ffmpeg", "-i", str(tmp_path), "-vn", "-acodec",
-                                "libmp3lame", "-ab", "128k", str(audio_path), "-y"], capture_output=True)
-                if audio_path.exists():
-                    prog = st.progress(0)
-                    text = transcribe_audio(audio_path, language=lang_v,
-                                            progress_callback=lambda p, m: prog.progress(p, text=m))
-                    prog.empty()
-                    if text.strip():
-                        _add_item("视频", up_v.name, text); st.success(f"已加入：{len(text)}字")
+            # 检查 ffmpeg 是否可用
+            import shutil
+            if not shutil.which("ffmpeg"):
+                st.error("❌ 未检测到 ffmpeg。上传录像功能需要 ffmpeg 提取音频。\n\n"
+                         "安装方法：https://ffmpeg.org/download.html\n"
+                         "Windows: 下载后将 ffmpeg.exe 所在目录加入系统 PATH 环境变量，然后重启应用。")
+            else:
+                with st.spinner("提取音频并转文字..."):
+                    with tempfile.NamedTemporaryFile(suffix=Path(up_v.name).suffix, delete=False) as tmp:
+                        tmp.write(up_v.read()); tmp_path = Path(tmp.name)
+                    audio_path = tmp_path.with_suffix(".mp3")
+                    subprocess.run(["ffmpeg", "-i", str(tmp_path), "-vn", "-acodec",
+                                    "libmp3lame", "-ab", "128k", str(audio_path), "-y"], capture_output=True)
+                    if audio_path.exists():
+                        prog = st.progress(0)
+                        text = transcribe_audio(audio_path, language=lang_v,
+                                                progress_callback=lambda p, m: prog.progress(p, text=m))
+                        prog.empty()
+                        if text.strip():
+                            _add_item("视频", up_v.name, text); st.success(f"已加入：{len(text)}字")
+                        else:
+                            st.error("未提取到文字")
+                        tmp_path.unlink(missing_ok=True); audio_path.unlink(missing_ok=True)
                     else:
-                        st.error("未提取到文字")
-                    tmp_path.unlink(missing_ok=True); audio_path.unlink(missing_ok=True)
-                else:
-                    st.error("音频提取失败，请确认 ffmpeg 已安装"); tmp_path.unlink(missing_ok=True)
+                        st.error("音频提取失败，请确认 ffmpeg 版本正确"); tmp_path.unlink(missing_ok=True)
 
     with src_text:
         txt = st.text_area("粘贴口播稿", height=240, key="rk_paste")
